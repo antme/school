@@ -27,7 +27,7 @@ public class Person extends BaseEntity {
 	public static final String NAME = "name";
 
 	public static final String PERSON_TYPE_PARENT = "parent";
-	public static final String PERSON_TYPE_CHILD = "child";
+	public static final String PERSON_TYPE_STUDENT = "student";
 
 	@Column(name = NAME)
 	public String name;

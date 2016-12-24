@@ -33,7 +33,7 @@ CREATE TABLE `Person` (
   `creatorId` varchar(36) DEFAULT NULL,
   `personType` varchar(36) DEFAULT NULL,
   `birthday` date DEFAULT NULL,
-  `ownerId` varchar(36) NOT NULL,
+  `ownerId` varchar(36) DEFAULT NULL,
   `parentId` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)

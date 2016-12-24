@@ -183,6 +183,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		}
 
 		person.setParentId(EWeblibThreadLocal.getCurrentUserId());
+		person.setPersonType(Person.PERSON_TYPE_STUDENT);
 		this.dao.insert(person);
 
 	}
