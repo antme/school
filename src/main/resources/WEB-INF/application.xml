@@ -23,7 +23,7 @@
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
 		<property name="jdbcUrl"
-			value="jdbc:mysql://dbServer:3306/apads?useUnicode=true&amp;characterEncoding=UTF-8">
+			value="jdbc:mysql://dbServer:3306/school?useUnicode=true&amp;characterEncoding=UTF-8">
 		</property>
 
 		<property name="user" value="${db_user}" />

@@ -1,14 +1,11 @@
 package com.wx.school;
 
-import java.util.List;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dao.QueryDaoImpl;
-import com.eweblib.dbhelper.DataBaseQueryBuilder;
-import com.wx.school.bean.user.User;
+import com.wx.school.bean.user.Person;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.impl.UserServiceImpl;
 
@@ -32,12 +29,11 @@ public class BaseTestCase extends TestCase {
 	
 	}
 
-	public void testEmpty() {
-		
-//		us.logout();
-		
-		List<User> list = dao.listByQuery(new DataBaseQueryBuilder(User.TABLE_NAME), User.class);
-		System.out.println(list.size());
+	public void testSubmitPersonInfo() {
+		Person p = new Person();
+		p.setName("刘德华");
+		p.setMobileNumber("13818638561");
+		us.submitPersonInfo(p);
 	}
 
 }

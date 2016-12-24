@@ -20,7 +20,7 @@ import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.bean.vo.OrderBy;
 import com.eweblib.bean.vo.Pagination;
-import com.eweblib.constants.EWebLibConstants;
+import com.eweblib.constants.WebConstants;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
@@ -137,8 +137,8 @@ public class QueryDaoImpl implements IQueryDao {
 
 	public <T extends BaseEntity> List<T> listBySql(String sql, Class<T> classzz) {
 
-		if (EWeblibThreadLocal.get(EWebLibConstants.PAGENATION) != null) {
-			Pagination page = (Pagination) EWeblibThreadLocal.get(EWebLibConstants.PAGENATION);
+		if (EWeblibThreadLocal.get(WebConstants.PAGENATION) != null) {
+			Pagination page = (Pagination) EWeblibThreadLocal.get(WebConstants.PAGENATION);
 
 		}
 
@@ -221,11 +221,11 @@ public class QueryDaoImpl implements IQueryDao {
 			Table table = classzz.getAnnotation(Table.class);
 			builder = new DataBaseQueryBuilder(table.name());
 		}
-		if (EWeblibThreadLocal.get(EWebLibConstants.PAGENATION) != null) {
-			builder.pagination((Pagination) EWeblibThreadLocal.get(EWebLibConstants.PAGENATION));
+		if (EWeblibThreadLocal.get(WebConstants.PAGENATION) != null) {
+			builder.pagination((Pagination) EWeblibThreadLocal.get(WebConstants.PAGENATION));
 		}
-		if (EWeblibThreadLocal.get(EWebLibConstants.DB_QUERY_ORDER_BY) != null) {
-			OrderBy order = (OrderBy) EWeblibThreadLocal.get(EWebLibConstants.DB_QUERY_ORDER_BY);
+		if (EWeblibThreadLocal.get(WebConstants.DB_QUERY_ORDER_BY) != null) {
+			OrderBy order = (OrderBy) EWeblibThreadLocal.get(WebConstants.DB_QUERY_ORDER_BY);
 			
 			builder.clearOderBy();
 			

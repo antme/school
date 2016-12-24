@@ -36,7 +36,7 @@ import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.bean.vo.OrderBy;
 import com.eweblib.bean.vo.Pagination;
-import com.eweblib.constants.EWebLibConstants;
+import com.eweblib.constants.WebConstants;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.EWeblibThreadLocal;
@@ -154,7 +154,7 @@ public abstract class AbstractController {
 		}
 		if (EweblibUtil.isEmpty(parametersMap) && !emptyParameter) {
 			logger.error(String.format("Parameters required for path [%s]", request.getPathInfo()));
-			throw new ResponseException(EWebLibConstants.PARAMETER_REQUIRED);
+			throw new ResponseException(WebConstants.PARAMETER_REQUIRED);
 		}
 
 		parametersMap.remove("_");
@@ -163,12 +163,12 @@ public abstract class AbstractController {
 		parametersMap.remove("filter[logic]");
 		parametersMap.remove("filter");
 
-		if (parametersMap.get(EWebLibConstants.CURRENT_PAGE) != null && parametersMap.get(EWebLibConstants.PAGE_SIZE) != null) {
+		if (parametersMap.get(WebConstants.CURRENT_PAGE) != null && parametersMap.get(WebConstants.PAGE_SIZE) != null) {
 			Pagination pagination = new Pagination();
-			pagination.setPage(EweblibUtil.getInteger(parametersMap.get(EWebLibConstants.CURRENT_PAGE), 0));
+			pagination.setPage(EweblibUtil.getInteger(parametersMap.get(WebConstants.CURRENT_PAGE), 0));
 			// default is 10;
-			pagination.setRows(EweblibUtil.getInteger(parametersMap.get(EWebLibConstants.PAGE_SIZE), 10));
-			EWeblibThreadLocal.set(EWebLibConstants.PAGENATION, pagination);
+			pagination.setRows(EweblibUtil.getInteger(parametersMap.get(WebConstants.PAGE_SIZE), 10));
+			EWeblibThreadLocal.set(WebConstants.PAGENATION, pagination);
 		}
 
 		// FIXME: only support sort by one column
@@ -180,7 +180,7 @@ public abstract class AbstractController {
 			}
 			order.setSort(parametersMap.get("sort").toString());
 
-			EWeblibThreadLocal.set(EWebLibConstants.DB_QUERY_ORDER_BY, order);
+			EWeblibThreadLocal.set(WebConstants.DB_QUERY_ORDER_BY, order);
 
 		}
 
@@ -369,8 +369,12 @@ public abstract class AbstractController {
 	protected void responseServerError(Throwable throwable, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> temp = new HashMap<String, Object>();
 		temp.put(CODE, ResponseStatus.ERROR.toString());
-		if (throwable instanceof ResponseException) {
+		if (throwable instanceof ResponseException ) {
 			ResponseException apiException = (ResponseException) throwable;
+			temp.put(MSG, apiException.getMessage());
+			logger.debug(apiException.getMessage());
+		}else if(throwable.getCause() instanceof ResponseException){
+			ResponseException apiException = (ResponseException) throwable.getCause();
 			temp.put(MSG, apiException.getMessage());
 			logger.debug(apiException.getMessage());
 		} else {

@@ -1,11 +1,8 @@
 package com.eweblib.constants;
 
-public class EWebLibConstants {
+public class WebConstants {
 
 
-	public static final String PATH_INFO = "pathInfo";
-	public static final String IP_ADDRESS = "ipAddress";
-	public static final String USER_AGENT = "user-agent";
 
 	// DB queryMap constants
 	public static final String DB_QUERY_ORDER_BY = "orderBy";
@@ -19,10 +16,7 @@ public class EWebLibConstants {
 	public static final String CURRENT_PAGE = "page";
 	public static final String TOTAL = "total";
 
-	public static final String PARAMETER_REQUIRED = "PARAMETER_REQUIRED";
+	public static final String PARAMETER_REQUIRED = "参数不能为空";
 
-	public static final String NOT_SET_IN_VALID_FILE = "NOT_SET_IN_VALID_FILE";
-	
-	public static final String SEQ_APPCODE_CODEID = "appcode_id";
 
 }

@@ -18,6 +18,7 @@ import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.ImgUtil;
+import com.wx.school.bean.user.Person;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
 
@@ -49,7 +50,7 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/login.do")
 	@LoginRequired(required = false)
-	public void loginForWeb(HttpServletRequest request, HttpServletResponse response) {
+	public void login(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, false, User.class);
 
 		String imgCode = getSessionValue(request, IMG_CODE);
@@ -89,6 +90,22 @@ public class UserController extends AbstractController {
 		User user = (User) parserJsonParameters(request, true, User.class);
 		userService.editUserForAdmin(user);
 		responseWithEntity(null, request, response);
+	}
+	
+	
+
+	@RequestMapping("/parent/submit.do")
+	public void submitPersonInfo(HttpServletRequest request, HttpServletResponse response) {
+		Person person = (Person) parserJsonParameters(request, true, Person.class);
+		User user = userService.submitPersonInfo(person);
+		setLoginSessionInfo(request, response, user);
+		responseWithEntity(null, request, response);
+	}
+	
+	@RequestMapping("/parent/mine.do")
+	public void loadMyPersonInfo(HttpServletRequest request, HttpServletResponse response) {
+		Person person = userService.loadMyPersonInfo();
+		responseWithEntity(person, request, response);
 	}
 
 	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
