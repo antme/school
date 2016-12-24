@@ -12,6 +12,7 @@ import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.service.AbstractService;
 import com.eweblib.util.DataEncrypt;
+import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
 import com.wx.school.bean.user.Person;
@@ -149,6 +150,51 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		query.and(Person.OWNER_ID, uid);
 
 		return this.dao.findOneByQuery(query, Person.class);
+	}
+	
+
+	public void submitStudentInfo(Person person) {
+		if (EweblibUtil.isEmpty(person.getName())) {
+			throw new ResponseException("姓名不能为空");
+		}
+
+		if (EweblibUtil.isEmpty(person.getSex())) {
+			throw new ResponseException("性别不能为空");
+		}
+
+		if (EweblibUtil.isEmpty(person.getBirthday())) {
+			throw new ResponseException("出生日期不能为空");
+		}
+
+		if (!person.getSex().equals("f") && !person.getSex().equals("m")) {
+			throw new ResponseException("性别参数错误");
+		}
+		
+		if(EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())){
+			throw new ResponseException("请先登录");
+		}
+
+		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Person.TABLE_NAME);
+		checkQuery.and(Person.NAME, person.getName());
+		checkQuery.and(Person.SEX, person.getSex());
+		checkQuery.and(Person.BIRTH_DAY, person.getBirthday());
+		if (this.dao.exists(checkQuery)) {
+			throw new ResponseException("此学生信息已经提交");
+		}
+
+		person.setParentId(EWeblibThreadLocal.getCurrentUserId());
+		this.dao.insert(person);
+
+	}
+	
+	
+	public List<Person> listStudentInfo() {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Person.TABLE_NAME);
+		query.and(Person.PARENT_ID, EWeblibThreadLocal.getCurrentUserId());
+		query.limitColumns(new String[] { Person.NAME, Person.BIRTH_DAY, Person.SEX });
+
+		return this.dao.listByQuery(query, Person.class);
 	}
 
 	@Override

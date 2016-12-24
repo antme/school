@@ -1,3 +1,4 @@
+drop database school;
 create database school;
 use school;
 
@@ -17,7 +18,8 @@ CREATE TABLE `User` (
   `remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
 
 
 
@@ -30,9 +32,9 @@ CREATE TABLE `Person` (
   `updatedOn` datetime DEFAULT NULL,
   `creatorId` varchar(36) DEFAULT NULL,
   `personType` varchar(36) DEFAULT NULL,
-  `birthDay` date DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
   `ownerId` varchar(36) NOT NULL,
   `parentId` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  

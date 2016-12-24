@@ -18,7 +18,7 @@ public class Person extends BaseEntity {
 
 	public static final String OWNER_ID = "ownerId";
 
-	public static final String BIRTH_DAY = "birthDay";
+	public static final String BIRTH_DAY = "birthday";
 
 	public static final String TABLE_NAME = "Person";
 
@@ -39,7 +39,7 @@ public class Person extends BaseEntity {
 	public String personType;
 
 	@Column(name = BIRTH_DAY)
-	public Date birthDay;
+	public Date birthday;
 
 	@Column(name = OWNER_ID)
 	public String ownerId;
@@ -74,12 +74,12 @@ public class Person extends BaseEntity {
 		this.personType = personType;
 	}
 
-	public Date getBirthDay() {
-		return birthDay;
+	public Date getBirthday() {
+		return birthday;
 	}
 
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+	public void setBirthday(Date birthDay) {
+		this.birthday = birthDay;
 	}
 
 	public String getOwnerId() {

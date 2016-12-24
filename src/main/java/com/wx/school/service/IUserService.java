@@ -2,6 +2,7 @@ package com.wx.school.service;
 
 import java.util.List;
 
+import com.eweblib.bean.BaseEntity;
 import com.wx.school.bean.user.Person;
 import com.wx.school.bean.user.User;
 
@@ -24,5 +25,9 @@ public interface IUserService {
 	public User submitPersonInfo(Person person, User user);
 
 	public Person loadMyPersonInfo();
+
+	public void submitStudentInfo(Person person);
+
+	public List<Person> listStudentInfo();
 
 }

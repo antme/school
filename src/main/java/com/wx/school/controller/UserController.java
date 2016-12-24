@@ -125,6 +125,22 @@ public class UserController extends AbstractController {
 		Person person = userService.loadMyPersonInfo();
 		responseWithEntity(person, request, response);
 	}
+	
+	@RequestMapping("/parent/submitStudent.do")
+	public void submitStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		Person person = (Person) parserJsonParameters(request, true, Person.class);
+
+		userService.submitStudentInfo(person);
+		responseWithEntity(null, request, response);
+	}
+	
+	@RequestMapping("/parent/listStudent.do")
+	public void listStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+
+		responseWithListData(userService.listStudentInfo(), request, response);
+	}
+	
+	
 
 	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
 		User user = (User) entity;
