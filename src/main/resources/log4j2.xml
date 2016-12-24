@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<Appenders>
+
+
+		<RollingFile name="Debug" fileName="/mnt/logs/debug.log"
+			filePattern="/mnt/logs/debug.%d{yyyy-MM-dd}.log" bufferedIO="true">
+			<PatternLayout>
+				<Pattern>%d %logger{36} [%-5level] %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+
+
+
+		<Async name="Async">
+			<AppenderRef ref="Debug" level="trace" />
+
+		</Async>
+	</Appenders>
+	<Loggers>
+		<Root level="ALL">
+			<AppenderRef ref="Async" />
+		</Root>
+
+	</Loggers>
+</Configuration>

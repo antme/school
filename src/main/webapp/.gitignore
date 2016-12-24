@@ -1,0 +1,6 @@
+/WEB-INF/
+/upload/
+/download/
+/ap/
+/bak/
+*.DS_Store

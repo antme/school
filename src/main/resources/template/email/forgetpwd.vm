@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+body {
+font-size: 12px;
+font-family: "Microsoft Yahei",Tahoma,Arial,Helvetica,STHeiti;
+}
+</style>
+</head>
+<body>
+<h5></h5>
+         尊敬的${titleContent}您好！<br>
+
+　　根据您于${sendDate} 提交的请求，本邮件将引导您重新设置您的密码。<br>
+
+　　如果您确认本次“重新设置密码”的请求是您自己提交的，请点这里完成重设操作。<br>
+
+　　如果下面的链接无法点击，您也可以复制下面的链接，粘贴到您浏览器的地址栏内，然后按“回车”键打开重设密码页面设置新的密码。<br>
+
+　　<a href='${purchaseContractCode}'>${purchaseContractCode}</a>
+
+</body>
+</html>

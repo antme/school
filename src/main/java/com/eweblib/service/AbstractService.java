@@ -1,0 +1,136 @@
+package com.eweblib.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.eweblib.bean.BaseEntity;
+import com.eweblib.dao.IQueryDao;
+import com.eweblib.dbhelper.DataBaseQueryBuilder;
+import com.eweblib.dbhelper.DataBaseQueryOpertion;
+import com.eweblib.exception.ResponseException;
+import com.eweblib.util.EWeblibThreadLocal;
+import com.eweblib.util.EweblibUtil;
+
+public abstract class AbstractService {
+
+	@Autowired
+	public IQueryDao dao;
+
+	public IQueryDao getDao() {
+		return dao;
+	}
+
+	public void setDao(IQueryDao dao) {
+		this.dao = dao;
+	}
+
+	protected void checkOwner(BaseEntity entity) {
+		checkOwner(entity, BaseEntity.CREATOR_ID, null, null);
+	}
+	
+	protected void checkOwner(BaseEntity entity, String checkKey, Object checkValue) {
+		checkOwner(entity, BaseEntity.CREATOR_ID, checkKey, checkValue);
+	}
+
+	protected void checkOwner(BaseEntity entity, String ownerKey, String checkKey, Object checkValue) {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(entity.getTable());
+
+		if (ownerKey != null) {
+
+			query.and(ownerKey, EWeblibThreadLocal.getCurrentUserId());
+
+		}
+		if (checkKey != null && checkValue != null) {
+			query.and(checkKey, checkValue);
+		}
+
+		if (!this.dao.exists(query)) {
+			throw new ResponseException("非法数据");
+		}
+
+	}
+	
+	protected void checkOwner(BaseEntity entity, String ownerKey, DataBaseQueryBuilder dbQuery) {
+		if (ownerKey != null) {
+
+			DataBaseQueryBuilder query = new DataBaseQueryBuilder(entity.getTable());
+			query.and(ownerKey, EWeblibThreadLocal.getCurrentUserId());
+
+			dbQuery.and(query);
+		}
+
+		if (!this.dao.exists(dbQuery)) {
+			throw new ResponseException("非法数据");
+		}
+
+	}
+	
+	
+	protected void mergeKeywordQuery(DataBaseQueryBuilder builder, String keyword, String table, String[] queryKeys) {
+
+		if (EweblibUtil.isValid(keyword)) {
+			if (keyword != null && queryKeys != null) {
+				DataBaseQueryBuilder keywordQuery = new DataBaseQueryBuilder(table);
+
+				for (String key : queryKeys) {
+					keywordQuery.or(DataBaseQueryOpertion.LIKE, key, keyword);
+				}
+
+				builder.and(keywordQuery);
+			}
+		}
+
+	}
+
+	protected void checkIdsStatus(DataBaseQueryBuilder query, List<String> ids) {
+		checkIdsStatus(query, ids, BaseEntity.CREATOR_ID);
+
+	}
+	
+	protected void checkIdsStatus(DataBaseQueryBuilder query, List<String> ids, String ownerKey) {
+		if (ids.size() > 0) {
+			DataBaseQueryBuilder idsQuery = new DataBaseQueryBuilder(query.getTable());
+			if (ownerKey != null) {
+				idsQuery.and(ownerKey, EWeblibThreadLocal.getCurrentUserId());
+
+			}
+			idsQuery.and(DataBaseQueryOpertion.IN, BaseEntity.ID, ids);
+			idsQuery.and(query);
+			if (this.dao.count(idsQuery) != ids.size()) {
+				throw new ResponseException("非法数据");
+			}
+
+		}
+
+	}
+	
+	protected String genDownloadRandomRelativePath(String userId) {
+		StringBuffer sb = new StringBuffer("/");
+		sb.append("download/").append(userId).append("/");
+		return sb.toString();
+	}
+	
+	/**
+	 *检查同一个账号下是否存在同名的物料、推广组、推广计划
+	 *@param tableName 具体的表名
+	 *@param objectName 物料、推广组、推广计划的名字 
+	 *@param objectType 名字对应的数据库列
+	 *@param id         对应的id
+	 *@author zhangke
+	 */
+	
+	protected void checkSameName(String tableName,String objectName,String tableColumn,String id){
+		DataBaseQueryBuilder existDB = new DataBaseQueryBuilder(tableName);
+		existDB.and(tableColumn, objectName);
+		existDB.and(BaseEntity.CREATOR_ID, EWeblibThreadLocal.getCurrentUserId());
+		//有id时是修改,修改检验需排除自身
+		if(EweblibUtil.isValid(id)){
+			existDB.and(DataBaseQueryOpertion.NOT_EQUALS, BaseEntity.ID, id);
+		}
+		if(this.dao.exists(existDB)){
+			throw new ResponseException("已存在相同名称，请核对修改");
+		}
+	}
+
+}

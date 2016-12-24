@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eweblib.dao.IMyBatisDao">
+
+	<resultMap type="map" id="map">
+		<result column="createdOn" property="createdOn" javaType="java.sql.Timestamp"
+			jdbcType="DATE" />
+		<result column="updatedOn" property="updatedOn" javaType="java.sql.Timestamp"
+			jdbcType="DATE" />
+	</resultMap>
+
+	<resultMap type="entity" id="entity">
+	</resultMap>
+	<parameterMap type="String" id="string"></parameterMap>
+
+
+	<select id="count" resultType="int">
+	    
+	    	
+		<if test="groupBy!=null">
+			select count(distinct  ${groupBy} ) from ${table} as ${table}
+		</if>
+		
+		<if test="groupBy==null">
+			select count(*) from ${table} as ${table}
+		</if>
+
+
+		<if test="onQuery!=null">
+			${onQuery}
+		</if>
+
+		<if test="queryStr!=null">
+			where ${queryStr}
+		</if>
+ 
+
+	</select>
+
+	<select id="listByQuery" resultMap="map">
+		select
+		<if test="distinctColumn!=null">
+			distinct ${distinctColumn}
+		</if>
+
+		<if test="limitColumns!=null and distinctColumn==null">
+			${limitColumns}
+		</if>
+		<if test="limitColumns==null and distinctColumn==null">
+			*
+		</if>
+		from ${table} as ${table}
+
+		<if test="onQuery!=null">
+			${onQuery}
+		</if>
+
+		<if test="queryStr!=null">
+			where ${queryStr}
+		</if>
+		<if test="groupBy!=null">
+			group by ${groupBy}
+		</if>
+		
+		<if test="orderBy!=null">
+			order by ${orderBy}
+		</if>
+
+	
+		
+
+	</select>
+
+
+
+	<select id="listByQueryWithPagination" resultMap="map">
+		select
+		<if test="distinctColumn!=null">
+			distinct ${distinctColumn}
+		</if>
+
+		<if test="limitColumns!=null and distinctColumn==null">
+			${limitColumns}
+		</if>
+		<if test="limitColumns==null and distinctColumn==null">
+			*
+		</if>
+		from ${table} as ${table}
+
+		<if test="onQuery!=null">
+			${onQuery}
+		</if>
+
+		<if test="queryStr!=null">
+			where ${queryStr}
+		</if>
+		
+		<if test="groupBy!=null">
+			group by ${groupBy}
+		</if>	
+
+		<if test="orderBy!=null">
+			order by ${orderBy}
+		</if>
+	
+		<if test="limitStart!=null">
+			limit ${limitStart},${limitRows}
+		</if>
+
+	</select>
+
+
+
+	<select id="listBySql" resultMap="map" parameterMap="string">
+		${_parameter}
+	</select>
+
+
+
+	<select id="findOneByQuery" resultMap="map">
+		select
+		<if test="distinctColumn!=null">
+			distinct ${distinctColumn}
+		</if>
+
+		<if test="limitColumns!=null and distinctColumn==null">
+			${limitColumns}
+		</if>
+		<if test="limitColumns==null and distinctColumn==null">
+			*
+		</if>
+		from ${table} as ${table}
+
+		<if test="onQuery!=null">
+			${onQuery}
+		</if>
+
+		<if test="queryStr!=null">
+			where ${queryStr}
+		</if>
+
+		<if test="orderBy!=null">
+			order by ${orderBy}
+		</if>
+		
+		
+		<if test="groupBy!=null">
+			group by ${groupBy}
+		</if>	
+				
+		limit 0,1
+	</select>
+
+	<insert id="insert">
+		insert into ${table}(${insertColumns})
+		values(${insertColumnsExp})
+	</insert>
+
+	<insert id="batchInsert">
+		insert into ${table}(${insertColumns})
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(${batchInsertColumnsExp})
+		</foreach>
+	</insert>
+
+	<update id="updateById">
+		update ${table} set
+		${updateColumns}
+		where id=#{id}
+	</update>
+		
+	<update id="executeSql">
+		${_parameter}
+	</update>
+	
+	<update id="updateByQuery">
+		update ${table} set
+		${updateColumns}
+		where ${queryStr}
+	</update>
+
+	<delete id="deleteById">
+		delete from ${table} where id=#{id}
+	</delete>
+
+	<delete id="deleteByQuery">
+		delete from ${table} where ${queryStr}
+	</delete>
+
+	<delete id="deleteAllByTableName" parameterMap="string">
+		delete from
+		${_parameter}
+	</delete>
+
+</mapper>
