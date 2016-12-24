@@ -2,8 +2,11 @@ package com.wx.school.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,8 +18,8 @@ import com.eweblib.annotation.role.LoginRequired;
 import com.eweblib.annotation.role.Permission;
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.controller.AbstractController;
-import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
+import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ImgUtil;
 import com.wx.school.bean.user.Person;
 import com.wx.school.bean.user.User;
@@ -53,15 +56,30 @@ public class UserController extends AbstractController {
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, false, User.class);
 
-		String imgCode = getSessionValue(request, IMG_CODE);
-		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
-			user = userService.login(user);
-			setLoginSessionInfo(request, response, user);
+		// String imgCode = getSessionValue(request, IMG_CODE);
+		// if (imgCode != null && user.getImgCode() != null &&
+		// user.getImgCode().equalsIgnoreCase(imgCode)) {
+		user = userService.login(user);
+		setLoginSessionInfo(request, response, user);
+		responseWithEntity(null, request, response);
+		// } else {
+		// throw new ResponseException("请输入正确验证码");
+		// }
+	}
 
-			responseWithEntity(user, request, response);
+	@RequestMapping("/login/valid.do")
+	@LoginRequired(required = false)
+	public void validLoginStatus(HttpServletRequest request, HttpServletResponse response) {
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
+			data.put("isLogin", false);
+
 		} else {
-			throw new ResponseException("请输入正确验证码");
+			data.put("isLogin", true);
 		}
+		responseWithMapData(data, request, response);
+
 	}
 
 	@RequestMapping("/img.do")
@@ -91,17 +109,17 @@ public class UserController extends AbstractController {
 		userService.editUserForAdmin(user);
 		responseWithEntity(null, request, response);
 	}
-	
-	
 
 	@RequestMapping("/parent/submit.do")
 	public void submitPersonInfo(HttpServletRequest request, HttpServletResponse response) {
 		Person person = (Person) parserJsonParameters(request, true, Person.class);
-		User user = userService.submitPersonInfo(person);
+		User user = (User) parserJsonParameters(request, true, User.class);
+
+		user = userService.submitPersonInfo(person, user);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 	}
-	
+
 	@RequestMapping("/parent/mine.do")
 	public void loadMyPersonInfo(HttpServletRequest request, HttpServletResponse response) {
 		Person person = userService.loadMyPersonInfo();
@@ -114,6 +132,10 @@ public class UserController extends AbstractController {
 		EWeblibThreadLocal.set(BaseEntity.ID, user.getId());
 		setSessionValue(request, User.USER_NAME, user.getUserName());
 		setSessionValue(request, BaseEntity.ID, user.getId());
+
+		Cookie cookie = new Cookie("sch_uid", user.getId());
+		cookie.setMaxAge(30 * 60);
+		response.addCookie(cookie);
 	}
 
 }

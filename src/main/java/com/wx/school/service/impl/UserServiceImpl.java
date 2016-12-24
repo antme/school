@@ -2,6 +2,7 @@ package com.wx.school.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -25,27 +26,19 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	public User login(User user) {
 		DataBaseQueryBuilder builder = new DataBaseQueryBuilder(User.TABLE_NAME);
 		builder.and(User.PASSWORD, DataEncrypt.generatePassword(user.getPassword()));
-		builder.and(User.USER_NAME, user.getUserName());
+		String userName = user.getUserName();
+		if (EweblibUtil.isValid(user.getMobileNumber())) {
+			userName = user.getMobileNumber();
+		}
+		builder.and(User.USER_NAME, userName);
 
 		if (!dao.exists(builder)) {
 			throw new ResponseException("用户名或密码错误");
 		}
 
-		builder.limitColumns(new String[] { user.ID, User.USER_NAME, User.STATUS });
-		User u = (User) dao.findOneByQuery(builder, User.class);
+		builder.limitColumns(new String[] { User.ID, User.USER_NAME, User.STATUS });
+		return (User) dao.findOneByQuery(builder, User.class);
 
-		// if (u.getStatus()!=null && u.getStatus() == 0) {
-		// throw new ResponseException("你没有登录权限，请联系管理员");
-		// }
-
-		// if (fromApp) {
-		// sys.createMsgLog(u.getId(), "从手机端登录");
-		// } else {
-		// sys.createMsgLog(u.getId(), "从后台登录");
-		// }
-		EWeblibThreadLocal.set(User.ID, u.getId());
-
-		return u;
 	}
 
 	@Override
@@ -109,7 +102,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	}
 
-	public User submitPersonInfo(Person person) {
+	public User submitPersonInfo(Person person, User user) {
 
 		if (EweblibUtil.isEmpty(person.getName())) {
 			throw new ResponseException("姓名不能为空");
@@ -123,20 +116,32 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("此手机号已经注册");
 		}
 
-		User user = new User();
+		if (EweblibUtil.isEmpty(user.getPassword())) {
+			throw new ResponseException("密码不能为空");
+		}
+
+		if (!user.getPassword2().equals(user.getPassword())) {
+			throw new ResponseException("两次密码不一致");
+		}
+
+		if (EweblibUtil.isEmpty(user.getValidCode())) {
+			throw new ResponseException("验证码不能为空");
+		}
+
 		user.setMobileNumber(person.getMobileNumber());
 		user.setName(person.getName());
 		user.setUserName(person.getMobileNumber());
+		user.setPassword(DataEncrypt.generatePassword(user.getPassword()));
 		this.dao.insert(user);
 
 		person.setPersonType(Person.PERSON_TYPE_PARENT);
 		person.setOwnerId(user.getId());
 		this.dao.insert(person);
-		
+
 		return user;
 
 	}
-	
+
 	public Person loadMyPersonInfo() {
 		String uid = EWeblibThreadLocal.getCurrentUserId();
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Person.TABLE_NAME);

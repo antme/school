@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,7 @@ import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.LoginException;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
+import com.eweblib.util.EweblibUtil;
 import com.wx.school.service.InitialService;
 
 public class ControllerFilter extends AbstractController implements Filter {
@@ -36,8 +38,24 @@ public class ControllerFilter extends AbstractController implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest srequest = (HttpServletRequest) request;
 		HttpServletResponse sresponse = (HttpServletResponse) response;
-		if (srequest.getSession().getAttribute(BaseEntity.ID) != null) {
-			EWeblibThreadLocal.set(BaseEntity.ID, srequest.getSession().getAttribute(BaseEntity.ID));
+
+		Cookie[] cookies = srequest.getCookies();
+		String uid = null;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equalsIgnoreCase("sch_uid")) {
+					uid = cookie.getValue();
+				}
+			}
+		}
+		Object sid = srequest.getSession().getAttribute(BaseEntity.ID);
+		if (sid != null) {
+			uid = sid.toString();
+		}
+
+		if (EweblibUtil.isValid(uid)) {
+			EWeblibThreadLocal.set(BaseEntity.ID, uid);
+
 		}
 
 		try {

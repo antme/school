@@ -21,7 +21,7 @@ public interface IUserService {
 
 	public void editUserForAdmin(User user);
 
-	public User submitPersonInfo(Person person);
+	public User submitPersonInfo(Person person, User user);
 
 	public Person loadMyPersonInfo();
 

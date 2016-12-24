@@ -33,7 +33,7 @@ public class BaseTestCase extends TestCase {
 		Person p = new Person();
 		p.setName("刘德华");
 		p.setMobileNumber("13818638561");
-		us.submitPersonInfo(p);
+//		us.submitPersonInfo(p);
 	}
 
 }
