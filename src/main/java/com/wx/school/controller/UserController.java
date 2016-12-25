@@ -2,8 +2,6 @@ package com.wx.school.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
@@ -18,8 +16,8 @@ import com.eweblib.annotation.role.LoginRequired;
 import com.eweblib.annotation.role.Permission;
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.controller.AbstractController;
+import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
-import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ImgUtil;
 import com.wx.school.bean.user.Person;
 import com.wx.school.bean.user.User;
@@ -65,6 +63,22 @@ public class UserController extends AbstractController {
 		// } else {
 		// throw new ResponseException("请输入正确验证码");
 		// }
+	}
+	
+	
+	@RequestMapping("/back/login.do")
+	@LoginRequired(required = false)
+	public void loginBack(HttpServletRequest request, HttpServletResponse response) {
+		User user = (User) parserJsonParameters(request, false, User.class);
+
+		String imgCode = getSessionValue(request, IMG_CODE);
+		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
+			user = userService.login(user);
+			setLoginSessionInfo(request, response, user);
+			responseWithEntity(null, request, response);
+		} else {
+			throw new ResponseException("请输入正确验证码");
+		}
 	}
 
 	@RequestMapping("/login/valid.do")

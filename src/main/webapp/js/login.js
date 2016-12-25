@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 
 	$("#login-form").form({
-		url : '/user/login.do',
+		url : '/user/back/login.do',
 		onSubmit : function() {
 			return $(this).form('validate');
 		},
@@ -21,7 +21,6 @@ $(document).ready(function() {
 window.load=function(){
 	$("#userName").val("");
 	$("#password").val("");
-	//$("#userName").val("");
 };
 function getPwdCode() {
 	$("#forget_pwd_form").form({

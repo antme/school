@@ -5,30 +5,7 @@ ul{list-style-type:none;}
 .titles{float:left;width:40%;min-width:300px;text-indent:1em;color:#fff;font-size:26px;}
 .user_info{float:right;padding-right:2em;color:#fff;font-size:14px;}
 .col1{color:#f08300;}
-#left{
-	width:220px;
-	position: absolute;
-    top:50px;
-    left:0px;
-    height:auto;
-    overflow:hidden;
-}
-#left .header{padding:5px;position: relative;}
-#left .title{font-size:14px;font-weight:bold;text-indent:5px;}
-#left .header,#left .title{height:30px;line-height:30px;border:0;background-color:transparent;}
-#left .title{padding:0 5px;}
-#left .panel-body{background-color:#fcfafa;border:0;}
-#left .panel-body a{
-	display:block;
-	padding:5px;
-	text-indent:2em;
-	text-decoration:none;
-	color:#333;
-}
-#left .panels{
-	border-top: 1px solid #fff;
-	border-bottom: 1px solid #dbdbdb;
-}
+
 
 .datagrid-header td, .datagrid-body td, .datagrid-footer td{border-style: solid;}
 #right{
@@ -37,12 +14,15 @@ ul{list-style-type:none;}
 	background: #fff;
 	height:auto;
 	overflow: auto;
+	width:90%;
+	float:left;
+	margin-left:50px;
 }
+
 .right_head{height:50px;line-height:50px;font-size:16px;text-indent:20px;font-weight:bold;ox-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);}
 .right_content{padding:20px 10px;background-color:#fff;}
 .datagrid-btable,.datagrid-header-inner,.datagrid-htable{width:100%;}
 .form{padding:20px;}
-
 .form_items{height:auto;line-height:25px;padding-bottom:10px;overflow:hidden;}
 .form_items_btn{height:auto;line-height:25px;padding-bottom:10px;overflow:hidden;}
 .form_items_btn input{float:left;}
@@ -61,10 +41,7 @@ ul{list-style-type:none;}
 .width350{width:350px;}
 .width500{width:500px;}
 .height24{height:24px;}
-.height26{height:26px;}
-.height28{height:28px;}
-.height30{height:30px;}
-.height50{height:50px;}
+.height26{heightpx;}
 .login_div{
 	width:360px;
 	height:auto;
