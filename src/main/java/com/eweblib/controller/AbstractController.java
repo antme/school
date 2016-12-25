@@ -45,6 +45,8 @@ import com.eweblib.util.EweblibUtil;
 public abstract class AbstractController {
 	public static final String MSG = "msg";
 	public static final String CODE = "code";
+	public static final String IS_LOGINED = "isLogined";
+
 	private static Logger logger = LogManager.getLogger(AbstractController.class);
 
 	protected <T extends BaseEntity> BaseEntity parserJsonParameters(HttpServletRequest request, boolean emptyParameter, Class<T> claszz) {
@@ -301,6 +303,11 @@ public abstract class AbstractController {
 			data = new HashMap<String, Object>();
 		}
 		data.put(CODE, EweblibUtil.getInteger(status.toString(), 1));
+		if (EweblibUtil.isValid(EWeblibThreadLocal.getCurrentUserId())) {
+			data.put(IS_LOGINED, true);
+		} else {
+			data.put(IS_LOGINED, false);
+		}
 		response.setContentType("text/plain;charset=UTF-8");
 		response.addHeader("Accept-Encoding", "gzip, deflate");
 		String jsonReturn = EweblibUtil.toJson(data);
