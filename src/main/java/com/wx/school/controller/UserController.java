@@ -71,14 +71,7 @@ public class UserController extends AbstractController {
 	@LoginRequired(required = false)
 	public void validLoginStatus(HttpServletRequest request, HttpServletResponse response) {
 
-		Map<String, Object> data = new HashMap<String, Object>();
-		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
-			data.put("isLogin", false);
-
-		} else {
-			data.put("isLogin", true);
-		}
-		responseWithMapData(data, request, response);
+		responseWithMapData(null, request, response);
 
 	}
 
@@ -139,6 +132,18 @@ public class UserController extends AbstractController {
 
 		responseWithListData(userService.listStudentInfo(), request, response);
 	}
+	
+	
+
+	@RequestMapping("/password/update.do")
+	public void updateUserPassword(HttpServletRequest request, HttpServletResponse response) {
+		User user = (User) parserJsonParameters(request, true, User.class);
+		userService.updateUserPassword(user);
+
+		responseWithEntity(null, request, response);
+
+	}
+	
 	
 	
 

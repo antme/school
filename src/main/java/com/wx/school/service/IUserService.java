@@ -13,8 +13,6 @@ public interface IUserService {
 
 	public boolean isAdmin(String userId);
 
-
-
 	public User loadUserForAdmin(User user);
 
 	public void editUserForAdmin(User user);
@@ -26,5 +24,7 @@ public interface IUserService {
 	public void submitStudentInfo(Person person);
 
 	public List<Person> listStudentInfo();
+
+	public void updateUserPassword(User user);
 
 }

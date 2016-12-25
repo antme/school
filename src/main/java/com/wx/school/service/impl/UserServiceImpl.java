@@ -109,22 +109,15 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("此手机号已经注册");
 		}
 
-		if (EweblibUtil.isEmpty(user.getPassword())) {
-			throw new ResponseException("密码不能为空");
-		}
-
-		if (!user.getPassword2().equals(user.getPassword())) {
-			throw new ResponseException("两次密码不一致");
-		}
-
+	
 		if (EweblibUtil.isEmpty(user.getValidCode())) {
 			throw new ResponseException("验证码不能为空");
 		}
+		checkPassword(user);
 
 		user.setMobileNumber(person.getMobileNumber());
 		user.setName(person.getName());
 		user.setUserName(person.getMobileNumber());
-		user.setPassword(DataEncrypt.generatePassword(user.getPassword()));
 		this.dao.insert(user);
 
 		person.setPersonType(Person.PERSON_TYPE_PARENT);
@@ -133,6 +126,18 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		return user;
 
+	}
+
+	private void checkPassword(User user) {
+		if (EweblibUtil.isEmpty(user.getPassword())) {
+			throw new ResponseException("密码不能为空");
+		}
+
+		if (!user.getPassword().equals(user.getPassword2())) {
+			throw new ResponseException("两次密码不一致");
+		}
+
+		user.setPassword(DataEncrypt.generatePassword(user.getPassword()));
 	}
 
 	public Person loadMyPersonInfo() {
@@ -186,6 +191,16 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		query.limitColumns(new String[] { Person.NAME, Person.BIRTH_DAY, Person.SEX, Person.ID });
 
 		return this.dao.listByQuery(query, Person.class);
+	}
+	
+	public void updateUserPassword(User user) {
+		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
+			throw new ResponseException("请先登录");
+		}
+		user.setId(EWeblibThreadLocal.getCurrentUserId());
+		checkPassword(user);
+		this.dao.updateById(user, new String[] { User.PASSWORD });
+
 	}
 
 }
