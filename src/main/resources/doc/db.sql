@@ -38,3 +38,21 @@ CREATE TABLE `Person` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+
+
+
+
+CREATE TABLE `School` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `onlyForVip` tinyint(1) DEFAULT '0',
+  `createdOn` datetime DEFAULT NULL,
+  `updatedOn` datetime DEFAULT NULL,
+  `creatorId` varchar(36) DEFAULT NULL,
+  `takeNumberDate` date DEFAULT NULL,
+  `startTime` varchar(255)  DEFAULT NULL,
+  `endTime` varchar(255)  DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+

@@ -84,14 +84,6 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		}
 	}
 
-	public List<User> selectWifiCloudUsers() {
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
-		query.limitColumns(new String[] { User.ID, User.USER_NAME });
-		// query.and(DataBaseQueryOpertion.NOT_NULL, User.WCUID);
-
-		return this.dao.listByQuery(query, User.class);
-	}
-
 	public User loadUserForAdmin(User user) {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
 		query.limitColumns(new String[] { User.USER_NAME, User.NAME, User.ID, User.CREATED_ON });
@@ -151,7 +143,6 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		return this.dao.findOneByQuery(query, Person.class);
 	}
-	
 
 	public void submitStudentInfo(Person person) {
 		if (EweblibUtil.isEmpty(person.getName())) {
@@ -169,8 +160,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		if (!person.getSex().equals("f") && !person.getSex().equals("m")) {
 			throw new ResponseException("性别参数错误");
 		}
-		
-		if(EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())){
+
+		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
 			throw new ResponseException("请先登录");
 		}
 
@@ -187,21 +178,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		this.dao.insert(person);
 
 	}
-	
-	
+
 	public List<Person> listStudentInfo() {
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Person.TABLE_NAME);
 		query.and(Person.PARENT_ID, EWeblibThreadLocal.getCurrentUserId());
-		query.limitColumns(new String[] { Person.NAME, Person.BIRTH_DAY, Person.SEX });
+		query.limitColumns(new String[] { Person.NAME, Person.BIRTH_DAY, Person.SEX, Person.ID });
 
 		return this.dao.listByQuery(query, Person.class);
-	}
-
-	@Override
-	public User regWifiCloudUser(String wcuname, String name, String serverIp) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

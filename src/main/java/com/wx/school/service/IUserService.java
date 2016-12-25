@@ -2,7 +2,6 @@ package com.wx.school.service;
 
 import java.util.List;
 
-import com.eweblib.bean.BaseEntity;
 import com.wx.school.bean.user.Person;
 import com.wx.school.bean.user.User;
 
@@ -14,9 +13,7 @@ public interface IUserService {
 
 	public boolean isAdmin(String userId);
 
-	public User regWifiCloudUser(String wcuname, String name, String serverIp);
 
-	public List<User> selectWifiCloudUsers();
 
 	public User loadUserForAdmin(User user);
 
