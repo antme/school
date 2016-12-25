@@ -27,4 +27,8 @@ public interface IUserService {
 
 	public void updateUserPassword(User user);
 
+	public void valideMobileNumber(User user);
+
+	public User updateUserPasswordWhenForgot(User user);
+
 }

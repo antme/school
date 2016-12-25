@@ -28,14 +28,6 @@ public interface IQueryDao {
 	
 	public void executeSql(String sql);
 
-	/**
-	 * 传人entity对象，数据操作取entity里面的table和id，其它属性和字段忽略
-	 *  请使用updateById
-	 * 
-	 * @param entity
-	 */
-	@Deprecated
-	public void updateById(BaseEntity entity);
 	
 	public  <T extends BaseEntity> void updateById(BaseEntity entity, String[] columns);
 

@@ -109,7 +109,6 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("此手机号已经注册");
 		}
 
-	
 		if (EweblibUtil.isEmpty(user.getValidCode())) {
 			throw new ResponseException("验证码不能为空");
 		}
@@ -192,7 +191,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		return this.dao.listByQuery(query, Person.class);
 	}
-	
+
 	public void updateUserPassword(User user) {
 		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
 			throw new ResponseException("请先登录");
@@ -201,6 +200,29 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		checkPassword(user);
 		this.dao.updateById(user, new String[] { User.PASSWORD });
 
+	}
+
+	public void valideMobileNumber(User user) {
+		if (EweblibUtil.isEmpty(user.getMobileNumber())) {
+			throw new ResponseException("手机号码不能为空");
+		}
+
+		if (!this.dao.exists(User.MOBILE_NUMBER, user.getMobileNumber(), User.TABLE_NAME)) {
+			throw new ResponseException("此手机号码未注册，请先注册");
+		}
+	}
+
+	public User updateUserPasswordWhenForgot(User user) {
+		valideMobileNumber(user);
+		if (EweblibUtil.isEmpty(user.getValidCode())) {
+			throw new ResponseException("验证码不能为空");
+		}
+		checkPassword(user);
+		User old = this.dao.findByKeyValue(User.MOBILE_NUMBER, user.getMobileNumber(), User.TABLE_NAME, User.class);
+		user.setId(old.getId());
+		this.dao.updateById(user, new String[] { User.PASSWORD });
+
+		return user;
 	}
 
 }

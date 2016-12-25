@@ -242,18 +242,6 @@ public class QueryDaoImpl implements IQueryDao {
 		return builder;
 	}
 
-	@Override
-	@Deprecated
-	public void updateById(BaseEntity entity) {
-
-		if (EweblibUtil.isEmpty(entity.getId())) {
-			throw new IllegalArgumentException("Must have id value when call updateById method");
-		}
-		entity.setUpdatedOn(new Date());
-
-		dao.updateById(entity);
-
-	}
 
 	
 	public <T extends BaseEntity> void updateById(BaseEntity entity, String[] columns) {

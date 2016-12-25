@@ -145,6 +145,17 @@ public class UserController extends AbstractController {
 	}
 	
 	
+
+	@RequestMapping("/password/forgot/update.do")
+	public void updateUserPasswordWhenForgot(HttpServletRequest request, HttpServletResponse response) {
+		User user = (User) parserJsonParameters(request, true, User.class);
+		user = userService.updateUserPasswordWhenForgot(user);
+		setLoginSessionInfo(request, response, user);
+		responseWithEntity(null, request, response);
+
+	}
+	
+	
 	
 
 	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
