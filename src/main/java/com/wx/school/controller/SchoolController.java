@@ -18,7 +18,7 @@ import com.wx.school.bean.user.SMS;
 import com.wx.school.service.ISchoolService;
 
 @Controller
-@RequestMapping("/school")
+@RequestMapping("/sch")
 @Permission()
 @LoginRequired()
 public class SchoolController extends AbstractController {
