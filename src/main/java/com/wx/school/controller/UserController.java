@@ -173,9 +173,9 @@ public class UserController extends AbstractController {
 		setSessionValue(request, User.USER_NAME, user.getUserName());
 		setSessionValue(request, BaseEntity.ID, user.getId());
 
-		Cookie cookie = new Cookie("sch_uid", user.getId());
-		cookie.setMaxAge(30 * 60);
-		response.addCookie(cookie);
+//		Cookie cookie = new Cookie("sch_uid", user.getId());
+//		cookie.setMaxAge(30 * 60);
+//		response.addCookie(cookie);
 	}
 
 }
