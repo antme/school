@@ -16,6 +16,8 @@ import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
+import com.wx.school.bean.UserSearchVO;
+import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
@@ -221,8 +223,48 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		return user;
 	}
 
-	public EntityResults<Student> listStudentsForAdmin() {
-		return null;
+	public EntityResults<Student> listStudentsForAdmin(UserSearchVO uvo) {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+
+		query.leftJoin(Student.TABLE_NAME, User.TABLE_NAME, Student.OWNER_ID, User.ID);
+		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName",
+				User.MOBILE_NUMBER + " as parentMobileNumber", User.CREATED_ON + " as parentCreatedOn" });
+
+		query.limitColumns(new Student().getColumnList());
+
+		if (EweblibUtil.isValid(uvo.getName())) {
+			query.and(DataBaseQueryOpertion.LIKE, Student.NAME, uvo.getName());
+		}
+
+		if (EweblibUtil.isValid(uvo.getParentName())) {
+			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.NAME, uvo.getParentName());
+		}
+
+		if (EweblibUtil.isValid(uvo.getMobileNumber())) {
+			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER, uvo.getMobileNumber());
+		}
+
+		return this.dao.listByQueryWithPagnation(query, Student.class);
+
 	}
 
+	public void deleteStudentInfo(Student student) {
+
+		DataBaseQueryBuilder snQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		snQuery.and(StudentNumber.STUDENT_ID, student.getId());
+
+		this.dao.deleteByQuery(snQuery);
+
+		this.dao.deleteById(student);
+
+	}
+
+	public Student loadStudentInfo(Student student) {
+
+		return this.dao.findById(student.getId(), Student.TABLE_NAME, Student.class);
+	}
+
+	public void updateStudentInfo(Student student) {
+		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
+	}
 }

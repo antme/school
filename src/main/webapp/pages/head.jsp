@@ -27,7 +27,7 @@
 
 	
 	<div style="float:left;margin-left:20px; margin-top:10px;">
-		<a href="index.jsp?p=admin/ADReport/import"><img src="/images/import.png"height="50" width="50"></img><br>
+		<a href="index.jsp?p=school/list"><img src="/images/import.png"height="50" width="50"></img><br>
 		<span style="margin-left: 5px;">报名批次管理</span></a>
 	</div>
 	

@@ -10,6 +10,10 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = School.TABLE_NAME)
 public class School extends BaseEntity {
 
+	public static final String IS_DISPLAY_FOR_WX = "isDisplayForWx";
+
+	public static final String TAKE_STATUS = "takeStatus";
+
 	public static final String END_TIME = "endTime";
 
 	public static final String START_TIME = "startTime";
@@ -37,7 +41,26 @@ public class School extends BaseEntity {
 	@Column(name = END_TIME)
 	public String endTime;
 
+	@Column(name = TAKE_STATUS)
 	public Integer takeStatus;
+
+	@Column(name = IS_DISPLAY_FOR_WX)
+	public Boolean isDisplayForWx;
+	
+	
+	@Column(name = TAKE_NUMBER_DATE)
+	public Date startDate;
+	
+	@Column(name = TAKE_NUMBER_DATE)
+	public Date endDate;
+
+	public Boolean getIsDisplayForWx() {
+		return isDisplayForWx;
+	}
+
+	public void setIsDisplayForWx(Boolean isDisplayForWx) {
+		this.isDisplayForWx = isDisplayForWx;
+	}
 
 	public Integer getTakeStatus() {
 		return takeStatus;

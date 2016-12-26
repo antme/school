@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
+import com.wx.school.bean.UserSearchVO;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 
@@ -33,6 +34,12 @@ public interface IUserService {
 
 	public User updateUserPasswordWhenForgot(User user);
 
-	public EntityResults<Student> listStudentsForAdmin();
+	public EntityResults<Student> listStudentsForAdmin(UserSearchVO uvo);
+
+	public void deleteStudentInfo(Student student);
+
+	public Student loadStudentInfo(Student student);
+
+	public void updateStudentInfo(Student student);
 
 }

@@ -68,3 +68,14 @@ CREATE TABLE `StudentNumber` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 
 
+alter table School add column takeStatus int default 2;
+alter table School add column isDisplayForWx tinyint(1) DEFAULT '0';
+
+update School set takeStatus =2;
+update School set isDisplayForWx=false;
+
+
+
+
+
+

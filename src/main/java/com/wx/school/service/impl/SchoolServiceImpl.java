@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
@@ -71,6 +72,14 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			throw new ResponseException("此学生已经选择校区");
 		}
 
+		if (!this.dao.exists(Student.ID, sn.getStudentId(), Student.TABLE_NAME)) {
+			throw new ResponseException("此学生不存在");
+		}
+
+		if (!this.dao.exists(School.ID, sn.getSchoolId(), School.TABLE_NAME)) {
+			throw new ResponseException("此学校不存在");
+		}
+
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		query.and(StudentNumber.SCHOOL_ID, sn.getSchoolId());
 
@@ -128,8 +137,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		return this.dao.findOneByQuery(query, Student.class);
 	}
-	
-	
+
 	public List<Student> listMyAvaliableStudentForSchool() {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		query.and(StudentNumber.OWER_ID, EWeblibThreadLocal.getCurrentUserId());
@@ -146,6 +154,18 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		squery.and(DataBaseQueryOpertion.NOT_IN, Student.ID, ids);
 
 		return this.dao.listByQuery(squery, Student.class);
+
+	}
+
+	public EntityResults<School> listSchoolsForAdmin(School school) {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(School.TABLE_NAME);
+
+		if (EweblibUtil.isValid(school.getName())) {
+			query.and(DataBaseQueryOpertion.LIKE, School.NAME, school.getName());
+		}
+
+		return this.dao.listByQueryWithPagnation(query, School.class);
 
 	}
 

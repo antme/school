@@ -14,6 +14,7 @@ import com.eweblib.dao.IQueryDao;
 import com.eweblib.util.DateUtil;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.StudentNumber;
+import com.wx.school.bean.user.User;
 import com.wx.school.service.ISchoolService;
 
 @Controller
@@ -24,19 +25,18 @@ public class SchoolController extends AbstractController {
 
 	@Autowired
 	private ISchoolService schoolService;
-	
+
 	@Autowired
 	private IQueryDao dao;
-	
+
 	@RequestMapping("/list.do")
 	@LoginRequired(required = false)
 	public void listSchools(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		responseWithListData(schoolService.listSchools(), request, response);
 
 	}
-	
-	
+
 	@RequestMapping("/initial.do")
 	@LoginRequired(required = false)
 	public void intialSchool(HttpServletRequest request, HttpServletResponse response) {
@@ -48,8 +48,7 @@ public class SchoolController extends AbstractController {
 		school.setStartTime("09:10:00");
 		school.setEndTime("10:10:00");
 		schoolService.addSchool(school);
-		
-		
+
 		school = new School();
 		school.setName("陆家嘴校区");
 		school.setOnlyForVip(true);
@@ -57,8 +56,7 @@ public class SchoolController extends AbstractController {
 		school.setStartTime("09:10:00");
 		school.setEndTime("10:10:00");
 		schoolService.addSchool(school);
-		
-		
+
 		school = new School();
 		school.setName("普陀校区");
 		school.setOnlyForVip(false);
@@ -66,14 +64,11 @@ public class SchoolController extends AbstractController {
 		school.setStartTime("14:00:00");
 		school.setEndTime("15:00:00");
 		schoolService.addSchool(school);
-		
-		
-		
+
 		responseWithEntity(null, request, response);
 
 	}
-	
-	
+
 	@RequestMapping("/book.do")
 	@LoginRequired(required = false)
 	public void bookSchool(HttpServletRequest request, HttpServletResponse response) {
@@ -82,26 +77,27 @@ public class SchoolController extends AbstractController {
 		responseWithEntity(sn, request, response);
 
 	}
-	
-	
-	
+
 	@RequestMapping("/student_school/mine.do")
 	@LoginRequired(required = false)
 	public void listMyStudentSchools(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		responseWithListData(schoolService.listMyStudentSchools(), request, response);
 
 	}
-	
-	
+
 	@RequestMapping("/student/avaliable/mine.do")
 	@LoginRequired(required = false)
 	public void listMyAvaliableStudentForSchool(HttpServletRequest request, HttpServletResponse response) {
-
 		responseWithListData(schoolService.listMyAvaliableStudentForSchool(), request, response);
-
 	}
-	
-	
+
+	@RequestMapping("/admin/list.do")
+	@LoginRequired(required = false)
+	public void listSchoolsForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		School school = (School) parserJsonParameters(request, false, School.class);
+
+		responseWithDataPagnation(schoolService.listSchoolsForAdmin(school), request, response);
+	}
 
 }

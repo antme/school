@@ -24,7 +24,6 @@
 		<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="/js/eweblib.js"></script>
 		<script type="text/javascript" src="/js/json2.js"></script>
-		<script type="text/javascript" src="/js/ap.js"></script>
 		<script type="text/javascript" src="/js/validation.js"></script>
 		<script type="text/javascript" src="/js/easyui-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="/js/highcharts.js"></script>

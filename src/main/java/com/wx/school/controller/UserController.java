@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +18,7 @@ import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.ImgUtil;
+import com.wx.school.bean.UserSearchVO;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
@@ -161,9 +161,34 @@ public class UserController extends AbstractController {
 	
 	@RequestMapping("/admin/listStudent.do")
 	public void listStudentsForAdmin(HttpServletRequest request, HttpServletResponse response) {
-		User user = (User) parserJsonParameters(request, true, User.class);
+		UserSearchVO uvo = (UserSearchVO) parserJsonParameters(request, true, UserSearchVO.class);
 
-		responseWithDataPagnation(userService.listStudentsForAdmin(), request, response);
+		responseWithDataPagnation(userService.listStudentsForAdmin(uvo), request, response);
+	}
+	
+	@RequestMapping("/admin/student/delete.do")
+	public void deleteStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		Student student = (Student) parserJsonParameters(request, true, Student.class);
+
+		userService.deleteStudentInfo(student);
+		responseWithEntity(null, request, response);
+
+	}
+	
+	@RequestMapping("/admin/student/load.do")
+	public void loadStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		Student student = (Student) parserJsonParameters(request, true, Student.class);
+
+		responseWithEntity(userService.loadStudentInfo(student), request, response);
+
+	}
+	
+	@RequestMapping("/admin/student/update.do")
+	public void updateStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		Student student = (Student) parserJsonParameters(request, true, Student.class);
+		userService.updateStudentInfo(student);
+		responseWithEntity(null, request, response);
+
 	}
 
 	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
