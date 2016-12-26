@@ -37,13 +37,13 @@ public class School extends BaseEntity {
 	@Column(name = END_TIME)
 	public String endTime;
 
-	public int takeStatus;
+	public Integer takeStatus;
 
-	public int getTakeStatus() {
+	public Integer getTakeStatus() {
 		return takeStatus;
 	}
 
-	public void setTakeStatus(int takeStatus) {
+	public void setTakeStatus(Integer takeStatus) {
 		this.takeStatus = takeStatus;
 	}
 

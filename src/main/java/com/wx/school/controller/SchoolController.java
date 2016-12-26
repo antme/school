@@ -12,9 +12,8 @@ import com.eweblib.annotation.role.Permission;
 import com.eweblib.controller.AbstractController;
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.util.DateUtil;
-import com.eweblib.util.ImgUtil;
 import com.wx.school.bean.school.School;
-import com.wx.school.bean.user.SMS;
+import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.service.ISchoolService;
 
 @Controller
@@ -73,5 +72,27 @@ public class SchoolController extends AbstractController {
 		responseWithEntity(null, request, response);
 
 	}
+	
+	
+	@RequestMapping("/book.do")
+	@LoginRequired(required = false)
+	public void bookSchool(HttpServletRequest request, HttpServletResponse response) {
+		StudentNumber sn = (StudentNumber) parserJsonParameters(request, true, StudentNumber.class);
+		sn = schoolService.bookSchool(sn);
+		responseWithEntity(sn, request, response);
+
+	}
+	
+	
+	
+	@RequestMapping("/student_school/mine.do")
+	@LoginRequired(required = false)
+	public void listMyStudentSchools(HttpServletRequest request, HttpServletResponse response) {
+		
+		responseWithListData(schoolService.listMyStudentSchools(), request, response);
+
+	}
+	
+	
 
 }

@@ -418,18 +418,7 @@ public abstract class AbstractController {
 
 	protected void clearLoginSession(HttpServletRequest request, HttpServletResponse response) {
 		removeSessionInfo(request);
-
-		String path = EweblibUtil.isEmpty(request.getContextPath()) ? "/" : request.getContextPath();
-		Cookie account = new Cookie("account", null);
-		account.setMaxAge(0);
-		account.setPath(path);
-
-		Cookie ssid = new Cookie("ssid", null);
-		ssid.setMaxAge(0);
-		ssid.setPath(path);
-
-		response.addCookie(account);
-		response.addCookie(ssid);
+		EWeblibThreadLocal.removeAll();
 	}
 
 	protected String uploadFile(HttpServletRequest request, String parameterName, int size, String[] suffixes) {

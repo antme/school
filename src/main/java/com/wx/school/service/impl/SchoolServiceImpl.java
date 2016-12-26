@@ -1,15 +1,22 @@
 package com.wx.school.service.impl;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
+import com.eweblib.exception.ResponseException;
 import com.eweblib.service.AbstractService;
 import com.eweblib.util.DateUtil;
+import com.eweblib.util.EWeblibThreadLocal;
+import com.eweblib.util.EweblibUtil;
 import com.wx.school.bean.school.School;
+import com.wx.school.bean.school.StudentNumber;
+import com.wx.school.bean.school.StudentSchoolInfo;
+import com.wx.school.bean.user.Student;
+import com.wx.school.bean.user.User;
 import com.wx.school.service.ISchoolService;
 
 @Service(value = "school")
@@ -46,6 +53,77 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public void addSchool(School school) {
 		this.dao.insert(school);
+	}
+
+	public StudentNumber bookSchool(StudentNumber sn) {
+		if (EweblibUtil.isEmpty(sn.getStudentId())) {
+			throw new ResponseException("请选择选号学生");
+		}
+
+		if (EweblibUtil.isEmpty(sn.getSchoolId())) {
+			throw new ResponseException("请选择校区");
+		}
+
+		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
+			throw new ResponseException("此学生已经选择校区");
+		}
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		query.and(StudentNumber.SCHOOL_ID, sn.getSchoolId());
+
+		int count = this.dao.count(query);
+		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
+		sn.setNumber(count + 1);
+		this.dao.insert(sn);
+
+		StudentNumber tmp = new StudentNumber();
+		tmp.setNumber(sn.getNumber());
+		return tmp;
+	}
+
+	@Override
+	public List<StudentSchoolInfo> listMyStudentSchools() {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		query.and(StudentNumber.OWER_ID, EWeblibThreadLocal.getCurrentUserId());
+
+		List<StudentNumber> list = this.dao.listByQuery(query, StudentNumber.class);
+		List<StudentSchoolInfo> results = new ArrayList<StudentSchoolInfo>();
+		DataBaseQueryBuilder userQuery = new DataBaseQueryBuilder(User.TABLE_NAME);
+		userQuery.and(User.ID, EWeblibThreadLocal.getCurrentUserId());
+		userQuery.limitColumns(new String[] { User.NAME, User.MOBILE_NUMBER });
+		User user = this.dao.findOneByQuery(userQuery, User.class);
+		for (StudentNumber sn : list) {
+			StudentSchoolInfo info = new StudentSchoolInfo();
+			info.setNumber(sn.getNumber());
+			info.setParent(user);
+			info.setCreatedOn(sn.getCreatedOn());
+
+			info.setSchool(loadSchool(sn.getSchoolId()));
+			info.setStudent(loadStudentInfo(sn.getStudentId()));
+			results.add(info);
+
+		}
+
+		return results;
+	}
+
+	private School loadSchool(String id) {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(School.TABLE_NAME);
+		query.and(School.ID, id);
+		query.limitColumns(new String[] { School.NAME });
+
+		return this.dao.findOneByQuery(query, School.class);
+	}
+
+	private Student loadStudentInfo(String id) {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		query.and(Student.ID, id);
+		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX });
+
+		return this.dao.findOneByQuery(query, Student.class);
 	}
 
 }

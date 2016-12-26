@@ -1,15 +1,44 @@
 package com.wx.school.bean.school;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+
 import com.eweblib.bean.BaseEntity;
 
-public class StudentNumber extends BaseEntity {
 
-	
+@Table(name = StudentNumber.TABLE_NAME)
+public class StudentNumber extends BaseEntity {
+	public static final String TABLE_NAME = "StudentNumber";
+
+	public static final String OWER_ID = "ownerId";
+
+	public static final String STUDENT_ID = "studentId";
+
+	public static final String NUMBER = "number";
+
+	public static final String SCHOOL_ID = "schoolId";
+
+	@Column(name = STUDENT_ID)
 	public String studentId;
-	
-	public String owerId;
-	
+
+	@Column(name = OWER_ID)
+	public String ownerId;
+
+	@Column(name = NUMBER)
 	public Integer number;
+
+	@Column(name = SCHOOL_ID)
+	public String schoolId;
+	
+	
+
+	public String getSchoolId() {
+		return schoolId;
+	}
+
+	public void setSchoolId(String schoolId) {
+		this.schoolId = schoolId;
+	}
 
 	public String getStudentId() {
 		return studentId;
@@ -19,12 +48,12 @@ public class StudentNumber extends BaseEntity {
 		this.studentId = studentId;
 	}
 
-	public String getOwerId() {
-		return owerId;
+	public String getOwnerId() {
+		return ownerId;
 	}
 
-	public void setOwerId(String owerId) {
-		this.owerId = owerId;
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	public Integer getNumber() {
@@ -34,6 +63,5 @@ public class StudentNumber extends BaseEntity {
 	public void setNumber(Integer number) {
 		this.number = number;
 	}
-	
-	
+
 }

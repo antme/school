@@ -10,6 +10,7 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = Student.TABLE_NAME)
 public class Student extends BaseEntity {
 
+
 	public static final String SEX = "sex";
 
 	public static final String OWNER_ID = "ownerId";
@@ -31,6 +32,7 @@ public class Student extends BaseEntity {
 
 	@Column(name = SEX)
 	public String sex;
+;
 
 	public Date getBirthday() {
 		return birthday;

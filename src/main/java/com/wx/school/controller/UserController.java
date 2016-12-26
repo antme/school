@@ -38,15 +38,13 @@ public class UserController extends AbstractController {
 	@LoginRequired(required = false)
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		clearLoginSession(request, response);
-		response.setContentType("text/html;charset=UTF-8");
-		response.addHeader("Accept-Encoding", "gzip, deflate");
-		response.addHeader("Location", "index.jsp");
+//		response.setContentType("text/html;charset=UTF-8");
+//		response.addHeader("Accept-Encoding", "gzip, deflate");
+//		response.addHeader("Location", "index.jsp");
 
 		userService.logout();
-		try {
-			response.sendRedirect("/index.jsp");
-		} catch (IOException e) {
-		}
+		responseWithEntity(null, request, response);
+		
 	}
 
 	@RequestMapping("/login.do")

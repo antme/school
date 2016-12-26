@@ -51,3 +51,20 @@ CREATE TABLE `School` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 
+
+
+
+CREATE TABLE `StudentNumber` (
+  `id` varchar(36) NOT NULL,
+  `number` int DEFAULT '0',
+  `createdOn` datetime DEFAULT NULL,
+  `updatedOn` datetime DEFAULT NULL,
+  `creatorId` varchar(36) DEFAULT NULL,
+  `schoolId` varchar(36) DEFAULT NULL,
+  `ownerId` varchar(36) DEFAULT NULL,
+  `studentId` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+
+
