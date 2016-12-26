@@ -18,15 +18,10 @@ public class Student extends BaseEntity {
 
 	public static final String TABLE_NAME = "Student";
 
-	public static final String MOBILE_NUMBER = "mobileNumber";
-
 	public static final String NAME = "name";
 
 	@Column(name = NAME)
 	public String name;
-
-	@Column(name = MOBILE_NUMBER)
-	public String mobileNumber;
 
 	@Column(name = BIRTH_DAY)
 	public Date birthday;
@@ -36,14 +31,6 @@ public class Student extends BaseEntity {
 
 	@Column(name = SEX)
 	public String sex;
-
-	public String getMobileNumber() {
-		return mobileNumber;
-	}
-
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
-	}
 
 	public Date getBirthday() {
 		return birthday;

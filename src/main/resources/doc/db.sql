@@ -25,7 +25,6 @@ CREATE TABLE `Student` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `sex` varchar(36) DEFAULT NULL,
-  `mobileNumber` varchar(36) DEFAULT NULL,
   `createdOn` datetime DEFAULT NULL,
   `updatedOn` datetime DEFAULT NULL,
   `creatorId` varchar(36) DEFAULT NULL,

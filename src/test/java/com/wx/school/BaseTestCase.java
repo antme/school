@@ -39,7 +39,6 @@ public class BaseTestCase extends TestCase {
 	public void testSubmitPersonInfo() {
 		Student p = new Student();
 		p.setName("刘德华");
-		p.setMobileNumber("13818638561");
 //		us.submitPersonInfo(p);
 	}
 	
