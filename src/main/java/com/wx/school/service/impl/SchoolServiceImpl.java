@@ -2,11 +2,14 @@ package com.wx.school.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
+import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.service.AbstractService;
 import com.eweblib.util.DateUtil;
@@ -124,6 +127,26 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX });
 
 		return this.dao.findOneByQuery(query, Student.class);
+	}
+	
+	
+	public List<Student> listMyAvaliableStudentForSchool() {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		query.and(StudentNumber.OWER_ID, EWeblibThreadLocal.getCurrentUserId());
+
+		List<StudentNumber> list = this.dao.listByQuery(query, StudentNumber.class);
+		Set<String> ids = new HashSet<String>();
+		for (StudentNumber sn : list) {
+			ids.add(sn.getStudentId());
+		}
+
+		DataBaseQueryBuilder squery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		squery.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
+		squery.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.ID });
+		squery.and(DataBaseQueryOpertion.NOT_IN, Student.ID, ids);
+
+		return this.dao.listByQuery(squery, Student.class);
+
 	}
 
 }

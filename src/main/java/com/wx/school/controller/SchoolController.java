@@ -94,5 +94,14 @@ public class SchoolController extends AbstractController {
 	}
 	
 	
+	@RequestMapping("/student/avaliable/mine.do")
+	@LoginRequired(required = false)
+	public void listMyAvaliableStudentForSchool(HttpServletRequest request, HttpServletResponse response) {
+
+		responseWithListData(schoolService.listMyAvaliableStudentForSchool(), request, response);
+
+	}
+	
+	
 
 }

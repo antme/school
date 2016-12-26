@@ -137,6 +137,8 @@ public class UserController extends AbstractController {
 
 		responseWithListData(userService.listStudentInfo(), request, response);
 	}
+	
+
 
 	@RequestMapping("/password/update.do")
 	public void updateUserPassword(HttpServletRequest request, HttpServletResponse response) {

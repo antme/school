@@ -5,6 +5,7 @@ import java.util.List;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.school.StudentSchoolInfo;
+import com.wx.school.bean.user.Student;
 
 public interface ISchoolService {
 
@@ -15,5 +16,7 @@ public interface ISchoolService {
 	StudentNumber bookSchool(StudentNumber sn);
 
 	List<StudentSchoolInfo> listMyStudentSchools();
+
+	List<Student> listMyAvaliableStudentForSchool();
 
 }
