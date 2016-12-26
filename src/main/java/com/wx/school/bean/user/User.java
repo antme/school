@@ -9,6 +9,10 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = User.TABLE_NAME)
 public class User extends BaseEntity {
 
+	public static final String USER_TYPE = "userType";
+
+	public static final String USER_TYPE_PARENT = "parent";
+
 	public static final String REMARK = "remark";
 
 	public static final String EMAIL = "email";
@@ -52,11 +56,22 @@ public class User extends BaseEntity {
 	@Column(name = REMARK)
 	public String remark;
 
+	@Column(name = USER_TYPE)
+	public String userType;
+
 	public String password2;
 
 	public String validCode;
 
 	public String imgCode;
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 
 	public String getValidCode() {
 		return validCode;

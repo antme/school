@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
@@ -15,7 +16,7 @@ import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
-import com.wx.school.bean.user.Person;
+import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
 
@@ -95,17 +96,17 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	}
 
-	public User submitPersonInfo(Person person, User user) {
+	public User submitPersonInfo(User user) {
 
-		if (EweblibUtil.isEmpty(person.getName())) {
+		if (EweblibUtil.isEmpty(user.getName())) {
 			throw new ResponseException("姓名不能为空");
 		}
 
-		if (EweblibUtil.isEmpty(person.getName())) {
+		if (EweblibUtil.isEmpty(user.getMobileNumber())) {
 			throw new ResponseException("手机号不能为空");
 		}
 
-		if (this.dao.exists(Person.MOBILE_NUMBER, person.getMobileNumber(), Person.TABLE_NAME)) {
+		if (this.dao.exists(User.MOBILE_NUMBER, user.getMobileNumber(), User.TABLE_NAME)) {
 			throw new ResponseException("此手机号已经注册");
 		}
 
@@ -114,14 +115,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		}
 		checkPassword(user);
 
-		user.setMobileNumber(person.getMobileNumber());
-		user.setName(person.getName());
-		user.setUserName(person.getMobileNumber());
-		this.dao.insert(user);
+		user.setUserName(user.getMobileNumber());
+		user.setUserType(User.USER_TYPE_PARENT);
 
-		person.setPersonType(Person.PERSON_TYPE_PARENT);
-		person.setOwnerId(user.getId());
-		this.dao.insert(person);
+		this.dao.insert(user);
 
 		return user;
 
@@ -139,29 +136,29 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		user.setPassword(DataEncrypt.generatePassword(user.getPassword()));
 	}
 
-	public Person loadMyPersonInfo() {
+	public User loadMyPersonInfo() {
 		String uid = EWeblibThreadLocal.getCurrentUserId();
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Person.TABLE_NAME);
-		query.limitColumns(new String[] { Person.MOBILE_NUMBER, Person.NAME });
-		query.and(Person.OWNER_ID, uid);
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
+		query.limitColumns(new String[] { User.MOBILE_NUMBER, User.NAME });
+		query.and(User.ID, uid);
 
-		return this.dao.findOneByQuery(query, Person.class);
+		return this.dao.findOneByQuery(query, User.class);
 	}
 
-	public void submitStudentInfo(Person person) {
-		if (EweblibUtil.isEmpty(person.getName())) {
+	public void submitStudentInfo(Student student) {
+		if (EweblibUtil.isEmpty(student.getName())) {
 			throw new ResponseException("姓名不能为空");
 		}
 
-		if (EweblibUtil.isEmpty(person.getSex())) {
+		if (EweblibUtil.isEmpty(student.getSex())) {
 			throw new ResponseException("性别不能为空");
 		}
 
-		if (EweblibUtil.isEmpty(person.getBirthday())) {
+		if (EweblibUtil.isEmpty(student.getBirthday())) {
 			throw new ResponseException("出生日期不能为空");
 		}
 
-		if (!person.getSex().equals("f") && !person.getSex().equals("m")) {
+		if (!student.getSex().equals("f") && !student.getSex().equals("m")) {
 			throw new ResponseException("性别参数错误");
 		}
 
@@ -169,27 +166,26 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("请先登录");
 		}
 
-		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Person.TABLE_NAME);
-		checkQuery.and(Person.NAME, person.getName());
-		checkQuery.and(Person.SEX, person.getSex());
-		checkQuery.and(Person.BIRTH_DAY, person.getBirthday());
+		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		checkQuery.and(Student.NAME, student.getName());
+		checkQuery.and(Student.SEX, student.getSex());
+		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
 		if (this.dao.exists(checkQuery)) {
 			throw new ResponseException("此学生信息已经提交");
 		}
 
-		person.setParentId(EWeblibThreadLocal.getCurrentUserId());
-		person.setPersonType(Person.PERSON_TYPE_STUDENT);
-		this.dao.insert(person);
+		student.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
+		this.dao.insert(student);
 
 	}
 
-	public List<Person> listStudentInfo() {
+	public List<Student> listStudentInfo() {
 
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Person.TABLE_NAME);
-		query.and(Person.PARENT_ID, EWeblibThreadLocal.getCurrentUserId());
-		query.limitColumns(new String[] { Person.NAME, Person.BIRTH_DAY, Person.SEX, Person.ID });
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		query.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
+		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.ID });
 
-		return this.dao.listByQuery(query, Person.class);
+		return this.dao.listByQuery(query, Student.class);
 	}
 
 	public void updateUserPassword(User user) {
@@ -223,6 +219,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		this.dao.updateById(user, new String[] { User.PASSWORD });
 
 		return user;
+	}
+
+	public EntityResults<Student> listStudentsForAdmin() {
+		return null;
 	}
 
 }

@@ -16,14 +16,12 @@ CREATE TABLE `User` (
   `isAdmin` tinyint(1) DEFAULT '0',
   `email` varchar(255) DEFAULT NULL,
   `remark` varchar(255) DEFAULT NULL,
+  `userType` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
 
-
-
-
-CREATE TABLE `Person` (
+CREATE TABLE `Student` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `sex` varchar(36) DEFAULT NULL,
@@ -31,10 +29,8 @@ CREATE TABLE `Person` (
   `createdOn` datetime DEFAULT NULL,
   `updatedOn` datetime DEFAULT NULL,
   `creatorId` varchar(36) DEFAULT NULL,
-  `personType` varchar(36) DEFAULT NULL,
   `birthday` date DEFAULT NULL,
   `ownerId` varchar(36) DEFAULT NULL,
-  `parentId` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  

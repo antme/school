@@ -19,7 +19,7 @@ import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.ImgUtil;
-import com.wx.school.bean.user.Person;
+import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
 
@@ -113,23 +113,22 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/parent/submit.do")
 	public void submitPersonInfo(HttpServletRequest request, HttpServletResponse response) {
-		Person person = (Person) parserJsonParameters(request, true, Person.class);
 		User user = (User) parserJsonParameters(request, true, User.class);
 
-		user = userService.submitPersonInfo(person, user);
+		user = userService.submitPersonInfo(user);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 	}
 
 	@RequestMapping("/parent/mine.do")
 	public void loadMyPersonInfo(HttpServletRequest request, HttpServletResponse response) {
-		Person person = userService.loadMyPersonInfo();
-		responseWithEntity(person, request, response);
+		User user = userService.loadMyPersonInfo();
+		responseWithEntity(user, request, response);
 	}
 
 	@RequestMapping("/parent/submitStudent.do")
 	public void submitStudentInfo(HttpServletRequest request, HttpServletResponse response) {
-		Person person = (Person) parserJsonParameters(request, true, Person.class);
+		Student person = (Student) parserJsonParameters(request, true, Student.class);
 
 		userService.submitStudentInfo(person);
 		responseWithEntity(null, request, response);

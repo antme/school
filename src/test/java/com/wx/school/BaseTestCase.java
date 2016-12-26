@@ -7,7 +7,7 @@ import com.eweblib.dao.IQueryDao;
 import com.eweblib.dao.QueryDaoImpl;
 import com.eweblib.util.DateUtil;
 import com.wx.school.bean.school.School;
-import com.wx.school.bean.user.Person;
+import com.wx.school.bean.user.Student;
 import com.wx.school.service.ISchoolService;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.impl.SchoolServiceImpl;
@@ -37,7 +37,7 @@ public class BaseTestCase extends TestCase {
 	}
 
 	public void testSubmitPersonInfo() {
-		Person p = new Person();
+		Student p = new Student();
 		p.setName("刘德华");
 		p.setMobileNumber("13818638561");
 //		us.submitPersonInfo(p);
