@@ -69,126 +69,34 @@
 		}
 	}
 	
-	function cancel(id){		
-		$.messager.confirm('账单撤销', '确认撤销此账单', function(r){
-    		if (r){
-    			var data = {id: id};
-		       	postAjaxRequest('/bill/admin/cancel.do', data, function(data) {
-		       	 	$.messager.alert('提示','提交成功');
-					$("#billList").datagrid('reload');
-				}); 
-    		}
-   		});   
-		
-	}
 
-	function formatterInvoiceStatus(val, row){		
-		if(val == 0){			
-			return "待确认";
-		}
-		
-		if(val == 1 ){
-			return "待付款";
-		}
-		
-		if(val == 2 ){
-			return "已付款";
-		}
-		
-		if(val == 3 ){
-			return "累计到下月结算";
-		}
-				
-	}
-	
-	$(document).ready(function() { 
-		var param = getCookie("bill_list_param");
-		var data = null;
-		if(param){
-			data = JSON.parse(param);
-		}
-		
-		if(data){
-			$('#queryDate').combobox('setValue',data.queryDate);
-			$("#billStatus").combobox('setValue', data.billStatus);
-			$("#userName").val(data.userName);
-			search();
-		}else{
-			$("#queryDate").combobox({			
-				url :'/bill/admin/month.do',
-				loadFilter:function(data){
-					return data.rows;
-				},
-				valueField:'queryDate',
-	            textField:'queryDate',
-	            method:'get',
-				onLoadSuccess: function(param){
-					$('#queryDate').combobox('setValue',param[0].queryDate);
-				}
-			});		
-		}
-	});
 	
 
-	function formatterInvoiceOperation(val, row){
-		if(row.isInvoiceSubmited){
-			return '<a style="margin-left:5px" href="?p=/admin/bill/invoice&id=' + row.id + '"> 查看发票 </a>';	
+	function formatterSex(val, row){
+		if(val=="f"){
+			return '女性';	
+		}else if(val == "m"){
+			return '男性';	
 		}
 	}
 	
-	function getSearchStr(){
-		var billStatus = 0;
-		var queryDate = $("#queryDate").combobox('getValue');;
-		if ($("#billStatus").length > 0) {
-			 billStatus = $("#billStatus").combobox('getValue');
-		}
-		var data = {
-			userName : $("#userName").val(),
-			billStatus : billStatus,
-			queryDate : queryDate
-		}
-		
-		addCookie("bill_list_param",JSON.stringify(data), 0.5);
-		//return "&param=" +  encodeURIComponent(JSON.stringify(data));
 
-	}
 	
 
-	function addCookie(objName, objValue, objHours) {//添加cookie
-		var str = objName + "=" + escape(objValue);
-		if (objHours > 0) {//为0时不设定过期时间，浏览器关闭时cookie自动消失
-			var date = new Date();
-			var ms = objHours * 3600 * 1000;
-			date.setTime(date.getTime() + ms);
-			str += "; expires=" + date.toGMTString();
-		}
-		document.cookie = str;
-	}
 
-	function getCookie(objName) {//获取指定名称的cookie的值
-		var arrStr = document.cookie.split("; ");
-		for (var i = 0; i < arrStr.length; i++) {
-			var temp = arrStr[i].split("=");
-			if (temp[0] == objName)
-				return unescape(temp[1]);
-		}
-	}
+	
 </script>
 
 <div>
-	<label style="font-size:20px">账单管理</label>
+	<label style="font-size:20px">学生信息管理</label>
 </div>
 <br><br>
 <div >
-	<span class="tab-m">
-           <label>月份</label>
-           <input class="easyui-combobox"  type="text" style="width:100px;height:30px;" id="queryDate" />
-    </span>
-	<span class="r-edit-label">用户名:</span>
+	<span class="r-edit-label">姓名:</span>
 	<input class="height26" type="text" name="userName" id="userName" /> 
  	<span class="tab-m">
        <label>状态:</label>
-       <select id="billStatus" class="easyui-combobox"   style="width:100px;height:30px;" name="billStatus">
+       <select id="school" class="easyui-combobox"   style="width:100px;height:30px;" name="school">
            <option value=""  >所有</option>
 		   <option value="0" selected >新账单</option>
 		   <option value="1"  >待付款</option>
@@ -197,29 +105,19 @@
 	   </select>
     </span>
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
-
 </div>
 <p></p>
-<table id="billList" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/bill/admin/listnew.do?billStatus=0"  iconCls="icon-save" sortOrder="asc" pagination="true" >
+<table id="billList" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/user/admin/listStudent.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>
 		<tr>
 		    <th data-options="field:'ck',checkbox:true"></th>
-			<th align="center" field="year" width="50" sortable="false" resizable="true" data-options="formatter:formatterBillDate">月份</th>					
-			<th align="center" field="name" width="100" sortable="false" resizable="true">账户</th>	
-			<th align="center" field="adForecastMoney" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">预估收入</th>
-			<th align="center" field="adForecastMoneyOfLastMonth" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">上月累计</th>
-			
-			<th align="center" field="shareProportion" width="100" sortable="false" resizable="true" >分成比率</th>
-			
-			<th align="center" field="adActureMoney" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">分成收入</th>
-			<th align="center" field="deductedMoney" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">扣款</th>			
-			<th align="center" field="rewardMoney" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">调整款</th>
-			<th align="center" field="payMoney" width="100" sortable="false" resizable="true" data-options="formatter:formatterMoneyOperation">实际收入</th>	
-			<th align="center" field="billStatus" width="100" sortable="false" resizable="true"  data-options="formatter:formatterInvoiceStatus">状态</th>	
-			<th align="center" field="billStatus1" width="100" sortable="false" resizable="true"  data-options="formatter:formatterInvoiceOperation">发票</th>		
-				
-			<th align="center" data-options="field:'id',formatter:formatterAdminBillOperation,width:100" >操作</th>
-			<th align="center" field="remark" width="200"  sortable="false" resizable="true" >备注</th>
+			<th align="center" field="name" width="50" sortable="false" resizable="true" >姓名</th>					
+			<th align="center" field="sex" width="100" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
+			<th align="center" field="birthday" width="100" sortable="false" resizable="true" >出生日期</th>
+			<th align="center" field="schoolName" width="100" sortable="false" resizable="true">报名校区</th>
+			<th align="center" field="parentName" width="100" sortable="false" resizable="true" >家长姓名</th>	
+			<th align="center" field="parentMobilNumber" width="100" sortable="false" resizable="true" >家长手机</th>	
+		<th align="center" data-options="field:'id',formatter:formatterAdminBillOperation,width:100" >操作</th>
 		</tr>
 	</thead>
 </table>

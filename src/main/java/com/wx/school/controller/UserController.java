@@ -54,18 +54,12 @@ public class UserController extends AbstractController {
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, false, User.class);
 
-		// String imgCode = getSessionValue(request, IMG_CODE);
-		// if (imgCode != null && user.getImgCode() != null &&
-		// user.getImgCode().equalsIgnoreCase(imgCode)) {
 		user = userService.login(user);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
-		// } else {
-		// throw new ResponseException("请输入正确验证码");
-		// }
+
 	}
-	
-	
+
 	@RequestMapping("/back/login.do")
 	@LoginRequired(required = false)
 	public void loginBack(HttpServletRequest request, HttpServletResponse response) {
@@ -132,7 +126,7 @@ public class UserController extends AbstractController {
 		Person person = userService.loadMyPersonInfo();
 		responseWithEntity(person, request, response);
 	}
-	
+
 	@RequestMapping("/parent/submitStudent.do")
 	public void submitStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		Person person = (Person) parserJsonParameters(request, true, Person.class);
@@ -140,14 +134,12 @@ public class UserController extends AbstractController {
 		userService.submitStudentInfo(person);
 		responseWithEntity(null, request, response);
 	}
-	
+
 	@RequestMapping("/parent/listStudent.do")
 	public void listStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 
 		responseWithListData(userService.listStudentInfo(), request, response);
 	}
-	
-	
 
 	@RequestMapping("/password/update.do")
 	public void updateUserPassword(HttpServletRequest request, HttpServletResponse response) {
@@ -157,8 +149,6 @@ public class UserController extends AbstractController {
 		responseWithEntity(null, request, response);
 
 	}
-	
-	
 
 	@RequestMapping("/password/forgot/update.do")
 	public void updateUserPasswordWhenForgot(HttpServletRequest request, HttpServletResponse response) {
@@ -170,7 +160,12 @@ public class UserController extends AbstractController {
 	}
 	
 	
-	
+	@RequestMapping("/admin/listStudent.do")
+	public void listStudentsForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		User user = (User) parserJsonParameters(request, true, User.class);
+
+		responseWithDataPagnation(userService.listStudentsForAdmin(), request, response);
+	}
 
 	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
 		User user = (User) entity;
