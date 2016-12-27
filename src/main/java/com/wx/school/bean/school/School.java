@@ -48,11 +48,11 @@ public class School extends BaseEntity {
 	public Boolean isDisplayForWx;
 	
 	
-	@Column(name = TAKE_NUMBER_DATE)
-	public Date startDate;
-	
-	@Column(name = TAKE_NUMBER_DATE)
-	public Date endDate;
+//	@Column(name = TAKE_NUMBER_DATE)
+//	public Date startDate;
+//	
+//	@Column(name = TAKE_NUMBER_DATE)
+//	public Date endDate;
 
 	public Boolean getIsDisplayForWx() {
 		return isDisplayForWx;
