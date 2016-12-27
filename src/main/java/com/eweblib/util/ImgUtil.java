@@ -31,6 +31,8 @@ public class ImgUtil {
 		}
 		return sb.toString();
 	}
+	
+
 
 	public static BufferedImage getCaptchaImage(String word, int imageWidth, int imageHeight) {// 生成图片
 		BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);

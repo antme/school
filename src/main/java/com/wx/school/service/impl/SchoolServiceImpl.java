@@ -56,6 +56,14 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	}
 
 	public void addSchool(School school) {
+
+		if (EweblibUtil.isEmpty(school.getName())) {
+			throw new ResponseException("校区名字不能为空");
+		}
+
+		if (this.dao.exists(School.NAME, school.getName(), School.TABLE_NAME)) {
+			throw new ResponseException("此校区已经存在");
+		}
 		this.dao.insert(school);
 	}
 

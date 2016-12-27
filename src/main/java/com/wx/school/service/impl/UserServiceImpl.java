@@ -2,9 +2,9 @@ package com.wx.school.service.impl;
 
 import java.util.List;
 
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eweblib.bean.vo.EntityResults;
@@ -13,7 +13,6 @@ import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.service.AbstractService;
 import com.eweblib.util.DataEncrypt;
-import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
 import com.wx.school.bean.UserSearchVO;
@@ -21,10 +20,14 @@ import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
+import com.wx.school.service.message.IMessageService;
 
 @Service(value = "userService")
 public class UserServiceImpl extends AbstractService implements IUserService {
 	public static Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
+	@Autowired
+	private IMessageService ms;
 
 	@Override
 	public User login(User user) {
@@ -115,7 +118,9 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		if (EweblibUtil.isEmpty(user.getValidCode())) {
 			throw new ResponseException("验证码不能为空");
 		}
+
 		checkPassword(user);
+		ms.checkSms(user, 0);
 
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
@@ -216,6 +221,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("验证码不能为空");
 		}
 		checkPassword(user);
+
+		ms.checkSms(user, 1);
 		User old = this.dao.findByKeyValue(User.MOBILE_NUMBER, user.getMobileNumber(), User.TABLE_NAME, User.class);
 		user.setId(old.getId());
 		this.dao.updateById(user, new String[] { User.PASSWORD });

@@ -74,6 +74,17 @@ alter table School add column isDisplayForWx tinyint(1) DEFAULT '0';
 update School set takeStatus =2;
 update School set isDisplayForWx=false;
 
+CREATE TABLE `SMS` (
+  `id` varchar(36) NOT NULL,
+  `validCode` varchar(6) DEFAULT '0',
+  `smsType` int DEFAULT '0',
+  `createdOn` datetime DEFAULT NULL,
+  `updatedOn` datetime DEFAULT NULL,
+  `creatorId` varchar(36) DEFAULT NULL,
+  `mobileNumber` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 
 
 

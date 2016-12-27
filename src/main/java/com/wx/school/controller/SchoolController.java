@@ -52,9 +52,9 @@ public class SchoolController extends AbstractController {
 		school = new School();
 		school.setName("陆家嘴校区");
 		school.setOnlyForVip(true);
-		school.setTakeNumberDate(DateUtil.getDate("2017-01-02", DateUtil.DATE_FORMAT));
+		school.setTakeNumberDate(DateUtil.getDate("2016-12-28", DateUtil.DATE_FORMAT));
 		school.setStartTime("09:10:00");
-		school.setEndTime("10:10:00");
+		school.setEndTime("17:10:00");
 		schoolService.addSchool(school);
 
 		school = new School();
