@@ -32,11 +32,21 @@ public class Student extends BaseEntity {
 	@Column(name = SEX)
 	public String sex;
 
+	public Boolean hasNumber = false;
+
 	public String parentName;
 
 	public String parentMobileNumber;
 
 	public Date parentCreatedOn;
+
+	public Boolean getHasNumber() {
+		return hasNumber;
+	}
+
+	public void setHasNumber(Boolean hasNumber) {
+		this.hasNumber = hasNumber;
+	}
 
 	public String getParentName() {
 		return parentName;

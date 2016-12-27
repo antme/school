@@ -52,6 +52,22 @@
 		return "未发布";
 		
 	}
+	
+
+	function add(id) {
+		$.messager.confirm('添加数据', '确认添加此校区？', function(r) {
+			if (r) {
+				var data = {
+					id : id
+				};
+				postAjaxRequest('/sch/admin/delete.do', data, function(data) {
+					$.messager.alert('提示', '删除成功');
+					$("#datalist").datagrid('reload');
+				});
+			}
+		});
+	}
+	
 </script>
 
 <div>

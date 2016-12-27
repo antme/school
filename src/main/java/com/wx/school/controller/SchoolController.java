@@ -99,5 +99,15 @@ public class SchoolController extends AbstractController {
 
 		responseWithDataPagnation(schoolService.listSchoolsForAdmin(school), request, response);
 	}
+	
+	
+	@RequestMapping("/admin/add.do")
+	@LoginRequired(required = false)
+	public void addSchool(HttpServletRequest request, HttpServletResponse response) {
+		School school = (School) parserJsonParameters(request, false, School.class);
+		schoolService.addSchool(school);
+		responseWithEntity(null, request, response);
+
+	}
 
 }

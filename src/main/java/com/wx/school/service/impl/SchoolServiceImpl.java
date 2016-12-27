@@ -151,9 +151,15 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		DataBaseQueryBuilder squery = new DataBaseQueryBuilder(Student.TABLE_NAME);
 		squery.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
 		squery.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.ID });
-		squery.and(DataBaseQueryOpertion.NOT_IN, Student.ID, ids);
 
-		return this.dao.listByQuery(squery, Student.class);
+		List<Student> slist =  this.dao.listByQuery(squery, Student.class);
+		for(Student s: slist){
+			if(ids.contains(s.getId())){
+				s.setHasNumber(true);
+			}
+		}
+		
+		return slist;
 
 	}
 

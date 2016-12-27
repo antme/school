@@ -29,8 +29,7 @@ public class StudentNumber extends BaseEntity {
 
 	@Column(name = SCHOOL_ID)
 	public String schoolId;
-	
-	
+
 
 	public String getSchoolId() {
 		return schoolId;
