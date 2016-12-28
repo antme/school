@@ -48,6 +48,12 @@ public class ControllerFilter extends AbstractController implements Filter {
 				}
 			}
 		}
+
+		String skey = srequest.getParameter("s_key");
+
+		if (EweblibUtil.isValid(skey)) {
+			uid = UserController.safariLoginData.get(skey);
+		}
 		Object sid = srequest.getSession().getAttribute(BaseEntity.ID);
 		if (sid != null) {
 			uid = sid.toString();

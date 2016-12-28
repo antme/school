@@ -23,7 +23,6 @@
 		<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
 		<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="/js/eweblib.js"></script>
-		<script type="text/javascript" src="/js/json2.js"></script>
 		<script type="text/javascript" src="/js/validation.js"></script>
 		<script type="text/javascript" src="/js/easyui-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="/js/highcharts.js"></script>
@@ -78,11 +77,6 @@
 	</div>
 	 <div id="dlg"  title="详情" data-options="iconCls:'icon-save'" style="width:500px;height:250px;padding:10px;">
      </div>
-	<script type="text/javascript">
-        var roleName = "<%=userRoleName%>";
-        var pagePath = "<%=pagePath%>";
-        var hi=body_height(70);
-        $("#right").css("min-height",hi+"px");
-     </script>
+	
 </body>
 </html>

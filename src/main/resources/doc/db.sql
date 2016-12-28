@@ -40,6 +40,18 @@ CREATE TABLE `Student` (
 CREATE TABLE `School` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `createdOn` datetime DEFAULT NULL,
+  `updatedOn` datetime DEFAULT NULL,
+  `creatorId` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+
+
+
+CREATE TABLE `SchoolPlan` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `onlyForVip` tinyint(1) DEFAULT '0',
   `createdOn` datetime DEFAULT NULL,
   `updatedOn` datetime DEFAULT NULL,
@@ -47,6 +59,9 @@ CREATE TABLE `School` (
   `takeNumberDate` date DEFAULT NULL,
   `startTime` varchar(255)  DEFAULT NULL,
   `endTime` varchar(255)  DEFAULT NULL,
+  `takeStatus` int default 2,
+  `isDisplayForWx` tinyint(1) DEFAULT '0',
+  `schoolId` varchar(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
@@ -60,19 +75,15 @@ CREATE TABLE `StudentNumber` (
   `createdOn` datetime DEFAULT NULL,
   `updatedOn` datetime DEFAULT NULL,
   `creatorId` varchar(36) DEFAULT NULL,
-  `schoolId` varchar(36) DEFAULT NULL,
+  `planId` varchar(36) DEFAULT NULL,
   `ownerId` varchar(36) DEFAULT NULL,
   `studentId` varchar(36) DEFAULT NULL,
+  `schoolId` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 
 
-alter table School add column takeStatus int default 2;
-alter table School add column isDisplayForWx tinyint(1) DEFAULT '0';
-
-update School set takeStatus =2;
-update School set isDisplayForWx=false;
 
 CREATE TABLE `SMS` (
   `id` varchar(36) NOT NULL,

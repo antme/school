@@ -22,7 +22,7 @@ import com.eweblib.service.AbstractService;
 import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
-import com.wx.school.bean.UserSearchVO;
+import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
@@ -238,7 +238,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		return user;
 	}
 
-	public EntityResults<Student> listStudentsForAdmin(UserSearchVO uvo) {
+	public EntityResults<Student> listStudentsForAdmin(SearchVO uvo) {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 
 		query.leftJoin(Student.TABLE_NAME, User.TABLE_NAME, Student.OWNER_ID, User.ID);
@@ -282,43 +282,5 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	public void updateStudentInfo(Student student) {
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
 	}
-	
-	public void loginForSafari(String skey, HttpServletRequest request, HttpServletResponse response) {
-		if (EweblibUtil.isValid(skey)) {
-			String dateTime = skey.split("___")[1];
-			//if ((new Date().getTime() - EweblibUtil.getLong(dateTime, 0l)) <= 30 * 60 * 1000) {
 
-				String uid = UserController.safariLoginData.get(skey);
-				User user = this.dao.findById(uid, User.TABLE_NAME, User.class);
-				if(user!=null){
-					setLoginSessionInfo(request, response, user);
-				}
-			//}
-		}
-	}
-
-	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {
-		removeSessionInfo(request);
-		EWeblibThreadLocal.set(BaseEntity.ID, user.getId());
-		setSessionValue(request, User.USER_NAME, user.getUserName());
-		setSessionValue(request, BaseEntity.ID, user.getId());
-
-		Cookie cookie = new Cookie("sch_uid", user.getId());
-		cookie.setMaxAge(30 * 60);
-		response.addCookie(cookie);
-	}
-
-	protected void removeSessionInfo(HttpServletRequest request) {
-
-		Enumeration<String> e = request.getSession().getAttributeNames();
-		while (e.hasMoreElements()) {
-			String nextElement = e.nextElement();
-			request.getSession().removeAttribute(nextElement);
-		}
-	}
-
-	protected void setSessionValue(HttpServletRequest request, String key, Object value) {
-
-		request.getSession().setAttribute(key, value);
-	}
 }

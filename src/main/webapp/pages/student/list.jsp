@@ -31,7 +31,7 @@
 	
 	function formatterOperation(val, row){
 		
-		return '<a style="margin-left:5px" href="?p=/student/edit&id=' + row.id + '"> 编辑 </a>' +
+		return '<a style="margin-left:5px" onclick="openStudentEditWindow(\'' + row.id + '\')" href="#"> 修改  </a>' +
 		 '<a style="margin-left:5px" onclick="deleteStudent(\'' + row.id + '\');" href="#"> 删除 </a>';
 		
 	}
@@ -48,9 +48,43 @@
 	}
 	
 
+	function openStudentEditWindow(id){
+		if(id){
+			
+			
+			if(id!="null"){
+				postAjaxRequest("/user/admin/student/load.do", {id:id}, function(data){
+					$("#edit_form").form('load',data.data);
+					$("#editwindow").window('open');
+				});
+				
+			}
+			
+			
+		}
+
+
+	}
+
 	
+ 	function submitStudentInfo(){
+ 		$.messager.confirm('修改确认', '确认修改此学生信息！', function(r){			
+	 		if(r){
+		 		$("#action").val("submit");
+		 		$('#edit_form').form('submit');
+	 		}
+ 		});
+ 	}
+ 	
 
-
+	$(document).ready(function() {
+		initFormSubmit("edit_form", "/user/admin/student/update.do", "修改学生信息", function(){
+			$.messager.alert('提示', '修改成功');
+			$("#editwindow").window('close');
+			$("#datalist").datagrid('reload');
+		});
+		
+	});
 	
 </script>
 
@@ -87,4 +121,45 @@
 	</thead>
 </table>
 
+
+<div id="editwindow" class="easyui-window" title="修改学生信息" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:600px;height:400px;padding:10px; top:100px;">
+       
+<div style="padding: 10px 60px 20px 60px">
+	<form id="edit_form" method="post" novalidate>
+		<div class="form-container">
+			<input class="" type="hidden" name="id" />
+			<input class="" type="hidden" name="action" id="action" />
+		
+			<br><br>
+				
+			<div class="form_items">
+				<label class="r-edit-label width100">姓名:</label> <input class="easyui-validatebox textbox width300" type="text" name="name" ></input>
+			</div>
+
+			<div class="form_items">
+				<label class="r-edit-label width100">出生日期:</label>  <input class="easyui-datebox" style="height:30px; width:200px" name="birthday" id="birthday"/>
+			</div>
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">性别:</label>
+			
+				  <select class="width150 height26" style="font-size:12px" name="sex">
+				  	<option value="m" selected>男性</option>
+				  	<option value="f" >女性</option>
+				  </select>
+			  </input>
+			</div>
+
+		
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">&nbsp;</label>
+				<input class="sub_btn" type="button" value="提交"  onclick="submitStudentInfo()" style="margin-left:10px;">
+			</div>
+		</div>
+	</form>
+	
+</div>
+       
+</div>
 

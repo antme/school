@@ -2,8 +2,10 @@ package com.wx.school.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -16,7 +18,10 @@ import com.eweblib.service.AbstractService;
 import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
+import com.wx.school.bean.SearchVO;
+import com.wx.school.bean.StudentPlanInfo;
 import com.wx.school.bean.school.School;
+import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.school.StudentSchoolInfo;
 import com.wx.school.bean.user.Student;
@@ -27,32 +32,39 @@ import com.wx.school.service.ISchoolService;
 public class SchoolServiceImpl extends AbstractService implements ISchoolService {
 
 	@Override
-	public List<School> listSchools() {
+	public List<SchoolPlan> listSchoolPlan() {
 
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(School.TABLE_NAME);
-		query.limitColumns(new String[] { School.ID, School.NAME, School.ONLY_FOR_VIP, School.TAKE_NUMBER_DATE,
-				School.START_TIME, School.END_TIME });
-
-		List<School> list = this.dao.listByQuery(query, School.class);
-		for (School school : list) {
-			Date date = new Date();
-
-			Date startDate = DateUtil
-					.getDateTime(DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getStartTime());
-			Date endDate = DateUtil
-					.getDateTime(DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getEndTime());
-
-			if (date.getTime() < startDate.getTime()) {
-				school.setTakeStatus(0);
-			} else if (date.getTime() < endDate.getTime()) {
-				school.setTakeStatus(1);
-			} else {
-				school.setTakeStatus(2);
-			}
-
-		}
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
+		query.limitColumns(new String[] { SchoolPlan.ID, SchoolPlan.NAME, SchoolPlan.ONLY_FOR_VIP,
+				SchoolPlan.TAKE_NUMBER_DATE, SchoolPlan.START_TIME, SchoolPlan.END_TIME });
+		query.and(DataBaseQueryOpertion.IS_TRUE, SchoolPlan.IS_DISPLAY_FOR_WX);
+		List<SchoolPlan> list = this.dao.listByQuery(query, SchoolPlan.class);
+		updateStatus(list);
 
 		return list;
+	}
+
+	private void updateStatus(List<SchoolPlan> list) {
+
+		if (list != null) {
+			for (SchoolPlan school : list) {
+				Date date = new Date();
+
+				String date2 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getStartTime() + ":00";
+				Date startDate = DateUtil.getDateTime(date2);
+				String date3 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getEndTime() + ":00";
+				Date endDate = DateUtil.getDateTime(date3);
+
+				if (date.getTime() < startDate.getTime()) {
+					school.setTakeStatus(0);
+				} else if (date.getTime() < endDate.getTime()) {
+					school.setTakeStatus(1);
+				} else {
+					school.setTakeStatus(2);
+				}
+
+			}
+		}
 	}
 
 	public void addSchool(School school) {
@@ -72,25 +84,27 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			throw new ResponseException("请选择选号学生");
 		}
 
-		if (EweblibUtil.isEmpty(sn.getSchoolId())) {
-			throw new ResponseException("请选择校区");
+		if (EweblibUtil.isEmpty(sn.getPlanId())) {
+			throw new ResponseException("请选择可以取号校区");
 		}
-
+		if (!this.dao.exists(Student.ID, sn.getStudentId(), Student.TABLE_NAME)) {
+			throw new ResponseException("此学生不存在");
+		}
 		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
 			throw new ResponseException("此学生已经选择校区");
 		}
 
-		if (!this.dao.exists(Student.ID, sn.getStudentId(), Student.TABLE_NAME)) {
-			throw new ResponseException("此学生不存在");
-		}
+		SchoolPlan plan = this.dao.findById(sn.getPlanId(), SchoolPlan.TABLE_NAME, SchoolPlan.class);
 
-		if (!this.dao.exists(School.ID, sn.getSchoolId(), School.TABLE_NAME)) {
-			throw new ResponseException("此学校不存在");
+		if (plan == null) {
+			throw new ResponseException("此取号批次不存在");
 		}
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
-		query.and(StudentNumber.SCHOOL_ID, sn.getSchoolId());
+		query.and(StudentNumber.PLAN_ID, sn.getPlanId());
 
+		sn.setSchoolId(plan.getSchoolId());
+		// FIXME
 		int count = this.dao.count(query);
 		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
 		sn.setNumber(count + 1);
@@ -103,6 +117,13 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	@Override
 	public List<StudentSchoolInfo> listMyStudentSchools() {
+
+		List<SchoolPlan> planList = this.dao.listByQuery(new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME),
+				SchoolPlan.class);
+		Map<String, String> planMap = new HashMap<String, String>();
+		for (SchoolPlan plan : planList) {
+			planMap.put(plan.getId(), plan.getSchoolId());
+		}
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		query.and(StudentNumber.OWER_ID, EWeblibThreadLocal.getCurrentUserId());
@@ -119,7 +140,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			info.setParent(user);
 			info.setCreatedOn(sn.getCreatedOn());
 
-			info.setSchool(loadSchool(sn.getSchoolId()));
+			info.setSchool(loadSchool(planMap.get(sn.getPlanId())));
 			info.setStudent(loadStudentInfo(sn.getStudentId()));
 			results.add(info);
 
@@ -160,27 +181,104 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		squery.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
 		squery.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.ID });
 
-		List<Student> slist =  this.dao.listByQuery(squery, Student.class);
-		for(Student s: slist){
-			if(ids.contains(s.getId())){
+		List<Student> slist = this.dao.listByQuery(squery, Student.class);
+		for (Student s : slist) {
+			if (ids.contains(s.getId())) {
 				s.setHasNumber(true);
 			}
 		}
-		
+
 		return slist;
 
 	}
 
-	public EntityResults<School> listSchoolsForAdmin(School school) {
+	public EntityResults<SchoolPlan> listSchoolPlanForAdmin(SchoolPlan school) {
 
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(School.TABLE_NAME);
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
 
 		if (EweblibUtil.isValid(school.getName())) {
-			query.and(DataBaseQueryOpertion.LIKE, School.NAME, school.getName());
+			query.and(DataBaseQueryOpertion.LIKE, SchoolPlan.NAME, school.getName());
 		}
 
-		return this.dao.listByQueryWithPagnation(query, School.class);
+		EntityResults<SchoolPlan> result = this.dao.listByQueryWithPagnation(query, SchoolPlan.class);
+		List<SchoolPlan> list = result.getEntityList();
+
+		updateStatus(list);
+		return result;
 
 	}
 
+	public List<School> listSchoolsForAdmin() {
+
+		return this.dao.listByQuery(new DataBaseQueryBuilder(School.TABLE_NAME), School.class);
+	}
+
+	public void addSchoolPlan(SchoolPlan plan) {
+		School s = loadSchool(plan.getSchoolId());
+		plan.setName(s.getName());
+
+		this.dao.insert(plan);
+	}
+
+	public void deleteSchoolPlan(SchoolPlan plan) {
+		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		delQuery.and(StudentNumber.PLAN_ID, plan.getId());
+		this.dao.deleteById(plan);
+	}
+
+	public void deliverySchoolPlan(SchoolPlan plan) {
+		plan.setIsDisplayForWx(true);
+		this.dao.updateById(plan, new String[] { SchoolPlan.IS_DISPLAY_FOR_WX });
+	}
+
+	public void cancelSchoolPlan(SchoolPlan plan) {
+		plan.setIsDisplayForWx(false);
+		this.dao.updateById(plan, new String[] { SchoolPlan.IS_DISPLAY_FOR_WX });
+	}
+
+	public SchoolPlan loadSchoolPlan(SchoolPlan plan) {
+		return this.dao.findById(plan.getId(), SchoolPlan.TABLE_NAME, SchoolPlan.class);
+	}
+
+	public void updateSchoolPlan(SchoolPlan plan) {
+
+		this.dao.updateById(plan,
+				new String[] { SchoolPlan.TAKE_NUMBER_DATE, SchoolPlan.START_TIME, SchoolPlan.END_TIME });
+	}
+
+	public EntityResults<StudentPlanInfo> listStudentPlanForAdmin(SearchVO svo) {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		query.leftJoin(StudentNumber.TABLE_NAME, Student.TABLE_NAME, StudentNumber.STUDENT_ID, Student.ID);
+		query.leftJoin(StudentNumber.TABLE_NAME, School.TABLE_NAME, StudentNumber.SCHOOL_ID, School.ID);
+		query.leftJoin(StudentNumber.TABLE_NAME, User.TABLE_NAME, StudentNumber.OWER_ID, User.ID);
+
+		query.joinColumns(Student.TABLE_NAME, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY,
+				Student.CREATED_ON + " as studentRegDate" });
+		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
+		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER });
+		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER });
+
+		if (EweblibUtil.isValid(svo.getName())) {
+			query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.NAME, svo.getName());
+		}
+
+		if (EweblibUtil.isValid(svo.getParentName())) {
+			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.NAME, svo.getParentName());
+		}
+
+		if (EweblibUtil.isValid(svo.getMobileNumber())) {
+			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER, svo.getMobileNumber());
+		}
+
+		if (EweblibUtil.isValid(svo.getSchoolName())) {
+			query.and(DataBaseQueryOpertion.LIKE, School.TABLE_NAME + "." + School.NAME, svo.getSchoolName());
+		}
+
+		if (EweblibUtil.isValid(svo.getSchoolId())) {
+			query.and(School.TABLE_NAME + "." + School.ID, svo.getSchoolId());
+		}
+
+		return this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);
+
+	}
 }

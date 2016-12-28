@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletInputStream;
@@ -41,6 +42,7 @@ import com.eweblib.exception.ResponseException;
 import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
+import com.wx.school.controller.UserController;
 
 public abstract class AbstractController {
 	public static final String MSG = "msg";
@@ -310,7 +312,7 @@ public abstract class AbstractController {
 		}
 		response.setContentType("text/plain;charset=UTF-8");
 		response.addHeader("Accept-Encoding", "gzip, deflate");
-		response.addHeader("P3P","CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"); 
+//		response.addHeader("P3P","CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"); 
 		String jsonReturn = EweblibUtil.toJson(data);
 		String callback = request.getParameter("callback");
 
@@ -418,6 +420,16 @@ public abstract class AbstractController {
 	}
 
 	protected void clearLoginSession(HttpServletRequest request, HttpServletResponse response) {
+		String uid = EWeblibThreadLocal.getCurrentUserId();
+
+		if (EweblibUtil.isValid(uid)) {
+			Set<String> keys = UserController.safariLoginData.keySet();
+			for (String key : keys) {
+				if (UserController.safariLoginData.get(key).equalsIgnoreCase(uid)) {
+					UserController.safariLoginData.remove(key);
+				}
+			}
+		}
 		removeSessionInfo(request);
 		EWeblibThreadLocal.removeAll();
 	}

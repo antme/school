@@ -7,6 +7,7 @@ import com.eweblib.dao.IQueryDao;
 import com.eweblib.dao.QueryDaoImpl;
 import com.eweblib.util.DateUtil;
 import com.wx.school.bean.school.School;
+import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.user.Student;
 import com.wx.school.service.ISchoolService;
 import com.wx.school.service.IUserService;
@@ -37,39 +38,52 @@ public class BaseTestCase extends TestCase {
 	}
 
 	public void testSubmitPersonInfo() {
-		Student p = new Student();
-		p.setName("刘德华");
-//		us.submitPersonInfo(p);
+		schoolService.listStudentPlanForAdmin(null);
 	}
 	
 	
 	public void testInsertSchool(){
-		dao.deleteAllByTableName(School.TABLE_NAME);
-		School school = new School();
-		school.setName("徐汇校区");
-		school.setOnlyForVip(true);
-		school.setTakeNumberDate(DateUtil.getDate("2017-01-01", DateUtil.DATE_FORMAT));
-		school.setStartTime("09:10:00");
-		school.setEndTime("10:10:00");
-		schoolService.addSchool(school);
-		
-		
-		school = new School();
-		school.setName("陆家嘴校区");
-		school.setOnlyForVip(true);
-		school.setTakeNumberDate(DateUtil.getDate("2017-01-02", DateUtil.DATE_FORMAT));
-		school.setStartTime("09:10:00");
-		school.setEndTime("10:10:00");
-		schoolService.addSchool(school);
-		
-		
-		school = new School();
-		school.setName("普陀校区");
-		school.setOnlyForVip(false);
-		school.setTakeNumberDate(DateUtil.getDate("2017-01-03", DateUtil.DATE_FORMAT));
-		school.setStartTime("14:00:00");
-		school.setEndTime("15:00:00");
-		schoolService.addSchool(school);
+//		dao.deleteAllByTableName(School.TABLE_NAME);
+//		dao.deleteAllByTableName(SchoolPlan.TABLE_NAME);
+//		School school = new School();
+//		school.setName("徐汇校区");
+//		schoolService.addSchool(school);
+//
+//		SchoolPlan plan = new SchoolPlan();
+//		plan.setOnlyForVip(true);
+//		plan.setTakeNumberDate(DateUtil.getDate("2017-01-01", DateUtil.DATE_FORMAT));
+//		plan.setStartTime("09:10:00");
+//		plan.setEndTime("10:10:00");
+//		plan.setName(school.getName());
+//		plan.setSchoolId(school.getId());
+//		this.dao.insert(plan);
+//
+//		school = new School();
+//		school.setName("陆家嘴校区");
+//		schoolService.addSchool(school);
+//
+//		plan = new SchoolPlan();
+//		plan.setOnlyForVip(true);
+//		plan.setTakeNumberDate(DateUtil.getDate("2016-12-28", DateUtil.DATE_FORMAT));
+//		plan.setStartTime("09:10:00");
+//		plan.setEndTime("17:10:00");
+//		plan.setName(school.getName());
+//		plan.setSchoolId(school.getId());
+//		this.dao.insert(plan);
+//
+//		school = new School();
+//		school.setName("普陀校区");
+//		schoolService.addSchool(school);
+//
+//		plan = new SchoolPlan();
+//		plan.setOnlyForVip(false);
+//		plan.setTakeNumberDate(DateUtil.getDate("2017-01-03", DateUtil.DATE_FORMAT));
+//		plan.setStartTime("14:00:00");
+//		plan.setEndTime("15:00:00");
+//		plan.setName(school.getName());
+//		plan.setSchoolId(school.getId());
+//		this.dao.insert(plan);
+
 		
 	}
 

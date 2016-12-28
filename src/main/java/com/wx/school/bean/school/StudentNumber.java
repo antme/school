@@ -5,9 +5,12 @@ import javax.persistence.Table;
 
 import com.eweblib.bean.BaseEntity;
 
-
 @Table(name = StudentNumber.TABLE_NAME)
 public class StudentNumber extends BaseEntity {
+	public static final String SCHOOL_ID = "schoolId";
+
+	public static final String PLAN_ID = "planId";
+
 	public static final String TABLE_NAME = "StudentNumber";
 
 	public static final String OWER_ID = "ownerId";
@@ -15,8 +18,6 @@ public class StudentNumber extends BaseEntity {
 	public static final String STUDENT_ID = "studentId";
 
 	public static final String NUMBER = "number";
-
-	public static final String SCHOOL_ID = "schoolId";
 
 	@Column(name = STUDENT_ID)
 	public String studentId;
@@ -27,9 +28,19 @@ public class StudentNumber extends BaseEntity {
 	@Column(name = NUMBER)
 	public Integer number;
 
+	@Column(name = PLAN_ID)
+	public String planId;
+
 	@Column(name = SCHOOL_ID)
 	public String schoolId;
 
+	public String getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(String planId) {
+		this.planId = planId;
+	}
 
 	public String getSchoolId() {
 		return schoolId;

@@ -3,6 +3,7 @@ package com.wx.school.controller;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +24,7 @@ import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.ImgUtil;
-import com.wx.school.bean.UserSearchVO;
+import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
@@ -54,6 +55,22 @@ public class UserController extends AbstractController {
 
 	}
 
+	@RequestMapping("/web/logout.do")
+	@LoginRequired(required = false)
+	public void logoutForWeb(HttpServletRequest request, HttpServletResponse response) {
+		clearLoginSession(request, response);
+		response.setContentType("text/html;charset=UTF-8");
+		response.addHeader("Accept-Encoding", "gzip, deflate");
+		response.addHeader("Location", "index.jsp");
+
+		userService.logout();
+		try {
+			response.sendRedirect("/index.jsp");
+		} catch (IOException e) {
+		}
+
+	}
+
 	@RequestMapping("/login.do")
 	@LoginRequired(required = false)
 	public void login(HttpServletRequest request, HttpServletResponse response) {
@@ -61,15 +78,15 @@ public class UserController extends AbstractController {
 		Boolean ajax_session = user.getAjax_session();
 
 		user = userService.login(user);
-		userService.setLoginSessionInfo(request, response, user);
+		setLoginSessionInfo(request, response, user);
 
 		String loginKey = "";
-		//if (ajax_session != null && ajax_session) {
-			loginKey = UUID.randomUUID().toString() + "___" + new Date().getTime();
+		// if (ajax_session != null && ajax_session) {
+		loginKey = UUID.randomUUID().toString() + "___" + new Date().getTime();
 
-			safariLoginData.put(loginKey, user.getId());
+		safariLoginData.put(loginKey, user.getId());
 
-		//}
+		// }
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("s_key", loginKey);
 		responseWithMapData(data, request, response);
@@ -84,7 +101,7 @@ public class UserController extends AbstractController {
 		String imgCode = getSessionValue(request, IMG_CODE);
 		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
 			user = userService.login(user);
-			userService.setLoginSessionInfo(request, response, user);
+			setLoginSessionInfo(request, response, user);
 			responseWithEntity(null, request, response);
 		} else {
 			throw new ResponseException("请输入正确验证码");
@@ -132,7 +149,7 @@ public class UserController extends AbstractController {
 		User user = (User) parserJsonParameters(request, true, User.class);
 
 		user = userService.submitPersonInfo(user);
-		userService.setLoginSessionInfo(request, response, user);
+		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 	}
 
@@ -169,14 +186,14 @@ public class UserController extends AbstractController {
 	public void updateUserPasswordWhenForgot(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, true, User.class);
 		user = userService.updateUserPasswordWhenForgot(user);
-		userService.setLoginSessionInfo(request, response, user);
+		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 
 	}
 
 	@RequestMapping("/admin/listStudent.do")
 	public void listStudentsForAdmin(HttpServletRequest request, HttpServletResponse response) {
-		UserSearchVO uvo = (UserSearchVO) parserJsonParameters(request, true, UserSearchVO.class);
+		SearchVO uvo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
 
 		responseWithDataPagnation(userService.listStudentsForAdmin(uvo), request, response);
 	}
@@ -204,6 +221,17 @@ public class UserController extends AbstractController {
 		userService.updateStudentInfo(student);
 		responseWithEntity(null, request, response);
 
+	}
+
+	protected void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {
+		removeSessionInfo(request);
+		EWeblibThreadLocal.set(BaseEntity.ID, user.getId());
+		setSessionValue(request, User.USER_NAME, user.getUserName());
+		setSessionValue(request, BaseEntity.ID, user.getId());
+
+		Cookie cookie = new Cookie("sch_uid", user.getId());
+		cookie.setMaxAge(30 * 60);
+		response.addCookie(cookie);
 	}
 
 }

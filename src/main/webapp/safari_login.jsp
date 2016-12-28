@@ -21,11 +21,8 @@
 
 	if (request.getParameter("skey") == null) {
 		String skey = request.getParameter("skey");
-		us.loginForSafari(skey, request, response);
 	}
 %>
-
-
 
 <body >
 
