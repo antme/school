@@ -17,11 +17,8 @@ $(document).ready(function(){
                     var jsonData = eval(data);
                     var res = Number(jsonData['code']);
                     if(res == 1){
-                        if(navigator.userAgent.indexOf("Safari")>0){
-                            $("body").append('<iframe id="sessionframe" name="sessionframe" onload="redirect();" src=' + ajaxUrlBase + '/safari_login.jsp?skey="' + jsonData["s_key"] +' style="display:none;"></iframe>');
-                        }else{
-                            window.location.href='tnstate.html';
-                        }
+                    	//window.location.href='tnstate.html';
+                    	$("body").append('<iframe id="sessionframe" name="sessionframe" onload="redirect();" src=' + ajaxUrlBase + '/safari_login.jsp?skey="' + jsonData["s_key"] +' style="display:none;"></iframe>');                  
                     }else{
                         tipShow($("#inSubmit"), jsonData['msg']);
                     }
