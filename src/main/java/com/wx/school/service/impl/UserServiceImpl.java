@@ -286,14 +286,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	public void loginForSafari(String skey, HttpServletRequest request, HttpServletResponse response) {
 		if (EweblibUtil.isValid(skey)) {
 			String dateTime = skey.split("___")[1];
-			if ((new Date().getTime() - EweblibUtil.getLong(dateTime, 0l)) <= 30 * 60 * 1000) {
+			//if ((new Date().getTime() - EweblibUtil.getLong(dateTime, 0l)) <= 30 * 60 * 1000) {
 
 				String uid = UserController.safariLoginData.get(skey);
 				User user = this.dao.findById(uid, User.TABLE_NAME, User.class);
 				if(user!=null){
 					setLoginSessionInfo(request, response, user);
 				}
-			}
+			//}
 		}
 	}
 

@@ -64,12 +64,12 @@ public class UserController extends AbstractController {
 		userService.setLoginSessionInfo(request, response, user);
 
 		String loginKey = "";
-		if (ajax_session != null && ajax_session) {
+		//if (ajax_session != null && ajax_session) {
 			loginKey = UUID.randomUUID().toString() + "___" + new Date().getTime();
 
 			safariLoginData.put(loginKey, user.getId());
 
-		}
+		//}
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("s_key", loginKey);
 		responseWithMapData(data, request, response);
