@@ -15,7 +15,7 @@ import com.eweblib.util.EweblibUtil;
 
 public class SmsHelp {
 
-	public static void sendRegSms(String code, Integer time) throws ClientException {
+	public static void sendRegSms(String code, Integer time, String mobileNumber) throws ClientException {
 		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4dB7XA1Qk15K",
 				"JEOke3hiPiZQC6y37ewVOg1QtvGWhf");
 		DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Sms", "sms.aliyuncs.com");
@@ -28,7 +28,7 @@ public class SmsHelp {
 			map.put("code", code);
 			map.put("time", time.toString());
 			request.setParamString(EweblibUtil.toJson(map));
-			request.setRecNum("18516692298");
+			request.setRecNum(mobileNumber);
 			SingleSendSmsResponse httpResponse = client.getAcsResponse(request);
 			System.out.println(httpResponse.getRequestId());
 		} catch (ServerException e) {
@@ -36,5 +36,9 @@ public class SmsHelp {
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String args[]){
+		//SmsHelp.sendRegSms(code, time);
 	}
 }

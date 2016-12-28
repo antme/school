@@ -69,7 +69,7 @@ public class SMSController extends AbstractController {
 		sms.setSmsType(smsType);
 		ms.addRegSms(sms);
 		try {
-			SmsHelp.sendRegSms(sms.getValidCode(), 5);
+			SmsHelp.sendRegSms(sms.getValidCode(), 5, sms.getMobileNumber());
 		} catch (ClientException e) {
 			throw new ResponseException("短信发送失败，请稍后再试");
 		}
