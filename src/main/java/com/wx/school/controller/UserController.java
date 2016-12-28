@@ -2,8 +2,13 @@ package com.wx.school.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,27 +39,40 @@ public class UserController extends AbstractController {
 	@Autowired
 	private IUserService userService;
 
+	public static Map<String, String> safariLoginData = new HashMap<String, String>();
+
 	@RequestMapping("/logout.do")
 	@LoginRequired(required = false)
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		clearLoginSession(request, response);
-//		response.setContentType("text/html;charset=UTF-8");
-//		response.addHeader("Accept-Encoding", "gzip, deflate");
-//		response.addHeader("Location", "index.jsp");
+		// response.setContentType("text/html;charset=UTF-8");
+		// response.addHeader("Accept-Encoding", "gzip, deflate");
+		// response.addHeader("Location", "index.jsp");
 
 		userService.logout();
 		responseWithEntity(null, request, response);
-		
+
 	}
 
 	@RequestMapping("/login.do")
 	@LoginRequired(required = false)
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, false, User.class);
+		Boolean ajax_session = user.getAjax_session();
 
 		user = userService.login(user);
-		setLoginSessionInfo(request, response, user);
-		responseWithEntity(null, request, response);
+		userService.setLoginSessionInfo(request, response, user);
+
+		String loginKey = "";
+		if (ajax_session != null && ajax_session) {
+			loginKey = UUID.randomUUID().toString() + "___" + new Date().getTime();
+
+			safariLoginData.put(loginKey, user.getId());
+
+		}
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("s_key", loginKey);
+		responseWithMapData(data, request, response);
 
 	}
 
@@ -66,7 +84,7 @@ public class UserController extends AbstractController {
 		String imgCode = getSessionValue(request, IMG_CODE);
 		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
 			user = userService.login(user);
-			setLoginSessionInfo(request, response, user);
+			userService.setLoginSessionInfo(request, response, user);
 			responseWithEntity(null, request, response);
 		} else {
 			throw new ResponseException("请输入正确验证码");
@@ -114,7 +132,7 @@ public class UserController extends AbstractController {
 		User user = (User) parserJsonParameters(request, true, User.class);
 
 		user = userService.submitPersonInfo(user);
-		setLoginSessionInfo(request, response, user);
+		userService.setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 	}
 
@@ -137,8 +155,6 @@ public class UserController extends AbstractController {
 
 		responseWithListData(userService.listStudentInfo(), request, response);
 	}
-	
-
 
 	@RequestMapping("/password/update.do")
 	public void updateUserPassword(HttpServletRequest request, HttpServletResponse response) {
@@ -153,19 +169,18 @@ public class UserController extends AbstractController {
 	public void updateUserPasswordWhenForgot(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, true, User.class);
 		user = userService.updateUserPasswordWhenForgot(user);
-		setLoginSessionInfo(request, response, user);
+		userService.setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 
 	}
-	
-	
+
 	@RequestMapping("/admin/listStudent.do")
 	public void listStudentsForAdmin(HttpServletRequest request, HttpServletResponse response) {
 		UserSearchVO uvo = (UserSearchVO) parserJsonParameters(request, true, UserSearchVO.class);
 
 		responseWithDataPagnation(userService.listStudentsForAdmin(uvo), request, response);
 	}
-	
+
 	@RequestMapping("/admin/student/delete.do")
 	public void deleteStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
@@ -174,7 +189,7 @@ public class UserController extends AbstractController {
 		responseWithEntity(null, request, response);
 
 	}
-	
+
 	@RequestMapping("/admin/student/load.do")
 	public void loadStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
@@ -182,25 +197,13 @@ public class UserController extends AbstractController {
 		responseWithEntity(userService.loadStudentInfo(student), request, response);
 
 	}
-	
+
 	@RequestMapping("/admin/student/update.do")
 	public void updateStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
 		userService.updateStudentInfo(student);
 		responseWithEntity(null, request, response);
 
-	}
-
-	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, BaseEntity entity) {
-		User user = (User) entity;
-		removeSessionInfo(request);
-		EWeblibThreadLocal.set(BaseEntity.ID, user.getId());
-		setSessionValue(request, User.USER_NAME, user.getUserName());
-		setSessionValue(request, BaseEntity.ID, user.getId());
-
-//		Cookie cookie = new Cookie("sch_uid", user.getId());
-//		cookie.setMaxAge(30 * 60);
-//		response.addCookie(cookie);
 	}
 
 }

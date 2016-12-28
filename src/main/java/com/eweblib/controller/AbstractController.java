@@ -310,6 +310,7 @@ public abstract class AbstractController {
 		}
 		response.setContentType("text/plain;charset=UTF-8");
 		response.addHeader("Accept-Encoding", "gzip, deflate");
+		response.addHeader("P3P","CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"); 
 		String jsonReturn = EweblibUtil.toJson(data);
 		String callback = request.getParameter("callback");
 

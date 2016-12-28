@@ -44,7 +44,7 @@ public class ControllerFilter extends AbstractController implements Filter {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().equalsIgnoreCase("sch_uid")) {
-					//uid = cookie.getValue();
+					uid = cookie.getValue();
 				}
 			}
 		}

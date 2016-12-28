@@ -59,11 +59,22 @@ public class User extends BaseEntity {
 	@Column(name = USER_TYPE)
 	public String userType;
 
+	@BooleanColumn
+	public Boolean ajax_session;
+
 	public String password2;
 
 	public String validCode;
 
 	public String imgCode;
+
+	public Boolean getAjax_session() {
+		return ajax_session;
+	}
+
+	public void setAjax_session(Boolean ajax_session) {
+		this.ajax_session = ajax_session;
+	}
 
 	public String getUserType() {
 		return userType;

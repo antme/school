@@ -1,12 +1,19 @@
 package com.wx.school.service.impl;
 
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
@@ -19,6 +26,7 @@ import com.wx.school.bean.UserSearchVO;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
+import com.wx.school.controller.UserController;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.message.IMessageService;
 
@@ -273,5 +281,44 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public void updateStudentInfo(Student student) {
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
+	}
+	
+	public void loginForSafari(String skey, HttpServletRequest request, HttpServletResponse response) {
+		if (EweblibUtil.isValid(skey)) {
+			String dateTime = skey.split("___")[1];
+			if ((new Date().getTime() - EweblibUtil.getLong(dateTime, 0l)) <= 30 * 60 * 1000) {
+
+				String uid = UserController.safariLoginData.get(skey);
+				User user = this.dao.findById(uid, User.TABLE_NAME, User.class);
+				if(user!=null){
+					setLoginSessionInfo(request, response, user);
+				}
+			}
+		}
+	}
+
+	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {
+		removeSessionInfo(request);
+		EWeblibThreadLocal.set(BaseEntity.ID, user.getId());
+		setSessionValue(request, User.USER_NAME, user.getUserName());
+		setSessionValue(request, BaseEntity.ID, user.getId());
+
+		Cookie cookie = new Cookie("sch_uid", user.getId());
+		cookie.setMaxAge(30 * 60);
+		response.addCookie(cookie);
+	}
+
+	protected void removeSessionInfo(HttpServletRequest request) {
+
+		Enumeration<String> e = request.getSession().getAttributeNames();
+		while (e.hasMoreElements()) {
+			String nextElement = e.nextElement();
+			request.getSession().removeAttribute(nextElement);
+		}
+	}
+
+	protected void setSessionValue(HttpServletRequest request, String key, Object value) {
+
+		request.getSession().setAttribute(key, value);
 	}
 }

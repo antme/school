@@ -2,6 +2,9 @@ package com.wx.school.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.wx.school.bean.UserSearchVO;
@@ -41,5 +44,11 @@ public interface IUserService {
 	public Student loadStudentInfo(Student student);
 
 	public void updateStudentInfo(Student student);
+	
+	
+	public void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user);
+	
+	public void loginForSafari(String skey, HttpServletRequest request, HttpServletResponse response);
+	
 
 }
