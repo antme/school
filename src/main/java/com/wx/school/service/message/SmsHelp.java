@@ -22,7 +22,7 @@ public class SmsHelp {
 		IAcsClient client = new DefaultAcsClient(profile);
 		SingleSendSmsRequest request = new SingleSendSmsRequest();
 		try {
-			request.setSignName("百花");
+			request.setSignName("百花学习塾");
 			request.setTemplateCode("SMS_35740141");
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("code", code);
