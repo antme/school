@@ -79,6 +79,7 @@ CREATE TABLE `StudentNumber` (
   `ownerId` varchar(36) DEFAULT NULL,
   `studentId` varchar(36) DEFAULT NULL,
   `schoolId` varchar(36) DEFAULT NULL,
+  `isSmsSent` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
@@ -120,10 +121,6 @@ CREATE TABLE `SmsLog` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
-
-
-
-alter table StudentNumber add column `isSmsSent` tinyint(1) DEFAULT '0';
 
 
 
