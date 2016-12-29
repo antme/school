@@ -41,14 +41,15 @@ public class ControllerFilter extends AbstractController implements Filter {
 
 		Cookie[] cookies = srequest.getCookies();
 		String uid = null;
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equalsIgnoreCase("sch_uid")) {
-					//uid = cookie.getValue();
-				}
-			}
-		}
-
+//		if (cookies != null) {
+//			for (Cookie cookie : cookies) {
+//				if (cookie.getName().equalsIgnoreCase("sch_uid")) {
+//					//uid = cookie.getValue();
+//				}
+//			}
+//		}
+		srequest.setCharacterEncoding("UTF-8");
+		srequest.getParameter("name");
 		String skey = srequest.getParameter("s_key");
 
 		if (EweblibUtil.isValid(skey)) {

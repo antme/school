@@ -223,6 +223,9 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	public void deleteSchoolPlan(SchoolPlan plan) {
 		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		delQuery.and(StudentNumber.PLAN_ID, plan.getId());
+		
+		this.dao.deleteByQuery(delQuery);
+		
 		this.dao.deleteById(plan);
 	}
 
@@ -276,6 +279,10 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		if (EweblibUtil.isValid(svo.getSchoolId())) {
 			query.and(School.TABLE_NAME + "." + School.ID, svo.getSchoolId());
+		}
+		
+		if(EweblibUtil.isValid(svo.getNumber())){
+			query.and(StudentNumber.TABLE_NAME + "." + StudentNumber.NUMBER, svo.getNumber());
 		}
 
 		return this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);

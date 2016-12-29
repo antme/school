@@ -5,12 +5,20 @@ import com.wx.school.bean.user.User;
 public class SearchVO extends User {
 
 	public String parentName;
-	
+
 	public String schoolName;
-	
+
 	public String schoolId;
-	
-	
+
+	public Integer number;
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 
 	public String getSchoolId() {
 		return schoolId;
@@ -35,7 +43,5 @@ public class SearchVO extends User {
 	public void setParentName(String parentName) {
 		this.parentName = parentName;
 	}
-	
-	
-	
+
 }

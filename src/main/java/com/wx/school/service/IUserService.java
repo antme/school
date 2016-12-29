@@ -1,6 +1,7 @@
 package com.wx.school.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,8 @@ public interface IUserService {
 	public Student loadStudentInfo(Student student);
 
 	public void updateStudentInfo(Student student);
+
+	public Map<String, Object> sumtUserInfo();
 	
 
 }

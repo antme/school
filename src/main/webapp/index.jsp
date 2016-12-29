@@ -60,7 +60,7 @@
 		               String pagePath = request.getParameter("p"); 
 		               String accindex = request.getParameter("a"); 
 		               if(pagePath == null){	
-							pagePath = "/student/list";							                 
+							pagePath = "/school/list";							                 
 		               }
 		               if(pagePath != null && pagePath!="null" && pagePath!=""){		                 
 		                   pageContext.setAttribute("pagePath","pages/"+pagePath+".jsp");                           		          

@@ -191,7 +191,7 @@
 </script>
 
 <div>
-	<label style="font-size: 20px">校区信息管理</label>
+	<label style="font-size: 20px">校区报名批次管理</label>
 </div>
 <br>
 <br>

@@ -1,19 +1,14 @@
 package com.wx.school.service.impl;
 
-import java.util.Date;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
@@ -26,7 +21,6 @@ import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
-import com.wx.school.controller.UserController;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.message.IMessageService;
 
@@ -181,17 +175,28 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("请先登录");
 		}
 
-		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
-		checkQuery.and(Student.NAME, student.getName());
-		checkQuery.and(Student.SEX, student.getSex());
-		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
-		if (this.dao.exists(checkQuery)) {
-			throw new ResponseException("此学生信息已经提交");
-		}
+		checkStudent(student, true);
 
 		student.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
 		this.dao.insert(student);
 
+	}
+
+	private void checkStudent(Student student, boolean isNew) {
+		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		checkQuery.and(Student.NAME, student.getName());
+		checkQuery.and(Student.SEX, student.getSex());
+		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
+		if(!isNew){
+			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, student.id, student.getId());
+			
+			if(EweblibUtil.isEmpty(student.getId())){
+				throw new ResponseException("非法参数");
+			}
+		}
+		if (this.dao.exists(checkQuery)) {
+			throw new ResponseException("此学生信息已经提交");
+		}
 	}
 
 	public List<Student> listStudentInfo() {
@@ -280,7 +285,26 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	}
 
 	public void updateStudentInfo(Student student) {
+		
+		checkStudent(student, false);
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
+	}
+
+	public Map<String, Object> sumtUserInfo() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
+		query.and(User.USER_TYPE, User.USER_TYPE_PARENT);
+		int count = this.dao.count(query);
+
+		map.put("parentCount", count);
+
+		DataBaseQueryBuilder studentQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		int scount = this.dao.count(studentQuery);
+
+		map.put("studentCount", scount);
+
+		return map;
+
 	}
 
 }

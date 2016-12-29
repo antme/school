@@ -8,7 +8,8 @@
 				name : $("#name").val(),
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
-				schoolId : $("#schoo_select").combobox('getValue')
+				schoolId : $("#schoo_select").combobox('getValue'),
+				number : $("#number").val()
 			}
 		});
 	}
@@ -28,6 +29,17 @@
 <br>
 <br>
 <div >
+
+ 	<span class="r-edit-label">校区:</span>
+ 	 <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
+                    method:'get',
+                    valueField:'id',
+                    textField:'name',
+                    panelHeight:'auto',
+                    loadFilter:function(data){
+						return data.rows;
+					}"/>
+					
 	<span class="r-edit-label">学生姓名:</span>
 	<input class="height24" type="text" name="name" id="name" /> 
 	
@@ -37,16 +49,10 @@
  	<span class="r-edit-label">家长手机号:</span>
  	<input class="height24" type="text" name="mobileNumber" id="mobileNumber" /> 
  	
- 	<span class="r-edit-label">校区:</span>
- 	 <input class="easyui-combobox"  type="text" style="width:200px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
-                    method:'get',
-                    valueField:'id',
-                    textField:'name',
-                    panelHeight:'auto',
-                    loadFilter:function(data){
-						return data.rows;
-					}"/>
+
  	
+ 	<span class="r-edit-label">号码:</span>
+ 	<input class="height24" type="number" name="number" id="number" style="width:50px;" /> 
  	
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
 	<button class="search_btn_noWidth" onclick="search();">导出</button>

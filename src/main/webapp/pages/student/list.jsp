@@ -84,6 +84,12 @@
 			$("#datalist").datagrid('reload');
 		});
 		
+		
+		postAjaxRequest("/user/admin/user/sum.do", {}, function(data){
+			$("#parentCount").html(data.parentCount);
+			$("#studentCount").html(data.parentCount);
+		});
+		
 	});
 	
 </script>
@@ -104,6 +110,17 @@
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
 	<button class="search_btn_noWidth" onclick="search();">导出</button>
 </div>
+<p></p>
+
+<div style="height:20px; width:100%;">
+ 	<div style="float:right; margin-right:100px;">
+	<span class="r-edit-label">家长总数: </span>
+	<label id="parentCount" style="color:red; margin-left:5px;"></label>
+	<span class="r-edit-label" style="margin-left:20px;">学生总数: </span>
+ 	<label id="studentCount" style="color:red; margin-left:5px;"></label>
+ 	</div>
+</div>
+
 <p></p>
 <table id="datalist" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/user/admin/listStudent.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>

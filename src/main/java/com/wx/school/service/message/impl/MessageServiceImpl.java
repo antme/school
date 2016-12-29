@@ -5,11 +5,13 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.wx.school.bean.user.SMS;
+import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.message.IMessageService;
 
@@ -50,5 +52,15 @@ public class MessageServiceImpl implements IMessageService {
 			throw new ResponseException("验证码错误或者过期");
 		}
 
+	}
+
+	public void sendSchoolNoticeSms(SmsLog smsLog) {
+
+		this.dao.insert(smsLog);
+	}
+
+	public EntityResults<SmsLog> listSentSchoolNoticeSms(SmsLog smsLog) {
+
+		return this.dao.listByQueryWithPagnation(new DataBaseQueryBuilder(SmsLog.TABLE_NAME), SmsLog.class);
 	}
 }

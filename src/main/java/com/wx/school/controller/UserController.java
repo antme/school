@@ -222,6 +222,15 @@ public class UserController extends AbstractController {
 		responseWithEntity(null, request, response);
 
 	}
+	
+	
+	@RequestMapping("/admin/user/sum.do")
+	public void sumtUserInfo(HttpServletRequest request, HttpServletResponse response) {
+
+		responseWithMapData(userService.sumtUserInfo(), request, response);
+
+	}
+
 
 	protected void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {
 		removeSessionInfo(request);

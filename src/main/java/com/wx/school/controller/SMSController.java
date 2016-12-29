@@ -15,6 +15,7 @@ import com.eweblib.exception.ResponseException;
 import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ImgUtil;
 import com.wx.school.bean.user.SMS;
+import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.message.IMessageService;
@@ -61,6 +62,27 @@ public class SMSController extends AbstractController {
 		sendSms(sms, word, 1);
 
 		responseWithEntity(null, request, response);
+
+	}
+
+	@RequestMapping("/school/book/notice.do")
+	@LoginRequired(required = false)
+	public void sendSchoolNoticeSms(HttpServletRequest request, HttpServletResponse response) {
+		SmsLog smsLog = (SmsLog) parserJsonParameters(request, false, SmsLog.class);
+
+		ms.sendSchoolNoticeSms(smsLog);
+
+		responseWithEntity(null, request, response);
+
+	}
+	
+	
+	@RequestMapping("/school/book/list.do")
+	@LoginRequired(required = false)
+	public void listSentSchoolNoticeSms(HttpServletRequest request, HttpServletResponse response) {
+		SmsLog smsLog = (SmsLog) parserJsonParameters(request, false, SmsLog.class);
+
+		responseWithDataPagnation(ms.listSentSchoolNoticeSms(smsLog), request, response);
 
 	}
 
