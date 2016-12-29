@@ -7,6 +7,8 @@ import com.eweblib.bean.BaseEntity;
 
 @Table(name = StudentNumber.TABLE_NAME)
 public class StudentNumber extends BaseEntity {
+	public static final String IS_SMS_SENT = "isSmsSent";
+
 	public static final String SCHOOL_ID = "schoolId";
 
 	public static final String PLAN_ID = "planId";
@@ -33,6 +35,17 @@ public class StudentNumber extends BaseEntity {
 
 	@Column(name = SCHOOL_ID)
 	public String schoolId;
+
+	@Column(name = IS_SMS_SENT)
+	public Boolean isSmsSent;
+
+	public Boolean getIsSmsSent() {
+		return isSmsSent;
+	}
+
+	public void setIsSmsSent(Boolean isSmsSent) {
+		this.isSmsSent = isSmsSent;
+	}
 
 	public String getPlanId() {
 		return planId;

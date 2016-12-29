@@ -101,13 +101,15 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		}
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
-		query.and(StudentNumber.PLAN_ID, sn.getPlanId());
+		query.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
 
 		sn.setSchoolId(plan.getSchoolId());
 		// FIXME
 		int count = this.dao.count(query);
+
 		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
 		sn.setNumber(count + 1);
+		sn.setIsSmsSent(false);
 		this.dao.insert(sn);
 
 		StudentNumber tmp = new StudentNumber();

@@ -123,7 +123,7 @@ CREATE TABLE `SmsLog` (
 
 
 
-
+alter table StudentNumber add column `isSmsSent` tinyint(1) DEFAULT '0';
 
 
 

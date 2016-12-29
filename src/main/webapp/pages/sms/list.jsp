@@ -4,10 +4,8 @@
 	
 
 	function formatterOperation(val, row) {
-		var a =   '<a style="margin-left:5px" onclick="deleteSchoolPlan(\''
-				+ row.id + '\');" href="#"> 删除 </a>';
-
-
+		var a = '<a style="margin-left:5px" onclick="resendSms(\''	+ row.id + '\');" href="#"> 重发 </a>';
+		return a;
 	}
 
 	function sendSms(){
@@ -134,18 +132,18 @@
 			<th data-options="field:'ck',checkbox:true"></th>
 			<th align="center" field="schoolName" width="100" sortable="false"
 				resizable="true">校区</th>
-			<th align="center" field="startNumber" width="150" sortable="false"
+			<th align="center" field="startNumber" width="80" sortable="false"
 				resizable="true">开始号码</th>	
-			<th align="center" field="endNumber" width="150" sortable="false"
+			<th align="center" field="endNumber" width="80" sortable="false"
 				resizable="true">结束号码</th>
 			<th align="center" field="successCount" width="150" sortable="false"
 				resizable="true">成功数量</th>
-			<th align="center" field="totalCount" width="150" sortable="false"
+			<th align="center" field="totalSend" width="150" sortable="false"
 				resizable="true">发送总数</th>
 			<th align="center" field="failedMobileNumbers" width="100" sortable="false"
 				resizable="true">失败号码</th>
 				
-			<th align="center" field="createdOn" width="100"
+			<th align="center" field="createdOn" width="150"
 				sortable="false" resizable="true" data-options="">发送时间</th>
 			<th align="center"
 				data-options="field:'id',formatter:formatterOperation,width:120">操作</th>

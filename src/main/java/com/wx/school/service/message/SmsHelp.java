@@ -1,16 +1,15 @@
 package com.wx.school.service.message;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageRequest;
-import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse;
-import com.aliyuncs.sms.model.v20160927.QuerySmsStatisticsRequest;
 import com.aliyuncs.sms.model.v20160927.SingleSendSmsRequest;
 import com.aliyuncs.sms.model.v20160927.SingleSendSmsResponse;
 import com.eweblib.util.EweblibUtil;
@@ -63,6 +62,16 @@ public class SmsHelp {
 	
 	public static void main(String[] args){
 		
+//		try {
+//			SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "上海市徐汇区天钥桥路30号美罗大厦15楼1504", "18516692298");
+//		} catch (ClientException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		Set<String> set = new HashSet<String>();
+		set.add("138");
+		set.add("139");
+		System.out.println(EweblibUtil.toJson(set).replace("[", "").replace("]", "").replaceAll("\"", ""));
 	}
 
 }
