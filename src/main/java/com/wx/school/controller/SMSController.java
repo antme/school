@@ -3,6 +3,8 @@ package com.wx.school.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +22,14 @@ import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.message.IMessageService;
 import com.wx.school.service.message.SmsHelp;
+import com.wx.school.service.message.impl.MessageServiceImpl;
 
 @Controller
 @RequestMapping("/sms")
 @Permission()
 @LoginRequired()
 public class SMSController extends AbstractController {
+	public static Logger logger = LogManager.getLogger(SMSController.class);
 
 	@Autowired
 	private IUserService us;
@@ -75,8 +79,7 @@ public class SMSController extends AbstractController {
 		responseWithEntity(null, request, response);
 
 	}
-	
-	
+
 	@RequestMapping("/school/book/list.do")
 	@LoginRequired(required = false)
 	public void listSentSchoolNoticeSms(HttpServletRequest request, HttpServletResponse response) {
@@ -93,6 +96,7 @@ public class SMSController extends AbstractController {
 		try {
 			SmsHelp.sendRegSms(sms.getValidCode(), 5, sms.getMobileNumber());
 		} catch (ClientException e) {
+			logger.fatal("短信发送失败", e);
 			throw new ResponseException("短信发送失败，请稍后再试");
 		}
 	}

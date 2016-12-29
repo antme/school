@@ -40,6 +40,16 @@ public class MessageServiceImpl implements IMessageService {
 
 	public void addRegSms(SMS sms) {
 
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SMS.TABLE_NAME);
+		Calendar c1 = Calendar.getInstance();
+		c1.add(Calendar.MINUTE, -1);
+		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SMS.CREATED_ON, c1.getTime());
+		query.and(SMS.MOBILE_NUMBER, sms.getMobileNumber());
+		if(this.dao.exists(query)){
+			throw new ResponseException("发送验证码失败，请稍后再试");
+		}
+		
+		
 		DataBaseQueryBuilder delQeury = new DataBaseQueryBuilder(SMS.TABLE_NAME);
 		delQeury.and(SMS.MOBILE_NUMBER, sms.getMobileNumber());
 		delQeury.and(SMS.SMS_TYPE, sms.getSmsType());
@@ -47,7 +57,6 @@ public class MessageServiceImpl implements IMessageService {
 
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, -5);
-
 		DataBaseQueryBuilder delQeury2 = new DataBaseQueryBuilder(SMS.TABLE_NAME);
 		delQeury2.and(DataBaseQueryOpertion.LESS_THAN, SMS.CREATED_ON, c.getTime());
 		this.dao.deleteByQuery(delQeury2);
