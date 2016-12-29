@@ -422,14 +422,14 @@ public abstract class AbstractController {
 	protected void clearLoginSession(HttpServletRequest request, HttpServletResponse response) {
 		String uid = EWeblibThreadLocal.getCurrentUserId();
 
-		if (EweblibUtil.isValid(uid)) {
-			Set<String> keys = UserController.safariLoginData.keySet();
-			for (String key : keys) {
-				if (UserController.safariLoginData.get(key).equalsIgnoreCase(uid)) {
-					UserController.safariLoginData.remove(key);
-				}
-			}
-		}
+//		if (EweblibUtil.isValid(uid)) {
+//			Set<String> keys = UserController.safariLoginData.keySet();
+//			for (String key : keys) {
+//				if (UserController.safariLoginData.get(key).equalsIgnoreCase(uid)) {
+//					UserController.safariLoginData.remove(key);
+//				}
+//			}
+//		}
 		removeSessionInfo(request);
 		EWeblibThreadLocal.removeAll();
 	}
