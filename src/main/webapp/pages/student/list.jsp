@@ -87,7 +87,7 @@
 		
 		postAjaxRequest("/user/admin/user/sum.do", {}, function(data){
 			$("#parentCount").html(data.parentCount);
-			$("#studentCount").html(data.parentCount);
+			$("#studentCount").html(data.studentCount);
 		});
 		
 	});
