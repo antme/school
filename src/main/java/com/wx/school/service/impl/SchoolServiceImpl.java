@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eweblib.bean.vo.EntityResults;
+import com.eweblib.cfg.ConfigManager;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
@@ -18,6 +20,7 @@ import com.eweblib.service.AbstractService;
 import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
+import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.StudentPlanInfo;
 import com.wx.school.bean.school.School;
@@ -26,10 +29,13 @@ import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.school.StudentSchoolInfo;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
+import com.wx.school.service.ICacheService;
 import com.wx.school.service.ISchoolService;
 
 @Service(value = "school")
 public class SchoolServiceImpl extends AbstractService implements ISchoolService {
+	@Autowired
+	private ICacheService cs;
 
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
@@ -56,13 +62,13 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 				Date endDate = DateUtil.getDateTime(date3);
 
 				if (date.getTime() < startDate.getTime()) {
-					//未开始
+					// 未开始
 					school.setTakeStatus(0);
 				} else if (date.getTime() < endDate.getTime()) {
-					//正在取号
+					// 正在取号
 					school.setTakeStatus(1);
 				} else {
-					//已结束
+					// 已结束
 					school.setTakeStatus(2);
 				}
 
@@ -90,28 +96,53 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (EweblibUtil.isEmpty(sn.getPlanId())) {
 			throw new ResponseException("请选择可以取号校区");
 		}
-		if (!this.dao.exists(Student.ID, sn.getStudentId(), Student.TABLE_NAME)) {
-			throw new ResponseException("此学生不存在");
-		}
-		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
-			throw new ResponseException("此学生已经选择校区");
-		}
 
-		SchoolPlan plan = this.dao.findById(sn.getPlanId(), SchoolPlan.TABLE_NAME, SchoolPlan.class);
+		if (sn.getStudentId().length() != 36) {
+			throw new ResponseException("参数异常");
+		}
+		
+		if (sn.getPlanId().length() != 36) {
+			throw new ResponseException("参数异常");
+		}
+		
+		
+		// if (!this.dao.exists(Student.ID, sn.getStudentId(),
+		// Student.TABLE_NAME)) {
+		// throw new ResponseException("此学生不存在");
+		// }
+
+
+		SchoolPlan plan = CacheServiceImpl.shcoolPlanMap.get(sn.getPlanId());
 
 		if (plan == null) {
 			throw new ResponseException("此取号批次不存在");
 		}
 
+		return bookPlan(sn, plan);
+
+	}
+
+	private synchronized StudentNumber bookPlan(StudentNumber sn, SchoolPlan plan) {
+
+		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
+			throw new ResponseException("此学生已经选择校区");
+		}
+
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		query.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
+		query.orderBy(StudentNumber.NUMBER, false);
+		query.limitColumns(new String[] { StudentNumber.NUMBER });
+		StudentNumber last = this.dao.findOneByQuery(query, StudentNumber.class);
+
+		int count = 1;
+		if (last != null) {
+			count = last.getNumber() + 1;
+		}
 
 		sn.setSchoolId(plan.getSchoolId());
-		// FIXME
-		int count = this.dao.count(query);
 
 		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
-		sn.setNumber(count + 1);
+		sn.setNumber(count);
 		sn.setIsSmsSent(false);
 		this.dao.insert(sn);
 
@@ -223,25 +254,31 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		plan.setName(s.getName());
 
 		this.dao.insert(plan);
+		
+		cs.refreshCach();
 	}
 
 	public void deleteSchoolPlan(SchoolPlan plan) {
 		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		delQuery.and(StudentNumber.PLAN_ID, plan.getId());
-		
+
 		this.dao.deleteByQuery(delQuery);
-		
+
 		this.dao.deleteById(plan);
+		
+		cs.refreshCach();
 	}
 
 	public void deliverySchoolPlan(SchoolPlan plan) {
 		plan.setIsDisplayForWx(true);
 		this.dao.updateById(plan, new String[] { SchoolPlan.IS_DISPLAY_FOR_WX });
+		cs.refreshCach();
 	}
 
 	public void cancelSchoolPlan(SchoolPlan plan) {
 		plan.setIsDisplayForWx(false);
 		this.dao.updateById(plan, new String[] { SchoolPlan.IS_DISPLAY_FOR_WX });
+		cs.refreshCach();
 	}
 
 	public SchoolPlan loadSchoolPlan(SchoolPlan plan) {
@@ -252,9 +289,17 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		this.dao.updateById(plan,
 				new String[] { SchoolPlan.TAKE_NUMBER_DATE, SchoolPlan.START_TIME, SchoolPlan.END_TIME });
+		cs.refreshCach();
 	}
 
 	public EntityResults<StudentPlanInfo> listStudentPlanForAdmin(SearchVO svo) {
+		DataBaseQueryBuilder query = getNumberQuery(svo);
+
+		return this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);
+
+	}
+
+	private DataBaseQueryBuilder getNumberQuery(SearchVO svo) {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		query.leftJoin(StudentNumber.TABLE_NAME, Student.TABLE_NAME, StudentNumber.STUDENT_ID, Student.ID);
 		query.leftJoin(StudentNumber.TABLE_NAME, School.TABLE_NAME, StudentNumber.SCHOOL_ID, School.ID);
@@ -285,12 +330,30 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (EweblibUtil.isValid(svo.getSchoolId())) {
 			query.and(School.TABLE_NAME + "." + School.ID, svo.getSchoolId());
 		}
-		
-		if(EweblibUtil.isValid(svo.getNumber())){
+
+		if (EweblibUtil.isValid(svo.getNumber())) {
 			query.and(StudentNumber.TABLE_NAME + "." + StudentNumber.NUMBER, svo.getNumber());
 		}
+		return query;
+	}
+	
+	public String exportStudentNumberForAdmin(SearchVO svo) {
+		DataBaseQueryBuilder query = getNumberQuery(svo);
+		List<StudentPlanInfo> list = this.dao.listByQuery(query, StudentPlanInfo.class);
+		for (StudentPlanInfo s : list) {
+			if (s.getName().equalsIgnoreCase("m")) {
+				s.setSexCn("男性");
+			} else {
+				s.setSexCn("女性");
+			}
+		}
+		String dowload_path = "取号_" + DateUtil.getDateString(new Date()) + ".xls";
+		String f = ConfigManager.getProperty("download_path") + dowload_path;
+		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区" };
+		String[] colunmHeaders = new String[] { "number", "name", "sexCn", "birthday", "parentName",
+				"mobileNumber", "studentRegDate", "createdOn", "schoolName" };
+		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
 
-		return this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);
-
+		return dowload_path;
 	}
 }

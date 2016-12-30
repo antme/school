@@ -21,6 +21,25 @@
 		}
 	}
 	
+
+	function exportData(){
+		var data = {
+				name : $("#name").val(),
+				parentName : $("#parentName").val(),
+				mobileNumber : $("#mobileNumber").val(),
+				schoolId : $("#schoo_select").combobox('getValue'),
+				number : $("#number").val()
+		}
+		
+		postAjaxRequest("/sch/student/number/export.do", data, function(data){		
+			var ifram =  '<iframe frameborder="no" border="0" scrolling="no" style="border:0px; border:none;" src ="/download/' + data.path + '" height="0" width="0" ></iframe>';
+			var y = document.createElement("div");
+			y.innerHTML = ifram;
+			document.body.appendChild(y);	
+		});
+		
+	}
+	
 </script>
 
 <div>
@@ -55,7 +74,7 @@
  	<input class="height24" type="number" name="number" id="number" style="width:50px;" /> 
  	
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
-	<button class="search_btn_noWidth" onclick="search();">导出</button>
+	<button class="search_btn_noWidth" onclick="exportData();">导出</button>
 </div>
 
 <p></p>

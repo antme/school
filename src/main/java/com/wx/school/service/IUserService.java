@@ -16,9 +16,8 @@ public interface IUserService {
 
 	public User login(User user, boolean back);
 
-	public void logout();
 
-	public boolean isAdmin(String userId);
+	public void validAdmin(String userId);
 
 	public User loadUserForAdmin(User user);
 
@@ -47,6 +46,15 @@ public interface IUserService {
 	public void updateStudentInfo(Student student);
 
 	public Map<String, Object> sumtUserInfo();
+
+
+	public String exportStudentInfo(SearchVO uvo);
+
+
+
+
+
+	
 	
 
 }

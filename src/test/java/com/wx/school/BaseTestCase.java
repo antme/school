@@ -38,7 +38,8 @@ public class BaseTestCase extends TestCase {
 	}
 
 	public void testSubmitPersonInfo() {
-		schoolService.listStudentPlanForAdmin(null);
+		us.exportStudentInfo(null);
+//		schoolService.listStudentPlanForAdmin(null);
 	}
 	
 	

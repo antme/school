@@ -1,5 +1,6 @@
 package com.wx.school.bean;
 
+import com.eweblib.annotation.column.IntegerColumn;
 import com.wx.school.bean.user.User;
 
 public class SearchVO extends User {
@@ -10,6 +11,7 @@ public class SearchVO extends User {
 
 	public String schoolId;
 
+	@IntegerColumn
 	public Integer number;
 
 	public Integer getNumber() {

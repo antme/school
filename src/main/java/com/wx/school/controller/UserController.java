@@ -50,7 +50,6 @@ public class UserController extends AbstractController {
 		// response.addHeader("Accept-Encoding", "gzip, deflate");
 		// response.addHeader("Location", "index.jsp");
 
-		userService.logout();
 		responseWithEntity(null, request, response);
 
 	}
@@ -63,7 +62,6 @@ public class UserController extends AbstractController {
 		response.addHeader("Accept-Encoding", "gzip, deflate");
 		response.addHeader("Location", "index.jsp");
 
-		userService.logout();
 		try {
 			response.sendRedirect("/index.jsp");
 		} catch (IOException e) {
@@ -134,12 +132,14 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/admin/load.do")
 	public void loadUserForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		User user = (User) parserJsonParameters(request, true, User.class);
 		responseWithEntity(userService.loadUserForAdmin(user), request, response);
 	}
 
 	@RequestMapping("/admin/edit.do")
 	public void editUserForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		User user = (User) parserJsonParameters(request, true, User.class);
 		userService.editUserForAdmin(user);
 		responseWithEntity(null, request, response);
@@ -194,6 +194,7 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/admin/listStudent.do")
 	public void listStudentsForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		SearchVO uvo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
 
 		responseWithDataPagnation(userService.listStudentsForAdmin(uvo), request, response);
@@ -201,6 +202,7 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/admin/student/delete.do")
 	public void deleteStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
 
 		userService.deleteStudentInfo(student);
@@ -210,6 +212,7 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/admin/student/load.do")
 	public void loadStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
 
 		responseWithEntity(userService.loadStudentInfo(student), request, response);
@@ -218,10 +221,10 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/admin/student/update.do")
 	public void updateStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		Student student = (Student) parserJsonParameters(request, true, Student.class);
 		userService.updateStudentInfo(student);
 		responseWithEntity(null, request, response);
-
 	}
 	
 	
@@ -231,7 +234,15 @@ public class UserController extends AbstractController {
 		responseWithMapData(userService.sumtUserInfo(), request, response);
 
 	}
-
+	
+	@RequestMapping("/admin/student/export.do")
+	public void exportStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+		SearchVO uvo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
+		String path = userService.exportStudentInfo(uvo);
+		
+		responseWithKeyValue("path", path, request, response);
+	}
 
 	protected void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {
 		removeSessionInfo(request);

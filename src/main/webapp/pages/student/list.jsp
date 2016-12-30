@@ -2,6 +2,7 @@
 <script>
 	function search() {
 
+	
 		$('#datalist').datagrid({
 			url: "/user/admin/listStudent.do",
 		    queryParams: {
@@ -13,6 +14,23 @@
 
 	
 	}
+	
+	function exportData(){
+		var data = {
+				name : $("#name").val(),
+				parentName : $("#parentName").val(),
+				mobileNumber : $("#mobileNumber").val()
+		}
+		
+		postAjaxRequest("/user/admin/student/export.do", data, function(data){		
+			var ifram =  '<iframe frameborder="no" border="0" scrolling="no" style="border:0px; border:none;" src ="/download/' + data.path + '" height="0" width="0" ></iframe>';
+			var y = document.createElement("div");
+			y.innerHTML = ifram;
+			document.body.appendChild(y);	
+		});
+		
+	}
+	
 
 	function deleteStudent(id){
 	   	
@@ -48,12 +66,20 @@
 	}
 	
 
+	function formatterRemark(val, row){
+		return '<div style="height: 40px; width: 220px; overflow: auto;  padding: 10px; ">' + val + "<div>";
+	}
+	
+
 	function openStudentEditWindow(id){
 		if(id){
 			
 			
 			if(id!="null"){
 				postAjaxRequest("/user/admin/student/load.do", {id:id}, function(data){
+					if(!data.data.remark){
+						data.data.remark = "";
+					}
 					$("#edit_form").form('load',data.data);
 					$("#editwindow").window('open');
 				});
@@ -108,7 +134,7 @@
  	<span class="r-edit-label">家长手机号:</span>
  	<input class="height24" type="text" name="mobileNumber" id="mobileNumber" /> 
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
-	<button class="search_btn_noWidth" onclick="search();">导出</button>
+	<button class="search_btn_noWidth" onclick="exportData();">导出</button>
 </div>
 <p></p>
 
@@ -125,14 +151,14 @@
 <table id="datalist" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/user/admin/listStudent.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>
 		<tr>
-		    <th data-options="field:'ck',checkbox:true"></th>
-			<th align="center" field="name" width="100" sortable="false" resizable="true" >姓名</th>					
+			<th align="center" field="name" width="70" sortable="false" resizable="true" >姓名</th>					
 			<th align="center" field="sex" width="50" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
 			<th align="center" field="birthday" width="80" sortable="false" resizable="true" >出生日期</th>
-			<th align="center" field="parentName" width="100" sortable="false" resizable="true" >家长姓名</th>	
-			<th align="center" field="parentMobileNumber" width="100" sortable="false" resizable="true" >家长手机</th>	
-			<th align="center" field="parentCreatedOn" width="150" sortable="false" resizable="true" >家长注册时间</th>	
-			<th align="center" field="createdOn" width="150" sortable="false" resizable="true" >学生注册时间</th>	
+			<th align="center" field="parentName" width="70" sortable="false" resizable="true" >家长姓名</th>	
+			<th align="center" field="parentMobileNumber" width="80" sortable="false" resizable="true" >家长手机</th>	
+			<th align="center" field="parentCreatedOn" width="130" sortable="false" resizable="true" >家长注册时间</th>	
+			<th align="center" field="createdOn" width="130" sortable="false" resizable="true" >学生注册时间</th>	
+			<th align="center" field="remark" width="250" sortable="false" resizable="true"  data-options="formatter:formatterRemark">备注</th>	
 		<th align="center" data-options="field:'id',formatter:formatterOperation,width:100" >操作</th>
 		</tr>
 	</thead>
@@ -167,7 +193,9 @@
 			  </input>
 			</div>
 
-		
+			<div class="form_items">
+				<label class="r-edit-label width100">备注:</label><textarea name="remark" cols="50" rows="5"></textarea>
+			</div>
 			
 			<div class="form_items">
 				<label class="r-edit-label width100">&nbsp;</label>

@@ -41,4 +41,6 @@ public interface ISchoolService {
 
 	EntityResults<StudentPlanInfo> listStudentPlanForAdmin(SearchVO svo);
 
+	String exportStudentNumberForAdmin(SearchVO svo);
+
 }

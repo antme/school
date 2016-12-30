@@ -22,6 +22,16 @@ public class StudentPlanInfo extends BaseEntity {
 
 	public Integer number;
 
+	public String sexCn;
+
+	public String getSexCn() {
+		return sexCn;
+	}
+
+	public void setSexCn(String sexCn) {
+		this.sexCn = sexCn;
+	}
+
 	public Date getBirthday() {
 		return birthday;
 	}

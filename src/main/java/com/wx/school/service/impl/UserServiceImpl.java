@@ -1,5 +1,6 @@
 package com.wx.school.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eweblib.bean.vo.EntityResults;
+import com.eweblib.cfg.ConfigManager;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.service.AbstractService;
 import com.eweblib.util.DataEncrypt;
+import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
+import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
@@ -43,7 +47,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		if (back) {
 			builder.and(DataBaseQueryOpertion.IS_TRUE, User.IS_ADMIN);
-		} 
+		}
 
 		if (!dao.exists(builder)) {
 			throw new ResponseException("用户名或密码错误");
@@ -54,36 +58,19 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	}
 
-	@Override
-	public void logout() {
-
-		System.out.println("logout");
-		// sys.createMsgLog(EWeblibThreadLocal.getCurrentUserId(), "登出后台系统");
-	}
-
-	public boolean isCloudAdmin() {
-
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
-		query.and(User.ID, EWeblibThreadLocal.getCurrentUserId());
-		query.limitColumns(new String[] { User.USER_NAME });
-
-		return isAdmin(EWeblibThreadLocal.getCurrentUserId())
-				&& ((User) this.dao.findOneByQuery(query, User.class)).getUserName().equalsIgnoreCase("winasdaqcloud");
-	}
-
-	public boolean isAdmin(String userId) {
+	public void validAdmin(String userId) {
 
 		if (EweblibUtil.isEmpty(userId)) {
-			return false;
+			throw new ResponseException("非法参数");
 		}
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
 		query.and(User.ID, userId);
 		query.and(DataBaseQueryOpertion.IS_TRUE, User.IS_ADMIN);
-		if (this.dao.exists(query)) {
-			return true;
+		if (!this.dao.exists(query)) {
+			throw new ResponseException("无权限操作");
 		}
-		return false;
+
 	}
 
 	public void validateRegUser(String userName) {
@@ -131,7 +118,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
-		
+
 		this.dao.insert(user);
 
 		return user;
@@ -193,7 +180,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		checkQuery.and(Student.SEX, student.getSex());
 		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
 		if (!isNew) {
-			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, student.id, student.getId());
+			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, Student.ID, student.getId());
 
 			if (EweblibUtil.isEmpty(student.getId())) {
 				throw new ResponseException("非法参数");
@@ -259,6 +246,13 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	}
 
 	public EntityResults<Student> listStudentsForAdmin(SearchVO uvo) {
+		DataBaseQueryBuilder query = getStudentSearchQuery(uvo);
+
+		return this.dao.listByQueryWithPagnation(query, Student.class);
+
+	}
+
+	private DataBaseQueryBuilder getStudentSearchQuery(SearchVO uvo) {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 
 		query.leftJoin(Student.TABLE_NAME, User.TABLE_NAME, Student.OWNER_ID, User.ID);
@@ -267,20 +261,21 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		query.limitColumns(new Student().getColumnList());
 
-		if (EweblibUtil.isValid(uvo.getName())) {
-			query.and(DataBaseQueryOpertion.LIKE, Student.NAME, uvo.getName());
+		if (uvo != null) {
+			if (EweblibUtil.isValid(uvo.getName())) {
+				query.and(DataBaseQueryOpertion.LIKE, Student.NAME, uvo.getName());
+			}
+
+			if (EweblibUtil.isValid(uvo.getParentName())) {
+				query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.NAME, uvo.getParentName());
+			}
+
+			if (EweblibUtil.isValid(uvo.getMobileNumber())) {
+				query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER,
+						uvo.getMobileNumber());
+			}
 		}
-
-		if (EweblibUtil.isValid(uvo.getParentName())) {
-			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.NAME, uvo.getParentName());
-		}
-
-		if (EweblibUtil.isValid(uvo.getMobileNumber())) {
-			query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER, uvo.getMobileNumber());
-		}
-
-		return this.dao.listByQueryWithPagnation(query, Student.class);
-
+		return query;
 	}
 
 	public void deleteStudentInfo(Student student) {
@@ -302,7 +297,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	public void updateStudentInfo(Student student) {
 
 		checkStudent(student, false);
-		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
+		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK });
 	}
 
 	public Map<String, Object> sumtUserInfo() {
@@ -320,6 +315,26 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		return map;
 
+	}
+
+	public String exportStudentInfo(SearchVO uvo) {
+		DataBaseQueryBuilder query = getStudentSearchQuery(uvo);
+		List<Student> list = this.dao.listByQuery(query, Student.class);
+		for (Student s : list) {
+			if (s.getName().equalsIgnoreCase("m")) {
+				s.setSexCn("男性");
+			} else {
+				s.setSexCn("女性");
+			}
+		}
+		String dowload_path = "学生_" + DateUtil.getDateString(new Date()) + ".xls";
+		String f = ConfigManager.getProperty("download_path") + dowload_path;
+		String[] colunmTitleHeaders = new String[] { "姓名", "性别", "出生日期", "家长姓名", "家长手机", "家长注册时间", "学生注册时间", "备注" };
+		String[] colunmHeaders = new String[] { "name", "sexCn", "birthday", "parentName", "parentMobileNumber",
+				"parentCreatedOn", "createdOn", "remark" };
+		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
+
+		return dowload_path;
 	}
 
 }
