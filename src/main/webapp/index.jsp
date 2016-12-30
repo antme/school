@@ -29,7 +29,7 @@
 </head>
 
 <%
-	if (session.getAttribute("userName") == null) {
+	if (session.getAttribute("back_login") == null) {
 		String url = request.getServerName();
 		response.sendRedirect("/login.jsp");
 	}

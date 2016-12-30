@@ -102,6 +102,7 @@ public class UserController extends AbstractController {
 		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
 			user = userService.login(user, true);
 			setLoginSessionInfo(request, response, user);
+			setSessionValue(request, User.BACKK_LOGIN, user.getUserName());
 			responseWithEntity(null, request, response);
 		} else {
 			throw new ResponseException("请输入正确验证码");

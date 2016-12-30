@@ -43,9 +43,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		if (back) {
 			builder.and(DataBaseQueryOpertion.IS_TRUE, User.IS_ADMIN);
-		} else {
-			builder.and(DataBaseQueryOpertion.IS_FALSE, User.IS_ADMIN);
-		}
+		} 
 
 		if (!dao.exists(builder)) {
 			throw new ResponseException("用户名或密码错误");

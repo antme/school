@@ -30,6 +30,8 @@ public class User extends BaseEntity {
 	public static final String STATUS = "status";
 
 	public static final String NAME = "name";
+	
+	public static final String BACKK_LOGIN = "back_login";
 
 	@Column(name = USER_NAME, unique = true)
 	public String userName;
