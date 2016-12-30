@@ -14,7 +14,7 @@ import com.wx.school.bean.user.User;
 
 public interface IUserService {
 
-	public User login(User user);
+	public User login(User user, boolean back);
 
 	public void logout();
 

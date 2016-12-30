@@ -32,7 +32,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	private IMessageService ms;
 
 	@Override
-	public User login(User user) {
+	public User login(User user, boolean back) {
 		DataBaseQueryBuilder builder = new DataBaseQueryBuilder(User.TABLE_NAME);
 		builder.and(User.PASSWORD, DataEncrypt.generatePassword(user.getPassword()));
 		String userName = user.getUserName();
@@ -40,6 +40,12 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			userName = user.getMobileNumber();
 		}
 		builder.and(User.USER_NAME, userName);
+
+		if (back) {
+			builder.and(DataBaseQueryOpertion.IS_TRUE, User.IS_ADMIN);
+		} else {
+			builder.and(DataBaseQueryOpertion.IS_FALSE, User.IS_ADMIN);
+		}
 
 		if (!dao.exists(builder)) {
 			throw new ResponseException("用户名或密码错误");
@@ -126,7 +132,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
-
+		user.setIsAdmin(false);
+		
 		this.dao.insert(user);
 
 		return user;

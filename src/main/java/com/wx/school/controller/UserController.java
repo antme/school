@@ -77,7 +77,7 @@ public class UserController extends AbstractController {
 		User user = (User) parserJsonParameters(request, false, User.class);
 		Boolean ajax_session = user.getAjax_session();
 
-		user = userService.login(user);
+		user = userService.login(user, false);
 		setLoginSessionInfo(request, response, user);
 
 		String loginKey = "";
@@ -100,7 +100,7 @@ public class UserController extends AbstractController {
 
 		String imgCode = getSessionValue(request, IMG_CODE);
 		if (imgCode != null && user.getImgCode() != null && user.getImgCode().equalsIgnoreCase(imgCode)) {
-			user = userService.login(user);
+			user = userService.login(user, true);
 			setLoginSessionInfo(request, response, user);
 			responseWithEntity(null, request, response);
 		} else {
