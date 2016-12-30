@@ -1,6 +1,7 @@
 package com.wx.school.service.message;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +10,12 @@ import org.apache.logging.log4j.Logger;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageRequest;
+import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse;
+import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse.stat;
 import com.aliyuncs.sms.model.v20160927.SingleSendSmsRequest;
 import com.aliyuncs.sms.model.v20160927.SingleSendSmsResponse;
 import com.eweblib.exception.ResponseException;
@@ -78,7 +83,6 @@ public class SmsHelp {
 			request.setParamString(EweblibUtil.toJson(map));
 			request.setRecNum(mobileNumers);
 			SingleSendSmsResponse httpResponse = client.getAcsResponse(request);
-
 			System.out.println(httpResponse.getRequestId());
 		} else {
 			loadClient();
@@ -87,14 +91,27 @@ public class SmsHelp {
 
 	}
 
-	public static void main(String[] args) {
-
-		try {
-			SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "上海市徐汇区天钥桥路30号", "18516692298");
-		} catch (ClientException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public static void main(String[] args) throws ServerException, ClientException {
+		
+		QuerySmsFailByPageRequest qs = new QuerySmsFailByPageRequest();
+		qs.setSmsType(2);
+		qs.setQueryTime("2016-12-30");
+		
+		QuerySmsFailByPageResponse response = client.getAcsResponse(qs);
+		List<stat> list = response.getdata();
+		
+		for(stat stat: list){
+			System.out.println(stat.getReceiverNum() + " " + stat.getSmsCode() + " " + stat.getResultCode());
+			
 		}
+		System.out.println(response.getdata());
+
+//		try {
+//			SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "上海市徐汇区天钥桥路30号", "18516692298");
+//		} catch (ClientException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 }

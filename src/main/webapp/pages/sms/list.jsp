@@ -49,6 +49,9 @@
 		else if(!endTime){
 			$.messager.alert('提示', '请选择报名结束时间');
 			can_submit = false;
+		}else if(startNumber < endNumber){
+			$.messager.alert('提示', '结束号段不能小于开始号段');
+			can_submit = false;
 		}
 		
 		var data = {

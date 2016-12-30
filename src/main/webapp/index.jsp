@@ -11,8 +11,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta name="keywords" content="首页" />
-<meta name="description" content="首页" />
+<meta name="keywords" content="百花取号系统" />
+<meta name="description" content="百花取号系统" />
 <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 
 <title>首页</title>
