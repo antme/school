@@ -201,6 +201,7 @@ public abstract class AbstractController {
 		if (EweblibUtil.isValid(postStr)) {
 			parametersMap.put("body", postStr);
 		}
+        logger.info("--------------Client called of path {} with  parameters {}", request.getServletPath(), parametersMap);
 
 
 		return parametersMap;
