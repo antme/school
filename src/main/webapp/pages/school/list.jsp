@@ -272,7 +272,7 @@
 			</div>
 				
 			<div class="form_items">
-				<label class="r-edit-label width100">取号日期:</label> <input required class="easyui-validatebox textbox width300" type="text" name="takeNumberDate" ></input>
+				<label class="r-edit-label width100">取号日期:</label> <input required class="easyui-datebox width300" name="takeNumberDate" ></input>
 			</div>
 
 			<div class="form_items">
