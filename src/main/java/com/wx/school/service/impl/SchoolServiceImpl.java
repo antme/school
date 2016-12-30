@@ -56,10 +56,13 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 				Date endDate = DateUtil.getDateTime(date3);
 
 				if (date.getTime() < startDate.getTime()) {
+					//未开始
 					school.setTakeStatus(0);
 				} else if (date.getTime() < endDate.getTime()) {
+					//正在取号
 					school.setTakeStatus(1);
 				} else {
+					//已结束
 					school.setTakeStatus(2);
 				}
 

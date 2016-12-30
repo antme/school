@@ -73,11 +73,11 @@
 
 	function formatterTakeStatus(val, row) {
 		if (val == "0") {
-			return "已结束";
+			return "未开始";
 		} else if (val == "1") {
 			return "进行中";
 		} else {
-			return "未开始";
+			return "已结束";
 		}
 
 	}
@@ -236,13 +236,13 @@
 	<thead>
 		<tr>
 			<th data-options="field:'ck',checkbox:true"></th>
-			<th align="center" field="name" width="100" sortable="false"
+			<th align="center" field="name" width="150" sortable="false"
 				resizable="true">校区</th>
-			<th align="center" field="takeNumberDate" width="150" sortable="false"
+			<th align="center" field="takeNumberDate" width="120" sortable="false"
 				resizable="true">取号日期</th>	
-			<th align="center" field="startTime" width="150" sortable="false"
+			<th align="center" field="startTime" width="100" sortable="false"
 				resizable="true">开始时间</th>
-			<th align="center" field="endTime" width="150" sortable="false"
+			<th align="center" field="endTime" width="100" sortable="false"
 				resizable="true">结束时间</th>
 			<th align="center" field="takeStatus" width="100" sortable="false"
 				resizable="true" data-options="formatter:formatterTakeStatus">状态</th>
