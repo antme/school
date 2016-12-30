@@ -187,12 +187,22 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		checkQuery.and(Student.NAME, student.getName());
 		checkQuery.and(Student.SEX, student.getSex());
 		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
-		if(!isNew){
+		if (!isNew) {
 			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, student.id, student.getId());
-			
-			if(EweblibUtil.isEmpty(student.getId())){
+
+			if (EweblibUtil.isEmpty(student.getId())) {
 				throw new ResponseException("非法参数");
 			}
+		}
+
+		if (isNew) {
+			DataBaseQueryBuilder checkCountQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+			checkCountQuery.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
+
+			if (this.dao.exists(checkCountQuery)) {
+				throw new ResponseException("一个家长只能创建一个学生");
+			}
+
 		}
 		if (this.dao.exists(checkQuery)) {
 			throw new ResponseException("此学生信息已经提交");
@@ -285,7 +295,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	}
 
 	public void updateStudentInfo(Student student) {
-		
+
 		checkStudent(student, false);
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY });
 	}
