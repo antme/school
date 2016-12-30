@@ -18,7 +18,7 @@
 <script type="text/javascript" src="/js/validation.js"></script>
 </head>
 <%
-    if(session.getValue("userName")!=null){
+    if(session.getValue("back_login")!=null){
     	response.sendRedirect("index.jsp");     
     }
 %>
