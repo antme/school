@@ -29,7 +29,8 @@ public class ControllerFilter extends AbstractController implements Filter {
 
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
-//	private String[] excludePatterns = { "/delivery/**", "/cloud/**", "/api/**", "/v/**", "/*.jsp", "/user/*.do" };
+	// private String[] excludePatterns = { "/delivery/**", "/cloud/**",
+	// "/api/**", "/v/**", "/*.jsp", "/user/*.do" };
 
 	private static Logger logger = LogManager.getLogger(ControllerFilter.class);
 
@@ -38,36 +39,35 @@ public class ControllerFilter extends AbstractController implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest srequest = (HttpServletRequest) request;
 		HttpServletResponse sresponse = (HttpServletResponse) response;
-
-		Cookie[] cookies = srequest.getCookies();
-		String uid = null;
-//		if (cookies != null) {
-//			for (Cookie cookie : cookies) {
-//				if (cookie.getName().equalsIgnoreCase("sch_uid")) {
-//					//uid = cookie.getValue();
-//				}
-//			}
-//		}
 		srequest.setCharacterEncoding("UTF-8");
-		srequest.getParameter("name");
-		String skey = srequest.getParameter("s_key");
 
-		if (EweblibUtil.isValid(skey)) {
-			uid = UserController.safariLoginData.get(skey);
-		}
-		Object sid = srequest.getSession().getAttribute(BaseEntity.ID);
-		if (sid != null) {
-			uid = sid.toString();
-		}
+		Object uid = srequest.getSession().getAttribute(BaseEntity.ID);
 
+		if (uid == null) {
+			Cookie[] cookies = srequest.getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equalsIgnoreCase("baiHuaId")) {
+						uid = cookie.getValue();
+						break;
+					}
+				}
+			}
+
+			// String skey = srequest.getParameter("s_key");
+
+			// if (EweblibUtil.isValid(skey)) {
+			// uid = UserController.safariLoginData.get(skey);
+			// }
+		}
+	
 		if (EweblibUtil.isValid(uid)) {
 			EWeblibThreadLocal.set(BaseEntity.ID, uid);
-
 		}
 
 		try {
 			if (!isLogin(srequest) && needLogin(srequest)) {
-				//throw new LoginException();
+				// throw new LoginException();
 			}
 			filterChain.doFilter(request, response);
 		} catch (Exception e) {
@@ -109,13 +109,13 @@ public class ControllerFilter extends AbstractController implements Filter {
 
 	private boolean needLogin(HttpServletRequest request) {
 		String path = request.getServletPath();
-//		if (excludePatterns != null) {
-//			for (String pattern : excludePatterns) {
-//				if (pathMatcher.match(pattern, path)) {
-//					return false;
-//				}
-//			}
-//		}
+		// if (excludePatterns != null) {
+		// for (String pattern : excludePatterns) {
+		// if (pathMatcher.match(pattern, path)) {
+		// return false;
+		// }
+		// }
+		// }
 		return true;
 	}
 
