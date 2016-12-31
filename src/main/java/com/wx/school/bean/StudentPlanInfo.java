@@ -24,6 +24,26 @@ public class StudentPlanInfo extends BaseEntity {
 
 	public String sexCn;
 
+	public Boolean isVip;
+
+	public String isVipStr;
+
+	public String getIsVipStr() {
+		return isVipStr;
+	}
+
+	public void setIsVipStr(String isVipStr) {
+		this.isVipStr = isVipStr;
+	}
+
+	public Boolean getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Boolean isVip) {
+		this.isVip = isVip;
+	}
+
 	public String getSexCn() {
 		return sexCn;
 	}

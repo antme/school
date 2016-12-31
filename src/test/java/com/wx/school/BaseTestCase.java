@@ -1,14 +1,15 @@
 package com.wx.school;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dao.QueryDaoImpl;
-import com.eweblib.util.DateUtil;
-import com.wx.school.bean.school.School;
-import com.wx.school.bean.school.SchoolPlan;
-import com.wx.school.bean.user.Student;
 import com.wx.school.service.ISchoolService;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.impl.SchoolServiceImpl;
@@ -37,8 +38,11 @@ public class BaseTestCase extends TestCase {
 	
 	}
 
-	public void testSubmitPersonInfo() {
-		us.exportStudentInfo(null);
+	public void testSubmitPersonInfo() throws FileNotFoundException {
+		InputStream in = new FileInputStream(new File("/Users/clp/downloads/2016年秋季名单汇总 （已去重）.xls"));
+		
+		us.importParentInfo(in);
+//		us.exportStudentInfo(null);
 //		schoolService.listStudentPlanForAdmin(null);
 	}
 	

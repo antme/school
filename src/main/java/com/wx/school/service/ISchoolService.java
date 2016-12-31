@@ -43,4 +43,6 @@ public interface ISchoolService {
 
 	String exportStudentNumberForAdmin(SearchVO svo);
 
+	int sumStudentVip(SearchVO svo);
+
 }

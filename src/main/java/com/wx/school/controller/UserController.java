@@ -3,7 +3,6 @@ package com.wx.school.controller;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,9 +12,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.eweblib.annotation.role.LoginRequired;
 import com.eweblib.annotation.role.Permission;
@@ -28,6 +31,7 @@ import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.IUserService;
+import com.wx.school.service.impl.UserServiceImpl;
 
 @Controller
 @RequestMapping("/user")
@@ -36,6 +40,7 @@ import com.wx.school.service.IUserService;
 public class UserController extends AbstractController {
 
 	public static final String IMG_CODE = "imgCode_User";
+	public static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private IUserService userService;
@@ -226,22 +231,48 @@ public class UserController extends AbstractController {
 		userService.updateStudentInfo(student);
 		responseWithEntity(null, request, response);
 	}
-	
-	
+
 	@RequestMapping("/admin/user/sum.do")
 	public void sumtUserInfo(HttpServletRequest request, HttpServletResponse response) {
 
 		responseWithMapData(userService.sumtUserInfo(), request, response);
 
 	}
-	
+
 	@RequestMapping("/admin/student/export.do")
 	public void exportStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 		SearchVO uvo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
 		String path = userService.exportStudentInfo(uvo);
-		
+
 		responseWithKeyValue("path", path, request, response);
+	}
+
+	@RequestMapping("/admin/import.do")
+	public void importParentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		MultipartFile uploadFile = multipartRequest.getFile("file");
+		String name = uploadFile.getOriginalFilename().toLowerCase().trim().replaceAll(" ", "");
+		int index = name.lastIndexOf(".");
+		if (index == -1) {
+			throw new ResponseException("请上传xls和xlsx格式的文件");
+		}
+		String fType = name.substring(index, name.length());
+		if (!fType.equals(".xls") && !fType.equals(".xlsx")) {
+			throw new ResponseException("文件格式仅支持 xls和xlsx");
+		}
+
+		try {
+			userService.importParentInfo(uploadFile.getInputStream());
+		} catch (IOException e) {
+			logger.fatal("文件导入失败", e);
+			throw new ResponseException("文件导入失败，请稍后再试");
+		}
+
+		responseWithEntity(null, request, response);
+
 	}
 
 	protected void setLoginSessionInfo(HttpServletRequest request, HttpServletResponse response, User user) {

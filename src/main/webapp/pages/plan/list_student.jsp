@@ -12,6 +12,8 @@
 				number : $("#number").val()
 			}
 		});
+		
+		sum();
 	}
 	function formatterSex(val, row){
 		if(val=="f"){
@@ -19,6 +21,14 @@
 		}else if(val == "m"){
 			return '男性';	
 		}
+	}
+	
+	function formatterVip(val, row){
+		if(val){
+			return "是";
+		}
+		
+		return "否";
 	}
 	
 
@@ -40,6 +50,23 @@
 		
 	}
 	
+	
+	function sum(){		
+		var data = {
+				name : $("#name").val(),
+				parentName : $("#parentName").val(),
+				mobileNumber : $("#mobileNumber").val(),
+				schoolId : $("#schoo_select").combobox('getValue'),
+				number : $("#number").val()
+		}
+		
+		postAjaxRequest("/sch/student/vip/sum.do", data, function(data){
+			$("#isVipCount").html(data.count);
+		});
+	}
+	$(document).ready(function() {
+		sum();
+	});
 </script>
 
 <div>
@@ -79,16 +106,25 @@
 
 <p></p>
 
+<div style="height:20px; width:100%;">
+ 	<div style="float:right; margin-right:100px;">
+	<span class="r-edit-label">会员总数: </span>
+	<label id="isVipCount" style="color:red; margin-left:5px;"></label>
+ 	</div>
+</div>
+
+
 <table id="datalist" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/sch/student/plan/list.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>
 		<tr>
 		    <th data-options="field:'ck',checkbox:true"></th>
-		    <th align="center" field="number" width="100" sortable="false" resizable="true" >号数</th>	
+		    <th align="center" field="number" width="50" sortable="false" resizable="true" >号数</th>	
 			<th align="center" field="name" width="100" sortable="false" resizable="true" >学生姓名</th>					
 			<th align="center" field="sex" width="50" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
 			<th align="center" field="birthday" width="80" sortable="false" resizable="true" >出生日期</th>
 			<th align="center" field="parentName" width="100" sortable="false" resizable="true" >家长姓名</th>	
 			<th align="center" field="mobileNumber" width="100" sortable="false" resizable="true" >家长手机</th>	
+			<th align="center" field="isVip" width="100" sortable="false" resizable="true" data-options="formatter:formatterVip" >是否会员</th>	
 			<th align="center" field="studentRegDate" width="150" sortable="false" resizable="true" >学生注册时间</th>	
 			<th align="center" field="createdOn" width="150" sortable="false" resizable="true" >取号时间</th>
 			<th align="center" field="schoolName" width="150" sortable="false" resizable="true" >校区</th>

@@ -1,5 +1,6 @@
 package com.wx.school.service.impl;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +119,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
-
+		user.setIsVip(false);
 		this.dao.insert(user);
 
 		return user;
@@ -335,6 +336,39 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
 
 		return dowload_path;
+	}
+
+	public void importParentInfo(InputStream inputStream) {
+
+		ExcelUtil excleUtil = new ExcelUtil(inputStream);
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
+		query.limitColumns(new String[] { User.ID, User.NAME, User.IS_VIP });
+
+		List<User> userList = this.dao.listByQuery(query, User.class);
+
+		for (int index = 0; index < excleUtil.getNumberOfSheets(); index++) {
+
+			List<String[]> list = excleUtil.getAllData(index);
+
+			if (list.isEmpty()) {
+				continue;
+			}
+
+			for (int i = 0; i < list.size(); i++) {// 从第2行开始读数据
+
+				String[] row = list.get(i);
+
+				String name = row[0].trim();
+				for (User user : userList) {
+					if (user.getName().equals(name)) {
+						user.setIsVip(true);
+						this.dao.updateById(user, new String[] { User.IS_VIP });
+					}
+				}
+
+			}
+		}
+
 	}
 
 }

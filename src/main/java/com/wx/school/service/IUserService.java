@@ -1,5 +1,6 @@
 package com.wx.school.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -51,10 +52,8 @@ public interface IUserService {
 	public String exportStudentInfo(SearchVO uvo);
 
 
+	public void importParentInfo(InputStream inputStream);
 
 
-
-	
-	
 
 }

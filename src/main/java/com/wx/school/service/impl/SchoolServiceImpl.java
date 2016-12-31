@@ -100,17 +100,15 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (sn.getStudentId().length() != 36) {
 			throw new ResponseException("参数异常");
 		}
-		
+
 		if (sn.getPlanId().length() != 36) {
 			throw new ResponseException("参数异常");
 		}
-		
-		
+
 		// if (!this.dao.exists(Student.ID, sn.getStudentId(),
 		// Student.TABLE_NAME)) {
 		// throw new ResponseException("此学生不存在");
 		// }
-
 
 		SchoolPlan plan = CacheServiceImpl.shcoolPlanMap.get(sn.getPlanId());
 
@@ -254,7 +252,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		plan.setName(s.getName());
 
 		this.dao.insert(plan);
-		
+
 		cs.refreshCach();
 	}
 
@@ -265,7 +263,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		this.dao.deleteByQuery(delQuery);
 
 		this.dao.deleteById(plan);
-		
+
 		cs.refreshCach();
 	}
 
@@ -308,7 +306,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.joinColumns(Student.TABLE_NAME, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY,
 				Student.CREATED_ON + " as studentRegDate" });
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
-		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER });
+		query.joinColumns(User.TABLE_NAME,
+				new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER, User.IS_VIP });
 		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER });
 
 		if (EweblibUtil.isValid(svo.getName())) {
@@ -336,7 +335,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		}
 		return query;
 	}
-	
+
 	public String exportStudentNumberForAdmin(SearchVO svo) {
 		DataBaseQueryBuilder query = getNumberQuery(svo);
 		List<StudentPlanInfo> list = this.dao.listByQuery(query, StudentPlanInfo.class);
@@ -346,14 +345,28 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			} else {
 				s.setSexCn("女性");
 			}
+
+			if (s.getIsVip()) {
+				s.setIsVipStr("是");
+			} else {
+				s.setIsVipStr("否");
+			}
 		}
 		String dowload_path = "取号_" + DateUtil.getDateString(new Date()) + ".xls";
 		String f = ConfigManager.getProperty("download_path") + dowload_path;
-		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区" };
-		String[] colunmHeaders = new String[] { "number", "name", "sexCn", "birthday", "parentName",
-				"mobileNumber", "studentRegDate", "createdOn", "schoolName" };
+		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区",
+				"是否会员" };
+		String[] colunmHeaders = new String[] { "number", "name", "sexCn", "birthday", "parentName", "mobileNumber",
+				"studentRegDate", "createdOn", "schoolName", "isVipStr" };
 		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
 
 		return dowload_path;
+	}
+
+	public int sumStudentVip(SearchVO svo) {
+		DataBaseQueryBuilder query = getNumberQuery(svo);
+		query.and(DataBaseQueryOpertion.IS_TRUE, User.TABLE_NAME + "." + User.IS_VIP);
+
+		return this.dao.count(query);
 	}
 }

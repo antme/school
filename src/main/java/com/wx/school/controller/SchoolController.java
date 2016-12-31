@@ -170,7 +170,7 @@ public class SchoolController extends AbstractController {
 	public void listStudentPlanForAdmin(HttpServletRequest request, HttpServletResponse response) {
 		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 
-		SearchVO svo = (SearchVO) parserJsonParameters(request, false, SearchVO.class);
+		SearchVO svo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
 
 		responseWithDataPagnation(schoolService.listStudentPlanForAdmin(svo), request, response);
 	}
@@ -181,11 +181,26 @@ public class SchoolController extends AbstractController {
 	public void exportStudentNumberForAdmin(HttpServletRequest request, HttpServletResponse response) {
 		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
 
-		SearchVO svo = (SearchVO) parserJsonParameters(request, false, SearchVO.class);
+		SearchVO svo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
 
 		String path = schoolService.exportStudentNumberForAdmin(svo);
 
 		responseWithKeyValue("path", path, request, response);
+
+	}
+	
+	
+	
+	@RequestMapping("/student/vip/sum.do")
+	@LoginRequired(required = false)
+	public void sumStudentVip(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SearchVO svo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
+
+		int count =  schoolService.sumStudentVip(svo);
+
+		responseWithKeyValue("count", count, request, response);
 
 	}
 	

@@ -9,6 +9,8 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = User.TABLE_NAME)
 public class User extends BaseEntity {
 
+	public static final String IS_VIP = "isVip";
+
 	public static final String USER_TYPE = "userType";
 
 	public static final String USER_TYPE_PARENT = "parent";
@@ -30,7 +32,7 @@ public class User extends BaseEntity {
 	public static final String STATUS = "status";
 
 	public static final String NAME = "name";
-	
+
 	public static final String BACKK_LOGIN = "back_login";
 
 	@Column(name = USER_NAME, unique = true)
@@ -61,6 +63,10 @@ public class User extends BaseEntity {
 	@Column(name = USER_TYPE)
 	public String userType;
 
+	@Column(name = IS_VIP)
+	@BooleanColumn
+	public Boolean isVip;
+
 	@BooleanColumn
 	public Boolean ajax_session;
 
@@ -69,6 +75,14 @@ public class User extends BaseEntity {
 	public String validCode;
 
 	public String imgCode;
+
+	public Boolean getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Boolean isVip) {
+		this.isVip = isVip;
+	}
 
 	public Boolean getAjax_session() {
 		return ajax_session;
