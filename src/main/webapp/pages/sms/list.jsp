@@ -4,7 +4,7 @@
 	
 
 	function formatterOperation(val, row) {
-		var a = '<a style="margin-left:5px" onclick="resendSms(\''	+ row.id + '\');" href="#"> 重发 </a>';
+		var a = '<a style="margin-left:5px" onclick="resendSms(\''	+ row.id + '\');" href="#"> 下载失败号码 </a>';
 		return a;
 	}
 
@@ -126,6 +126,8 @@
 
 
 <p></p>
+
+<label>由于短信发送有延迟，建议在发送6个小时候才下载失败号码</label>
 <table id="datalist" class="easyui-datagrid"
 	data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true"
 	url="/sms/school/book/list.do" iconCls="icon-save" sortOrder="asc"
@@ -143,8 +145,7 @@
 				resizable="true">成功数量</th>
 			<th align="center" field="totalSend" width="150" sortable="false"
 				resizable="true">发送总数</th>
-			<th align="center" field="failedMobileNumbers" width="100" sortable="false"
-				resizable="true">失败号码</th>
+		
 				
 			<th align="center" field="createdOn" width="150"
 				sortable="false" resizable="true" data-options="">发送时间</th>
