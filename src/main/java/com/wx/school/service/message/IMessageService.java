@@ -1,6 +1,5 @@
 package com.wx.school.service.message;
 
-import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.wx.school.bean.user.SMS;
 import com.wx.school.bean.user.SmsLog;
@@ -15,6 +14,8 @@ public interface IMessageService {
 	void sendSchoolNoticeSms(SmsLog smsLog);
 
 	EntityResults<SmsLog> listSentSchoolNoticeSms(SmsLog smsLog);
+
+	void checkNoticeSmsSendStatus();
 	
 	
 }

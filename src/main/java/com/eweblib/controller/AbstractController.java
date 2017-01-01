@@ -20,7 +20,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletInputStream;
@@ -42,7 +41,6 @@ import com.eweblib.exception.ResponseException;
 import com.eweblib.util.DataEncrypt;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
-import com.wx.school.controller.UserController;
 
 public abstract class AbstractController {
 	public static final String MSG = "msg";
@@ -157,7 +155,7 @@ public abstract class AbstractController {
 			}
 		}
 		if (EweblibUtil.isEmpty(parametersMap) && !emptyParameter) {
-			logger.error(String.format("Parameters required for path [%s]", request.getPathInfo()));
+			logger.fatal(String.format("Parameters required for path [%s]", request.getPathInfo()));
 			throw new ResponseException(WebConstants.PARAMETER_REQUIRED);
 		}
 

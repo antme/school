@@ -14,12 +14,46 @@
 			</Policies>
 		</RollingFile>
 
+		<RollingFile name="Fatal" fileName="/mnt/logs/fatal.log"
+			filePattern="/mnt/logs/fatal.%d{yyyy-MM-dd}.log" bufferedIO="true">
+
+			<PatternLayout>
+				<Pattern>%d %logger{36} [%-5level]  %msg%n</Pattern>
+			</PatternLayout>
+			<Filters>
+				<ThresholdFilter level="fatal" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		
+		<RollingFile name="Info" fileName="/mnt/logs/info.log"
+			filePattern="/mnt/logs/info.%d{yyyy-MM-dd}.log" bufferedIO="true">
+
+			<PatternLayout>
+				<Pattern>%d %logger{36} [%-5level]  %msg%n</Pattern>
+			</PatternLayout>
+			<Filters>
+				<ThresholdFilter level="fatal" onMatch="DENY"
+					onMismatch="NEUTRAL" />
+				<ThresholdFilter level="error" onMatch="DENY"
+					onMismatch="NEUTRAL" />
+				<ThresholdFilter level="info" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
 
 
 
 		<Async name="Async">
 			<AppenderRef ref="Debug" level="trace" />
-
+			<AppenderRef ref="Fatal" level="fatal" />
+			<AppenderRef ref="Info" level="info" />
 		</Async>
 	</Appenders>
 	<Loggers>

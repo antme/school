@@ -7,19 +7,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.wx.school.service.ICacheService;
+import com.wx.school.service.message.IMessageService;
 
 @Service
-public class CacheSchedule {
-	private static Logger log = LogManager.getLogger(CacheSchedule.class);
+public class SMSSchedule {
+	private static Logger log = LogManager.getLogger(SMSSchedule.class);
 
 	@Autowired
-	private ICacheService cs;
+	private IMessageService smsService;
 
-	@Scheduled(cron = "0 0/5 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	@Async
 	public void run() {
-		cs.refreshCach();
-		log.info("CacheSchedule called");
+		smsService.checkNoticeSmsSendStatus();
+		log.info("SMSSchedule called");
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse.stat;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
@@ -45,11 +46,10 @@ public class MessageServiceImpl implements IMessageService {
 		c1.add(Calendar.MINUTE, -1);
 		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SMS.CREATED_ON, c1.getTime());
 		query.and(SMS.MOBILE_NUMBER, sms.getMobileNumber());
-		if(this.dao.exists(query)){
+		if (this.dao.exists(query)) {
 			throw new ResponseException("发送验证码失败，请稍后再试");
 		}
-		
-		
+
 		DataBaseQueryBuilder delQeury = new DataBaseQueryBuilder(SMS.TABLE_NAME);
 		delQeury.and(SMS.MOBILE_NUMBER, sms.getMobileNumber());
 		delQeury.and(SMS.SMS_TYPE, sms.getSmsType());
@@ -89,7 +89,7 @@ public class MessageServiceImpl implements IMessageService {
 		query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
 
 		List<StudentNumber> slist = this.dao.listByQuery(query, StudentNumber.class);
-		
+
 		if (slist.isEmpty()) {
 			throw new ResponseException("此校区无取号家长需要通知");
 		}
@@ -107,19 +107,19 @@ public class MessageServiceImpl implements IMessageService {
 		}
 
 		smsLog.setTotalSend(mobileSet.size());
-		smsLog.setFailedCount(0);
-		smsLog.setSuccessCount(mobileSet.size());
 
 		smsLog.setMobileNumbers(EweblibUtil.toJson(mobileSet).replace("[", "").replace("]", "").replaceAll("\"", ""));
 
 		School school = this.dao.findById(smsLog.getSchoolId(), School.TABLE_NAME, School.class);
-		try {
-			SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()), smsLog.getStartTime(),
-					smsLog.getEndTime(), school.getName(), smsLog.getPlace(), smsLog.getMobileNumbers());
-		} catch (ClientException e) {
-			logger.fatal("send msg failed", e);
-			throw new ResponseException("发送短信失败，请稍后再试");
-		}
+
+		Set<String> failedMobiles = SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()),
+				smsLog.getStartTime(), smsLog.getEndTime(), school.getName(), smsLog.getPlace(),
+				smsLog.getMobileNumbers());
+		smsLog.setSuccessCount(smsLog.getTotalSend() - failedMobiles.size());
+		smsLog.setFailedCount(failedMobiles.size());
+		smsLog.setFailedMobileNumbers(
+				EweblibUtil.toJson(failedMobiles).replace("[", "").replace("]", "").replaceAll("\"", ""));
+
 		this.dao.insert(smsLog);
 		for (StudentNumber sn : slist) {
 			sn.setIsSmsSent(true);
@@ -135,5 +135,32 @@ public class MessageServiceImpl implements IMessageService {
 		query.limitColumns(new SmsLog().getColumnList());
 
 		return this.dao.listByQueryWithPagnation(query, SmsLog.class);
+	}
+
+	public void checkNoticeSmsSendStatus() {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.HOUR_OF_DAY, -6);
+		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.CREATED_ON, c.getTime());
+
+		List<SmsLog> logList = this.dao.listByQuery(query, SmsLog.class);
+		for (SmsLog log : logList) {
+			List<stat> statList = SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 1);
+			statList.addAll(SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 2));
+			for (stat stat : statList) {
+				if (stat.getSmsCode().equals("SMS_36350142")
+						&& log.getMobileNumbers().indexOf(stat.getReceiverNum()) != -1)
+
+					if (log.getFailedMobileNumbers().indexOf(stat.getReceiverNum()) != -1) {
+						log.setFailedCount(log.getFailedCount() + 1);
+						log.setSuccessCount(log.getSuccessCount() + 1);
+						log.setFailedMobileNumbers(log.getFailedMobileNumbers() + "," + stat.getReceiverNum());
+						this.dao.updateById(log, new String[] { SmsLog.FAILED_MOBILE_NUMBERS, SmsLog.SUCCESS_COUNT,
+								SmsLog.FAILED_COUNT });
+					}
+
+			}
+		}
+
 	}
 }

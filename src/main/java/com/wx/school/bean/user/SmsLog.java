@@ -10,6 +10,10 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = SmsLog.TABLE_NAME)
 public class SmsLog extends BaseEntity {
 
+	public static final String FAILED_COUNT = "failedCount";
+
+	public static final String SUCCESS_COUNT = "successCount";
+
 	public static final String PLACE = "place";
 
 	public static final String END_TIME = "endTime";
@@ -49,10 +53,10 @@ public class SmsLog extends BaseEntity {
 	@Column(name = TOTAL_SEND)
 	public Integer totalSend;
 
-	@Column(name = "successCount")
+	@Column(name = SUCCESS_COUNT)
 	public Integer successCount;
 
-	@Column(name = "failedCount")
+	@Column(name = FAILED_COUNT)
 	public Integer failedCount;
 
 	@Column(name = FAILED_MOBILE_NUMBERS)
