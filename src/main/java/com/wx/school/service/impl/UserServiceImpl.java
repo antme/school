@@ -50,13 +50,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			builder.and(DataBaseQueryOpertion.IS_TRUE, User.IS_ADMIN);
 		}
 
-		if (!dao.exists(builder)) {
+		builder.limitColumns(new String[] { User.ID, User.USER_NAME, User.STATUS });
+		User old = (User) dao.findOneByQuery(builder, User.class);
+
+		if (old == null) {
 			throw new ResponseException("用户名或密码错误");
 		}
 
-		builder.limitColumns(new String[] { User.ID, User.USER_NAME, User.STATUS });
-		return (User) dao.findOneByQuery(builder, User.class);
-
+		return old;
 	}
 
 	public void validAdmin(String userId) {
