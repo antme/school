@@ -13,6 +13,7 @@ public class SearchVO extends User {
 
 	@IntegerColumn
 	public Integer number;
+	
 
 	public Integer getNumber() {
 		return number;

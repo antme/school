@@ -2,6 +2,7 @@ package com.wx.school.service;
 
 import java.util.List;
 
+import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.StudentPlanInfo;
@@ -44,5 +45,9 @@ public interface ISchoolService {
 	String exportStudentNumberForAdmin(SearchVO svo);
 
 	int sumStudentVip(SearchVO svo);
+
+	StudentNumber loadStudentPlanRemark(StudentNumber number);
+
+	void updateStudentPlanRemark(StudentNumber number);
 
 }

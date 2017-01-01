@@ -9,6 +9,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				remark : $("#remark").val(),
 				number : $("#number").val()
 			}
 		});
@@ -38,6 +39,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				remark : $("#remark").val(),
 				number : $("#number").val()
 		}
 		
@@ -57,6 +59,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				remark : $("#remark").val(),
 				number : $("#number").val()
 		}
 		
@@ -67,6 +70,58 @@
 	$(document).ready(function() {
 		sum();
 	});
+	
+	function formatterRemark(val, row){
+		var r = "";
+		if(val){
+			r =  '<div style="height: 40px;  overflow: auto;  padding: 10px; ">' + val + "<div>";
+		}
+		
+		return r;
+	}
+	
+
+	
+
+	function openRemarkEditWindow(id){
+		if(id){
+			if(id!="null"){
+				postAjaxRequest("/sch/admin/student/plan/remark.do", {id:id}, function(data){
+					if(!data.data.remark){
+						data.data.remark = "";
+					}
+					$("#edit_form").form('load',data.data);
+					$("#editwindow").window('open');
+				});
+				
+			}
+			
+		}
+
+	}
+
+	function formatterOperation(val, row){
+		
+		return '<a style="margin-left:5px" onclick="openRemarkEditWindow(\'' + row.id + '\')" href="#"> 修改  </a>';
+		
+	}
+	
+	function submitRemarkInfo(){
+	
+		 $("#action").val("submit");
+		 $('#edit_form').form('submit');
+	 	
+	}
+	
+	$(document).ready(function() {
+		initFormSubmit("edit_form", "/sch/admin/student/plan/remark/update.do", "修改学生信息", function(){
+			$.messager.alert('提示', '备注成功');
+			$("#editwindow").window('close');
+			$("#datalist").datagrid('reload');
+		});
+	});
+	
+	
 </script>
 
 <div>
@@ -96,9 +151,12 @@
  	<input class="height24" type="text" name="mobileNumber" id="mobileNumber" /> 
  	
 
- 	
+ 	<br><br>
  	<span class="r-edit-label">号码:</span>
- 	<input class="height24" type="number" name="number" id="number" style="width:50px;" /> 
+ 	<input class="height24" type="number" name="number" id="number" style="width:150px;" /> 
+ 	
+ 	<span class="r-edit-label">备注:</span>
+ 	<input class="height24" type="text" name="remark" id="remark" /> 
  	
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
 	<button class="search_btn_noWidth" onclick="exportData();">导出</button>
@@ -117,7 +175,6 @@
 <table id="datalist" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/sch/student/plan/list.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>
 		<tr>
-		    <th data-options="field:'ck',checkbox:true"></th>
 		    <th align="center" field="number" width="50" sortable="false" resizable="true" >号数</th>	
 			<th align="center" field="name" width="100" sortable="false" resizable="true" >学生姓名</th>					
 			<th align="center" field="sex" width="50" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
@@ -128,7 +185,37 @@
 			<th align="center" field="studentRegDate" width="150" sortable="false" resizable="true" >学生注册时间</th>	
 			<th align="center" field="createdOn" width="150" sortable="false" resizable="true" >取号时间</th>
 			<th align="center" field="schoolName" width="150" sortable="false" resizable="true" >校区</th>
+			<th align="center" field="remark" width="250" sortable="false" resizable="true"  data-options="formatter:formatterRemark">备注</th>
+			<th align="center" data-options="field:'id',formatter:formatterOperation,width:100" >操作</th>
+			
 		</tr>
 	</thead>
 </table>
+
+
+
+<div id="editwindow" class="easyui-window" title="修改备注" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:600px;height:300px;padding:10px; top:100px;">
+       
+<div style="padding: 10px 60px 20px 60px">
+	<form id="edit_form" method="post" novalidate>
+		<div class="form-container">
+			<input class="" type="hidden" name="id" />
+			<input class="" type="hidden" name="action" id="action" />
+		
+		
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">备注:</label><textarea name="remark" cols="50" rows="5"></textarea>
+			</div>
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">&nbsp;</label>
+				<input class="sub_btn" type="button" value="提交"  onclick="submitRemarkInfo()" style="margin-left:10px;">
+			</div>
+		</div>
+	</form>
+	
+</div>
+       
+</div>
 

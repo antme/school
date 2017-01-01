@@ -28,6 +28,16 @@ public class StudentPlanInfo extends BaseEntity {
 
 	public String isVipStr;
 
+	public String remark;
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	public String getIsVipStr() {
 		return isVipStr;
 	}

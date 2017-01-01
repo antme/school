@@ -204,6 +204,26 @@ public class SchoolController extends AbstractController {
 
 	}
 	
+	@RequestMapping("/admin/student/plan/remark.do")
+	@LoginRequired(required = false)
+	public void loadStudentPlanRemark(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+		StudentNumber number = (StudentNumber) parserJsonParameters(request, false, StudentNumber.class);
+
+		responseWithEntity(schoolService.loadStudentPlanRemark(number), request, response);
+
+	}
+	
+	@RequestMapping("/admin/student/plan/remark/update.do")
+	@LoginRequired(required = false)
+	public void updateStudentPlanRemark(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+		StudentNumber number = (StudentNumber) parserJsonParameters(request, false, StudentNumber.class);
+		schoolService.updateStudentPlanRemark(number);
+		responseWithEntity(null, request, response);
+
+	}
+	
 	
 	
 

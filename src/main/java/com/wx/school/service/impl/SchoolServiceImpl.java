@@ -44,7 +44,6 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public static Map<String, Integer> lastCountMap = new HashMap<String, Integer>();
 
-	
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
 		List<SchoolPlan> list = CacheServiceImpl.list;
@@ -331,7 +330,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
 		query.joinColumns(User.TABLE_NAME,
 				new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER, User.IS_VIP });
-		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER });
+		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER, StudentNumber.ID,
+				StudentNumber.REMARK });
 
 		if (EweblibUtil.isValid(svo.getName())) {
 			query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.NAME, svo.getName());
@@ -356,6 +356,11 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (EweblibUtil.isValid(svo.getNumber())) {
 			query.and(StudentNumber.TABLE_NAME + "." + StudentNumber.NUMBER, svo.getNumber());
 		}
+
+		if (EweblibUtil.isValid(svo.getRemark())) {
+			query.and(DataBaseQueryOpertion.LIKE, StudentNumber.TABLE_NAME + "." + StudentNumber.REMARK,
+					svo.getRemark());
+		}
 		return query;
 	}
 
@@ -378,9 +383,9 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		String dowload_path = "取号_" + DateUtil.getDateString(new Date()) + ".xls";
 		String f = ConfigManager.getProperty("download_path") + dowload_path;
 		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区",
-				"是否会员" };
+				"是否会员", "备注" };
 		String[] colunmHeaders = new String[] { "number", "name", "sexCn", "birthday", "parentName", "mobileNumber",
-				"studentRegDate", "createdOn", "schoolName", "isVipStr" };
+				"studentRegDate", "createdOn", "schoolName", "isVipStr", "remark" };
 		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
 
 		return dowload_path;
@@ -391,5 +396,17 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.and(DataBaseQueryOpertion.IS_TRUE, User.TABLE_NAME + "." + User.IS_VIP);
 
 		return this.dao.count(query);
+	}
+
+	public StudentNumber loadStudentPlanRemark(StudentNumber number) {
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+		query.and(StudentNumber.ID, number.getId());
+		query.limitColumns(new String[] { StudentNumber.ID, StudentNumber.REMARK });
+		return this.dao.findOneByQuery(query, StudentNumber.class);
+
+	}
+
+	public void updateStudentPlanRemark(StudentNumber number) {
+		this.dao.updateById(number, new String[] { StudentNumber.REMARK });
 	}
 }

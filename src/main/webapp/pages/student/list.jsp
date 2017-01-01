@@ -8,6 +8,7 @@
 		    queryParams: {
 				name : $("#name").val(),
 				parentName : $("#parentName").val(),
+				remark : $("#remark").val(),
 				mobileNumber : $("#mobileNumber").val()
 			}
 		});
@@ -19,6 +20,7 @@
 		var data = {
 				name : $("#name").val(),
 				parentName : $("#parentName").val(),
+				remark : $("#remark").val(),
 				mobileNumber : $("#mobileNumber").val()
 		}
 		
@@ -133,6 +135,9 @@
  	
  	<span class="r-edit-label">家长手机号:</span>
  	<input class="height24" type="text" name="mobileNumber" id="mobileNumber" /> 
+ 	
+ 	<span class="r-edit-label">备注:</span>
+ 	<input class="height24" type="text" name="remark" id="remark" /> 
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
 	<button class="search_btn_noWidth" onclick="exportData();">导出</button>
 </div>

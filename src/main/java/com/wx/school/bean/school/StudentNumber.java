@@ -7,6 +7,8 @@ import com.eweblib.bean.BaseEntity;
 
 @Table(name = StudentNumber.TABLE_NAME)
 public class StudentNumber extends BaseEntity {
+	public static final String REMARK = "remark";
+
 	public static final String IS_SMS_SENT = "isSmsSent";
 
 	public static final String SCHOOL_ID = "schoolId";
@@ -38,6 +40,18 @@ public class StudentNumber extends BaseEntity {
 
 	@Column(name = IS_SMS_SENT)
 	public Boolean isSmsSent;
+	
+	@Column(name = REMARK)
+	public String remark;
+
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public Boolean getIsSmsSent() {
 		return isSmsSent;

@@ -276,6 +276,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER,
 						uvo.getMobileNumber());
 			}
+			
+			if (EweblibUtil.isValid(uvo.getRemark())) {
+				query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.REMARK, uvo.getRemark());
+			}
 		}
 		return query;
 	}
