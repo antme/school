@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,11 @@ import com.wx.school.service.ISchoolService;
 public class SchoolServiceImpl extends AbstractService implements ISchoolService {
 	@Autowired
 	private ICacheService cs;
+	public static Logger logger = LogManager.getLogger(SchoolServiceImpl.class);
+
+	public static Set<String> processMap = new HashSet<String>();
+
+	public static Map<String, Integer> lastCountMap = new HashMap<String, Integer>();
 
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
@@ -105,6 +112,11 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			throw new ResponseException("参数异常");
 		}
 
+		if (processMap.contains(sn.getStudentId())) {
+			throw new ResponseException("你的取号已经再处理中，请稍后在我的取号信息里查询结果");
+		}
+
+		processMap.add(sn.getStudentId());
 		// if (!this.dao.exists(Student.ID, sn.getStudentId(),
 		// Student.TABLE_NAME)) {
 		// throw new ResponseException("此学生不存在");
@@ -120,33 +132,51 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	}
 
-	private synchronized StudentNumber bookPlan(StudentNumber sn, SchoolPlan plan) {
+	private StudentNumber bookPlan(StudentNumber sn, SchoolPlan plan) {
 
 		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
 			throw new ResponseException("此学生已经选择校区");
 		}
-
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
-		query.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
-		query.orderBy(StudentNumber.NUMBER, false);
-		query.limitColumns(new String[] { StudentNumber.NUMBER });
-		StudentNumber last = this.dao.findOneByQuery(query, StudentNumber.class);
-
-		int count = 1;
-		if (last != null) {
-			count = last.getNumber() + 1;
-		}
-
-		sn.setSchoolId(plan.getSchoolId());
-
+		setBookNumber(sn, plan);
 		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
-		sn.setNumber(count);
 		sn.setIsSmsSent(false);
 		this.dao.insert(sn);
 
+		System.out.println(new Date().getTime());
+		logger.info(sn.toString());
 		StudentNumber tmp = new StudentNumber();
 		tmp.setNumber(sn.getNumber());
+
+		processMap.remove(sn.getStudentId());
 		return tmp;
+	}
+
+	private synchronized void setBookNumber(StudentNumber sn, SchoolPlan plan) {
+		String schoolId = plan.getSchoolId();
+
+		int count = 1;
+
+		if (lastCountMap.get(schoolId) == null) {
+
+			DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+			query.and(StudentNumber.SCHOOL_ID, schoolId);
+			query.orderBy(StudentNumber.NUMBER, false);
+			query.limitColumns(new String[] { StudentNumber.NUMBER });
+			StudentNumber last = this.dao.findOneByQuery(query, StudentNumber.class);
+
+			if (last != null) {
+				count = last.getNumber() + 1;
+			}
+
+		} else {
+			count = lastCountMap.get(schoolId);
+			count = count + 1;
+		}
+
+		lastCountMap.put(schoolId, count);
+		sn.setNumber(count);
+
+		sn.setSchoolId(schoolId);
 	}
 
 	@Override
