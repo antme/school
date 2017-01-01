@@ -16,16 +16,15 @@
 <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 
 <title>首页</title>
-<link rel="stylesheet" type="text/css" href="/css/easyui.css" />
-<link rel="stylesheet" type="text/css" href="/css/icon.css">
-<link rel="stylesheet" type="text/css" href="/css/public.css">
+		<link rel="stylesheet" type="text/css" href="/css/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="/css/icon.css">
+		<link rel="stylesheet" type="text/css" href="/css/public.css">
 
 		<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
 		<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="/js/eweblib.js"></script>
 		<script type="text/javascript" src="/js/validation.js"></script>
 		<script type="text/javascript" src="/js/easyui-lang-zh_CN.js"></script>
-		<script type="text/javascript" src="/js/highcharts.js"></script>
 </head>
 
 <%
