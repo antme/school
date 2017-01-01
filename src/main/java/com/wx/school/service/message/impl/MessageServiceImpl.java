@@ -1,5 +1,6 @@
 package com.wx.school.service.message.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -10,22 +11,22 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse.stat;
 import com.eweblib.bean.vo.EntityResults;
+import com.eweblib.cfg.ConfigManager;
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dbhelper.DataBaseQueryBuilder;
 import com.eweblib.dbhelper.DataBaseQueryOpertion;
 import com.eweblib.exception.ResponseException;
 import com.eweblib.util.DateUtil;
 import com.eweblib.util.EweblibUtil;
+import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.SMS;
 import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.ISchoolService;
-import com.wx.school.service.impl.UserServiceImpl;
 import com.wx.school.service.message.IMessageService;
 import com.wx.school.service.message.SmsHelp;
 
@@ -162,5 +163,42 @@ public class MessageServiceImpl implements IMessageService {
 			}
 		}
 
+	}
+
+	public String exportFailedNotice(SmsLog smsLog) {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+		query.leftJoin(SmsLog.TABLE_NAME, School.TABLE_NAME, SmsLog.SCHOOL_ID, School.ID);
+		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
+		query.limitColumns(new SmsLog().getColumnList());
+		query.and(SmsLog.ID, smsLog.getId());
+
+		SmsLog log = this.dao.findOneByQuery(query, SmsLog.class);
+
+		String dowload_path = "短信通知_" + log.getSchoolName() + "_" + log.getStartNumber() + "_" + log.getEndNumber()
+				+ ".xls";
+		String f = ConfigManager.getProperty("download_path") + dowload_path;
+		String[] colunmTitleHeaders = new String[] { "校区", "号数", "家长姓名", "家长手机", "报名日期", "报名开始时间", "报名结束时间", "报名地址" };
+		String[] colunmHeaders = new String[] { "schoolName", "number", "parentName", "mobileNumbers", "signDate",
+				"startTime", "endTime", "place" };
+
+		List<SmsLog> logList = new ArrayList<SmsLog>();
+		if (log.getFailedMobileNumbers() != null) {
+			String[] mobiles = log.getFailedMobileNumbers().split(",");
+			for (String mobile : mobiles) {
+				SmsLog tmp = (SmsLog) EweblibUtil.toEntity(log.toString(), SmsLog.class);
+				tmp.setMobileNumbers(mobile);
+				User user = this.dao.findByKeyValue(User.MOBILE_NUMBER, mobile, User.TABLE_NAME, User.class);
+				tmp.setParentName(user.getName());
+
+				StudentNumber sn = this.dao.findByKeyValue(StudentNumber.OWER_ID, user.getId(),
+						StudentNumber.TABLE_NAME, StudentNumber.class);
+				tmp.setNumber(sn.getNumber());
+				logList.add(tmp);
+			}
+		}
+		ExcelUtil.createExcelListFileByEntity(logList, colunmTitleHeaders, colunmHeaders, f);
+
+		return dowload_path;
 	}
 }

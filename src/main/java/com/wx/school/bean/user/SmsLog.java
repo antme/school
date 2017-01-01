@@ -77,6 +77,26 @@ public class SmsLog extends BaseEntity {
 	@Column(name = PLACE)
 	public String place;
 
+	public String parentName;
+
+	public Integer number;
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
 	public Integer getSuccessCount() {
 		return successCount;
 	}

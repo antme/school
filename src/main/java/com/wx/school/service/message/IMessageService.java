@@ -16,6 +16,8 @@ public interface IMessageService {
 	EntityResults<SmsLog> listSentSchoolNoticeSms(SmsLog smsLog);
 
 	void checkNoticeSmsSendStatus();
+
+	String exportFailedNotice(SmsLog smsLog);
 	
 	
 }

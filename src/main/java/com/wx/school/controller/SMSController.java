@@ -88,6 +88,19 @@ public class SMSController extends AbstractController {
 		responseWithDataPagnation(ms.listSentSchoolNoticeSms(smsLog), request, response);
 
 	}
+	
+	
+
+	@RequestMapping("/school/book/failed/export.do")
+	@LoginRequired(required = false)
+	public void exportFailedNotice(HttpServletRequest request, HttpServletResponse response) {
+		SmsLog smsLog = (SmsLog) parserJsonParameters(request, false, SmsLog.class);
+		String path =ms.exportFailedNotice(smsLog);
+
+		responseWithKeyValue("path", path, request, response);
+
+	}
+
 
 	private void sendSms(SMS sms, String word, int smsType) {
 		sms.setValidCode(word);

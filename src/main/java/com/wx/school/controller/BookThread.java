@@ -20,13 +20,11 @@ public class BookThread extends Thread {
 			sn.setSchoolId(UUID.randomUUID().toString());
 			sn.setStudentId(UUID.randomUUID().toString());
 			int generateRandom = EweblibUtil.generateRandom(1, 10);
-			if (generateRandom > 7) {
-				sn.setPlanId("373db98e-b500-4b6f-830f-2db5af2a6b64");
-			} else if (generateRandom > 4) {
-				sn.setPlanId("ac484752-9751-4bf0-be40-7a8a9f74f137");
-			} else {
-				sn.setPlanId("ff929aa2-a5aa-402e-ab37-b2980b820a05");
-			}
+			if (generateRandom > 5) {
+				sn.setPlanId("68a97dfc-c838-4d8d-8e27-84f5b5b1d8e6");
+			} else if (generateRandom > 0) {
+				sn.setPlanId("c4b503d7-c42b-4658-b0c8-684ee1ff705d");
+			} 
 			scs.bookSchool(sn);
 		}
 	}

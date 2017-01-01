@@ -41,7 +41,7 @@ public class BaseTestCase extends TestCase {
 
 	public void testSubmitPersonInfo() throws FileNotFoundException {
 
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 30; i++) {
 			new BookThread(schoolService).start();
 		}
 		while (true) {
