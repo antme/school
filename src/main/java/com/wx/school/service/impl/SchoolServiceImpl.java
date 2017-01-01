@@ -44,16 +44,11 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public static Map<String, Integer> lastCountMap = new HashMap<String, Integer>();
 
+	
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
-
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
-		query.limitColumns(new String[] { SchoolPlan.ID, SchoolPlan.NAME, SchoolPlan.ONLY_FOR_VIP,
-				SchoolPlan.TAKE_NUMBER_DATE, SchoolPlan.START_TIME, SchoolPlan.END_TIME });
-		query.and(DataBaseQueryOpertion.IS_TRUE, SchoolPlan.IS_DISPLAY_FOR_WX);
-		List<SchoolPlan> list = this.dao.listByQuery(query, SchoolPlan.class);
+		List<SchoolPlan> list = CacheServiceImpl.list;
 		updateStatus(list);
-
 		return list;
 	}
 
@@ -282,7 +277,6 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		plan.setName(s.getName());
 
 		this.dao.insert(plan);
-
 		cs.refreshCach();
 	}
 
@@ -293,7 +287,6 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		this.dao.deleteByQuery(delQuery);
 
 		this.dao.deleteById(plan);
-
 		cs.refreshCach();
 	}
 
