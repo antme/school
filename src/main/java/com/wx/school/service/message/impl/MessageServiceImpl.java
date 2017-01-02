@@ -212,6 +212,7 @@ public class MessageServiceImpl implements IMessageService {
 		String msg = "";
 		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
 		logQuery.and(SmsLog.SCHOOL_ID, info.getSchool().getId());
+		logQuery.orderBy(SmsLog.CREATED_ON, true);
 		List<SmsLog> logList = this.dao.listByQuery(logQuery, SmsLog.class);
 		SmsLog result = null;
 		for (SmsLog log : logList) {
