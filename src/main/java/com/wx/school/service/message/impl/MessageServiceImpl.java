@@ -90,6 +90,10 @@ public class MessageServiceImpl implements IMessageService {
 		query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
 
 		List<StudentNumber> slist = this.dao.listByQuery(query, StudentNumber.class);
+		if(smsLog.getPlace().length() > 15){
+			throw new ResponseException("地址长度超过15个字符限制");
+
+		}
 
 		if (slist.isEmpty()) {
 			throw new ResponseException("此校区无取号家长需要通知");
