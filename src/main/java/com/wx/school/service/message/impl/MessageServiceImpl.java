@@ -216,7 +216,7 @@ public class MessageServiceImpl implements IMessageService {
 		List<SmsLog> logList = this.dao.listByQuery(logQuery, SmsLog.class);
 		SmsLog result = null;
 		for (SmsLog log : logList) {
-			if (info.getNumber() <= log.getEndNumber() && info.getNumber() >= log.getEndNumber()) {
+			if (info.getNumber() <= log.getEndNumber() && info.getNumber() >= log.getStartNumber()) {
 				result = log;
 				break;
 			}
