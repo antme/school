@@ -63,6 +63,8 @@ public class ControllerFilter extends AbstractController implements Filter {
 	
 		if (EweblibUtil.isValid(uid)) {
 			EWeblibThreadLocal.set(BaseEntity.ID, uid);
+			HttpServletRequest r = (HttpServletRequest)request;
+			r.getSession().setAttribute(BaseEntity.ID, uid);
 		}
 
 		try {
