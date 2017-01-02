@@ -33,6 +33,7 @@ import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.ICacheService;
 import com.wx.school.service.ISchoolService;
+import com.wx.school.service.message.IMessageService;
 
 @Service(value = "school")
 public class SchoolServiceImpl extends AbstractService implements ISchoolService {
@@ -44,6 +45,10 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public static Map<String, Integer> lastCountMap = new HashMap<String, Integer>();
 
+	@Autowired
+	private IMessageService ms;
+	
+	
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
 		List<SchoolPlan> list = CacheServiceImpl.list;
@@ -208,6 +213,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 			info.setSchool(loadSchool(planMap.get(sn.getPlanId())));
 			info.setStudent(loadStudentInfo(sn.getStudentId()));
+			info.setBaomingMsg(ms.loadNoticeMsg(info));
 			results.add(info);
 
 		}
@@ -219,7 +225,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(School.TABLE_NAME);
 		query.and(School.ID, id);
-		query.limitColumns(new String[] { School.NAME });
+		query.limitColumns(new String[] { School.NAME, School.ID });
 
 		return this.dao.findOneByQuery(query, School.class);
 	}

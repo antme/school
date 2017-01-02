@@ -1,6 +1,7 @@
 package com.wx.school.service.message;
 
 import com.eweblib.bean.vo.EntityResults;
+import com.wx.school.bean.school.StudentSchoolInfo;
 import com.wx.school.bean.user.SMS;
 import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.User;
@@ -19,6 +20,6 @@ public interface IMessageService {
 
 	String exportFailedNotice(SmsLog smsLog);
 	
-	
+	String loadNoticeMsg(StudentSchoolInfo info);
 	
 }

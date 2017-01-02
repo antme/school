@@ -23,6 +23,7 @@ import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.StudentNumber;
+import com.wx.school.bean.school.StudentSchoolInfo;
 import com.wx.school.bean.user.SMS;
 import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.User;
@@ -87,10 +88,10 @@ public class MessageServiceImpl implements IMessageService {
 		query.and(StudentNumber.SCHOOL_ID, smsLog.getSchoolId());
 		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, smsLog.getStartNumber());
 		query.and(DataBaseQueryOpertion.LESS_THAN_EQUAILS, StudentNumber.NUMBER, smsLog.getEndNumber());
-//		query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
+		// query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
 
 		List<StudentNumber> slist = this.dao.listByQuery(query, StudentNumber.class);
-		if(smsLog.getPlace().length() > 15){
+		if (smsLog.getPlace().length() > 15) {
 			throw new ResponseException("地址长度超过15个字符限制");
 
 		}
@@ -204,5 +205,31 @@ public class MessageServiceImpl implements IMessageService {
 		ExcelUtil.createExcelListFileByEntity(logList, colunmTitleHeaders, colunmHeaders, f);
 
 		return dowload_path;
+	}
+
+	public String loadNoticeMsg(StudentSchoolInfo info) {
+
+		String msg = "";
+		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+		logQuery.and(SmsLog.SCHOOL_ID, info.getSchool().getId());
+		List<SmsLog> logList = this.dao.listByQuery(logQuery, SmsLog.class);
+		SmsLog result = null;
+		for (SmsLog log : logList) {
+			if (info.getNumber() <= log.getEndNumber() && info.getNumber() >= log.getEndNumber()) {
+				result = log;
+				break;
+			}
+		}
+		if (result != null) {
+			School school = this.dao.findById(result.getSchoolId(), School.TABLE_NAME, School.class);
+
+			msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
+					+ result.getEndTime() + "至" + school.getName() + "（地址：" + result.getPlace()
+					+ ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
+
+		}
+
+		return msg;
+
 	}
 }

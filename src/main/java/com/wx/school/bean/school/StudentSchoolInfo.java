@@ -14,6 +14,16 @@ public class StudentSchoolInfo extends BaseEntity {
 
 	public Student student;
 
+	public String baomingMsg;
+
+	public String getBaomingMsg() {
+		return baomingMsg;
+	}
+
+	public void setBaomingMsg(String baomingMsg) {
+		this.baomingMsg = baomingMsg;
+	}
+
 	public Integer getNumber() {
 		return number;
 	}
