@@ -150,7 +150,7 @@ public class MessageServiceImpl implements IMessageService {
 
 		List<SmsLog> logList = this.dao.listByQuery(query, SmsLog.class);
 		for (SmsLog log : logList) {
-			List<stat> statList = SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 1);
+			List<stat> statList = SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 0);
 			statList.addAll(SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 2));
 			for (stat stat : statList) {
 				if (stat.getSmsCode().equals("SMS_36350142")

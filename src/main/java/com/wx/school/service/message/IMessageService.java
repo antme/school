@@ -20,4 +20,5 @@ public interface IMessageService {
 	String exportFailedNotice(SmsLog smsLog);
 	
 	
+	
 }

@@ -100,6 +100,16 @@ public class SMSController extends AbstractController {
 		responseWithKeyValue("path", path, request, response);
 
 	}
+	
+
+	@RequestMapping("/falied.do")
+	@LoginRequired(required = false)
+	public void fetchFailedSMS(HttpServletRequest request, HttpServletResponse response) {
+//		String path =ms.exportFailedNotice(smsLog);
+		ms.checkNoticeSmsSendStatus();
+
+		responseWithEntity(null, request, response);
+	}
 
 
 	private void sendSms(SMS sms, String word, int smsType) {
