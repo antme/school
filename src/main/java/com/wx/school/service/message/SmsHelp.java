@@ -90,7 +90,7 @@ public class SmsHelp {
 					request.setTemplateCode("SMS_36350142");
 					request.setParamString(EweblibUtil.toJson(map));
 
-					request.setRecNum(mobileNumers);
+					request.setRecNum(mobile);
 					SingleSendSmsResponse httpResponse = null;
 					try {
 						httpResponse = client.getAcsResponse(request);
