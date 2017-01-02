@@ -384,7 +384,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		DataBaseQueryBuilder query = getNumberQuery(svo);
 		List<StudentPlanInfo> list = this.dao.listByQuery(query, StudentPlanInfo.class);
 		for (StudentPlanInfo s : list) {
-			if (s.getName().equalsIgnoreCase("m")) {
+			if (s.getSex().equalsIgnoreCase("m")) {
 				s.setSexCn("男性");
 			} else {
 				s.setSexCn("女性");

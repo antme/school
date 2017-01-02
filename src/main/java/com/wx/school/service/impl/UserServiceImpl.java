@@ -327,7 +327,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		DataBaseQueryBuilder query = getStudentSearchQuery(uvo);
 		List<Student> list = this.dao.listByQuery(query, Student.class);
 		for (Student s : list) {
-			if (s.getName().equalsIgnoreCase("m")) {
+			if (s.getSex().equalsIgnoreCase("m")) {
 				s.setSexCn("男性");
 			} else {
 				s.setSexCn("女性");
