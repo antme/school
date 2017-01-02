@@ -87,7 +87,7 @@ public class MessageServiceImpl implements IMessageService {
 		query.and(StudentNumber.SCHOOL_ID, smsLog.getSchoolId());
 		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, smsLog.getStartNumber());
 		query.and(DataBaseQueryOpertion.LESS_THAN_EQUAILS, StudentNumber.NUMBER, smsLog.getEndNumber());
-		query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
+//		query.and(DataBaseQueryOpertion.IS_FALSE, StudentNumber.IS_SMS_SENT);
 
 		List<StudentNumber> slist = this.dao.listByQuery(query, StudentNumber.class);
 		if(smsLog.getPlace().length() > 15){
