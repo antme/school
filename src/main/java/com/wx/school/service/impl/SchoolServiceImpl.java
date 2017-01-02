@@ -376,7 +376,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			query.and(DataBaseQueryOpertion.LIKE, StudentNumber.TABLE_NAME + "." + StudentNumber.REMARK,
 					svo.getRemark());
 		}
-		query.orderBy(StudentNumber.TABLE_NAME + "." + StudentNumber.NUMBER, false);
+		query.orderBy(StudentNumber.NUMBER, false);
 		return query;
 	}
 
