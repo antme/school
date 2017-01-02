@@ -110,7 +110,6 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			throw new ResponseException("你的取号已经再处理中，请稍后在我的取号信息里查询结果");
 		}
 
-		processMap.add(sn.getStudentId());
 		// if (!this.dao.exists(Student.ID, sn.getStudentId(),
 		// Student.TABLE_NAME)) {
 		// throw new ResponseException("此学生不存在");
@@ -121,8 +120,17 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (plan == null) {
 			throw new ResponseException("此取号批次不存在");
 		}
+		processMap.add(sn.getStudentId());
+		StudentNumber p = null;
+		try {
 
-		return bookPlan(sn, plan);
+			p = bookPlan(sn, plan);
+		} catch (Exception e) {
+			processMap.remove(sn.getStudentId());
+			throw new ResponseException("取号失败，请稍后再试");
+		}
+
+		return p;
 
 	}
 
