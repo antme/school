@@ -334,10 +334,9 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.leftJoin(StudentNumber.TABLE_NAME, User.TABLE_NAME, StudentNumber.OWER_ID, User.ID);
 
 		query.joinColumns(Student.TABLE_NAME, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY,
-				Student.CREATED_ON + " as studentRegDate" });
+				Student.CREATED_ON + " as studentRegDate", Student.IS_VIP });
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
-		query.joinColumns(User.TABLE_NAME,
-				new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER, User.IS_VIP });
+		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER });
 		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER, StudentNumber.ID,
 				StudentNumber.REMARK });
 
@@ -357,6 +356,14 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			query.and(DataBaseQueryOpertion.LIKE, School.TABLE_NAME + "." + School.NAME, svo.getSchoolName());
 		}
 
+		if (EweblibUtil.isValid(svo.getIsVip())) {
+			if (svo.getIsVip()) {
+				query.and(DataBaseQueryOpertion.IS_TRUE, Student.TABLE_NAME + "." + Student.IS_VIP);
+			} else {
+				query.and(DataBaseQueryOpertion.IS_FALSE, Student.TABLE_NAME + "." + Student.IS_VIP);
+			}
+		}
+
 		if (EweblibUtil.isValid(svo.getSchoolId())) {
 			query.and(School.TABLE_NAME + "." + School.ID, svo.getSchoolId());
 		}
@@ -369,6 +376,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			query.and(DataBaseQueryOpertion.LIKE, StudentNumber.TABLE_NAME + "." + StudentNumber.REMARK,
 					svo.getRemark());
 		}
+		query.orderBy(StudentNumber.TABLE_NAME + "." + StudentNumber.NUMBER, false);
 		return query;
 	}
 
@@ -401,7 +409,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public int sumStudentVip(SearchVO svo) {
 		DataBaseQueryBuilder query = getNumberQuery(svo);
-		query.and(DataBaseQueryOpertion.IS_TRUE, User.TABLE_NAME + "." + User.IS_VIP);
+		query.and(DataBaseQueryOpertion.IS_TRUE, Student.TABLE_NAME + "." + Student.IS_VIP);
 
 		return this.dao.count(query);
 	}

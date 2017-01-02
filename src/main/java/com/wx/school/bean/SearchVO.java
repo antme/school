@@ -1,5 +1,6 @@
 package com.wx.school.bean;
 
+import com.eweblib.annotation.column.BooleanColumn;
 import com.eweblib.annotation.column.IntegerColumn;
 import com.wx.school.bean.user.User;
 
@@ -13,7 +14,17 @@ public class SearchVO extends User {
 
 	@IntegerColumn
 	public Integer number;
-	
+
+	@BooleanColumn
+	public Boolean isVip;
+
+	public Boolean getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Boolean isVip) {
+		this.isVip = isVip;
+	}
 
 	public Integer getNumber() {
 		return number;

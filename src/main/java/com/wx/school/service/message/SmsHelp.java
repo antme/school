@@ -146,27 +146,26 @@ public class SmsHelp {
 	}
 
 	public static void main(String[] args) throws ServerException, ClientException {
+		
+		 QuerySmsFailByPageRequest qs = new QuerySmsFailByPageRequest();
+		 qs.setSmsType(2);
+		 qs.setQueryTime("2017-01-02");
+		
+		 QuerySmsFailByPageResponse response = client.getAcsResponse(qs);
+		 List<stat> list = response.getdata();
+		
+		 for (stat stat : list) {
+		 System.out.println(stat.getReceiverNum() + " " + stat.getSmsCode() +
+		 " " + stat.getResultCode());
+		
+		 }
+		 
+		 System.out.println("done");
+		// System.out.println(response.getdata());
 
-		QuerySmsFailByPageRequest qs = new QuerySmsFailByPageRequest();
-		qs.setSmsType(2);
-		qs.setQueryTime("2016-12-30");
+//		SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "徐汇区天钥桥路30号15楼1504号", "18516692298");
 
-		QuerySmsFailByPageResponse response = client.getAcsResponse(qs);
-		List<stat> list = response.getdata();
-
-		for (stat stat : list) {
-			System.out.println(stat.getReceiverNum() + " " + stat.getSmsCode() + " " + stat.getResultCode());
-
-		}
-		System.out.println(response.getdata());
-
-		// try {
-		// SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区",
-		// "上海市徐汇区天钥桥路30号", "18516692298");
-		// } catch (ClientException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+//		System.out.println("徐汇区天钥桥路30号15楼15".length());
 	}
 
 }

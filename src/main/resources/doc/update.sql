@@ -11,3 +11,8 @@ alter table User add index `mobileNumber` (`mobileNumber`);
 alter table User add index `password` (`password`);
 alter table StudentNumber add index `studentId` (`studentId`);
 alter table StudentNumber add index `schoolId` (`schoolId`);
+
+
+
+alter table Student add column isVip tinyint(1) DEFAULT '0';
+update Student set isVip=false;

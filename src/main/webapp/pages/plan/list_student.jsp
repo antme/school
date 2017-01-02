@@ -10,7 +10,8 @@
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
-				number : $("#number").val()
+				number : $("#number").val(),
+				isVip: $("#isVip").val()
 			}
 		});
 		
@@ -40,7 +41,8 @@
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
-				number : $("#number").val()
+				number : $("#number").val(),
+				isVip: $("#isVip").val()
 		}
 		
 		postAjaxRequest("/sch/student/number/export.do", data, function(data){		
@@ -60,7 +62,8 @@
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
-				number : $("#number").val()
+				number : $("#number").val(),
+				isVip: $("#isVip").val()
 		}
 		
 		postAjaxRequest("/sch/student/vip/sum.do", data, function(data){
@@ -157,7 +160,13 @@
  	
  	<span class="r-edit-label">备注:</span>
  	<input class="height24" type="text" name="remark" id="remark" /> 
- 	
+ 	<span class="r-edit-label width100">是否会员:</span>
+			
+				  <select class="width150 height26" style="font-size:12px" name="isVip" id="isVip">
+				  	<option value="">所有</option>
+				  	<option value="true">是</option>
+				  	<option value="false" >否</option>
+				  </select>
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
 	<button class="search_btn_noWidth" onclick="exportData();">导出</button>
 </div>

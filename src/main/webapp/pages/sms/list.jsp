@@ -22,6 +22,8 @@
 		var signDate = $("#signDate").datebox('getValue');
 		var startTime = $("#startTime").timespinner('getValue');
 		var endTime = $("#endTime").timespinner('getValue');
+	
+		
 
 		var can_submit = true;
 		if (!schoolId) {
@@ -51,7 +53,7 @@
 		} else if (!endTime) {
 			$.messager.alert('提示', '请选择报名结束时间');
 			can_submit = false;
-		} else if (startNumber > endNumber) {
+		} else if (parseInt(startNumber) > parseInt(endNumber)) {
 			$.messager.alert('提示', '结束号段不能小于开始号段');
 			can_submit = false;
 		}

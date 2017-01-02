@@ -120,7 +120,6 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
-		user.setIsVip(false);
 		this.dao.insert(user);
 
 		return user;
@@ -171,6 +170,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		checkStudent(student, true);
 
+		student.setIsVip(false);
 		student.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
 		this.dao.insert(student);
 
@@ -346,28 +346,30 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	public void importParentInfo(InputStream inputStream) {
 
 		ExcelUtil excleUtil = new ExcelUtil(inputStream);
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(User.TABLE_NAME);
-		query.limitColumns(new String[] { User.ID, User.NAME, User.IS_VIP });
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		query.limitColumns(new String[] { Student.ID, Student.NAME, Student.IS_VIP });
 
-		List<User> userList = this.dao.listByQuery(query, User.class);
+		List<Student> userList = this.dao.listByQuery(query, Student.class);
 
 		for (int index = 0; index < excleUtil.getNumberOfSheets(); index++) {
-
+			
 			List<String[]> list = excleUtil.getAllData(index);
 
 			if (list.isEmpty()) {
 				continue;
 			}
 
+			logger.info(excleUtil.getSheetName(index) + ":" + list.size());
 			for (int i = 0; i < list.size(); i++) {// 从第2行开始读数据
 
 				String[] row = list.get(i);
 
 				String name = row[0].trim();
-				for (User user : userList) {
-					if (user.getName().equals(name)) {
-						user.setIsVip(true);
-						this.dao.updateById(user, new String[] { User.IS_VIP });
+				System.out.println(name);
+				for (Student student : userList) {
+					if (student.getName().trim().equals(name.trim())) {
+						student.setIsVip(true);
+						this.dao.updateById(student, new String[] { Student.IS_VIP });
 					}
 				}
 

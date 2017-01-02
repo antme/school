@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+import com.eweblib.annotation.column.BooleanColumn;
 import com.eweblib.bean.BaseEntity;
 
 @Table(name = Student.TABLE_NAME)
@@ -36,6 +37,21 @@ public class Student extends BaseEntity {
 
 	@Column(name = REMARK)
 	public String remark;
+	
+	public static final String IS_VIP = "isVip";
+
+	@Column(name = IS_VIP)
+	@BooleanColumn
+	public Boolean isVip;
+
+	public Boolean getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Boolean isVip) {
+		this.isVip = isVip;
+	}
+
 
 	public Boolean hasNumber = false;
 

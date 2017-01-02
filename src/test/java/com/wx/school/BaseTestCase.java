@@ -10,7 +10,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.eweblib.dao.IQueryDao;
 import com.eweblib.dao.QueryDaoImpl;
-import com.wx.school.controller.BookThread;
 import com.wx.school.service.ISchoolService;
 import com.wx.school.service.IUserService;
 import com.wx.school.service.impl.SchoolServiceImpl;
@@ -40,17 +39,12 @@ public class BaseTestCase extends TestCase {
 	}
 
 	public void testSubmitPersonInfo() throws FileNotFoundException {
+//		SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "徐汇区天钥桥路30号15楼15", "18516692298");
 
-		for (int i = 0; i < 30; i++) {
-			new BookThread(schoolService).start();
-		}
-		while (true) {
-
-		}
-		// InputStream in = new FileInputStream(new
-		// File("/Users/clp/downloads/2016年秋季名单汇总 （已去重）.xls"));
-		//
-		// us.importParentInfo(in);
+		 InputStream in = new FileInputStream(new
+		 File("/Users/clp/downloads/2016年秋季名单汇总 （已去重）.xls"));
+		
+		 us.importParentInfo(in);
 		// us.exportStudentInfo(null);
 		// schoolService.listStudentPlanForAdmin(null);
 	}
