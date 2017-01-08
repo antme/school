@@ -146,7 +146,7 @@ public class MessageServiceImpl implements IMessageService {
 	public void checkNoticeSmsSendStatus() {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
 		Calendar c = Calendar.getInstance();
-		c.add(Calendar.HOUR_OF_DAY, -6);
+		c.add(Calendar.DAY_OF_YEAR, -1);
 		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.CREATED_ON, c.getTime());
 
 		List<SmsLog> logList = this.dao.listByQuery(query, SmsLog.class);

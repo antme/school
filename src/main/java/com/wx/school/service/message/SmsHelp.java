@@ -148,7 +148,7 @@ public class SmsHelp {
 	public static void main(String[] args) throws ServerException, ClientException {
 		
 		 QuerySmsFailByPageRequest qs = new QuerySmsFailByPageRequest();
-		 qs.setSmsType(2);
+		 qs.setSmsType(0);
 		 qs.setQueryTime("2017-01-02");
 		
 		 QuerySmsFailByPageResponse response = client.getAcsResponse(qs);
