@@ -4,8 +4,8 @@
 
 //项目定义
 var ajaxUrlBase = "http://sch.winasdaq.com";
-if(window.location.href.indexOf("queuetest.dandgedu.com") != -1){
-    ajaxUrlBase = "https://queuetest.dandgedu.com";
+if(window.location.href.indexOf("queue.dandgedu.com") != -1){
+    ajaxUrlBase = "https://queue.dandgedu.com";
 }
 //通信协议强制切换到https
 var curProtocol = window.location.protocol;
