@@ -1,0 +1,72 @@
+@charset "utf-8";
+/*common*/
+body,html{height:100%;background-color:#F8F8F8;}
+.tnwrap{position:relative;height:100%;}
+.tntab .weui-tabbar__item{padding:5px 0;}
+.tntab .weui-tabbar__label{font-size:18px;}
+.tnpage-tit{position:relative;z-index:10;padding:10px 0;font-size:22px;font-weight:normal;
+    text-align:center;color:#FFF;background:#54678c;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+.tnpad{padding:10px 15px;}
+.tndemo{display:none;}
+.alink{color:#1AAD19;cursor:pointer;}
+.alink:hover{color:#188518;text-decoration:underline;}
+.tncheck-box label{margin-right:10px;}
+.tn-explain{margin-top:10px;padding:10px 15px;}
+.tn-explain p{margin-bottom:5px;}
+.tn-handle{padding-top:15px;}
+.weui-label{width:95px;}
+.weui-vcode-btn{font-size:15px;padding:0 5px;}
+.weui-btn_primary{background:#586c94;}
+.weui-btn_primary:not(.weui-btn_disabled):active{background-color:#506488}
+.tnin-txt{height:1.41176em;line-height:1.6;}
+.weui-btn.valid,.weui-btn.valid:hover{color:#999;background:#D5D5D5;cursor:default;}
+.weui-input{font-family:'微软雅黑',"Microsoft YaHei";}
+.fontmin{font-size:14px;}
+.txtmark{color:#FF0000;}
+.fontblack{color:#333;}
+/*验证码*/
+.vcode-no-btn{display:inline-block;padding:0 5px;font-size:15px;line-height:44px;color:#888;border-left:1px solid #e5e5e5;}
+.vcodebox .get,.vcodebox.invalid .no{display:inline-block;}
+.vcodebox.invalid .get,.vcodebox .no{display:none;}
+/*表格*/
+.tntable{width:100%;}
+.tntable td,.tntable th{padding:5px 8px;}
+.tntable th{font-size:16px;color:#FFF;;background:#808080;white-space:nowrap;}
+/*layer自定义*/
+.layui-layer-dialog{width:260px;}
+/*登录*/
+.login-more{padding-top:10px;}
+/*注册*/
+.reg-body .tn-handle{margin-top:0;}
+/*个人中心*/
+.tncenter-pop .weui-actionsheet__menu .weui-actionsheet__cell{padding:0;}
+.tncenter-pop .weui-actionsheet__menu .weui-actionsheet__cell a{border-radius:0;border:0 none;}
+/*我的学生*/
+.student-list{padding-top:20px;}
+.stulist-table td{text-align:center;}
+.stulist-table .sort{width:15%;}
+.stulist-table .name{width:25%;}
+.stulist-table .birth{width:45%;}
+.stulist-table .sex{width:15%;}
+.std-body .weui-label{width:125px;}
+.std-body .tn-handle{padding-top:0;margin-top:5px;}
+.stulist-table tbody tr:nth-child(even){background:#E5E5E5;}
+/*取号*/
+.campus-li{padding-top:5px;}
+.campusli-tit{font-size:20px;}
+.campusli-con{padding-left:1.9em;}
+.campusli-time span{display:inline-block;vertical-align:middle;}
+.campusli-con .campusli-go{margin-top:3px;}
+.campusli-con .campusli-go a{display:inline-block;padding:5px 10px;font-size:14px;line-height:16px;}
+.mytn-list .mytn-li{margin-top:10px;padding:2px 5px;border:1px solid #AAA;background:#D8D8D8;}
+.mytnli-tit{font-size:20px;margin-bottom:5px;}
+.minbtn{display:inline-block;padding:5px 10px;font-size:14px;line-height:14px;vertical-align:middle;}
+.smallbtn{display:inline-block;margin:0 3px;padding:4px 8px;font-size:14px;line-height:14px;vertical-align:middle;}
+.tngo-list .tngo-li{margin-top:10px;padding-bottom:5px;border-bottom:1px dashed #999;}
+/*菜单*/
+.weui-mask{bottom:46px;top:-2px;}
+.weui-actionsheet{bottom:42px;-webkit-transform:translateY(130%);transform:translateY(130%);}
+.weui-actionsheet.weui-actionsheet_toggle{-webkit-transform:translateY(0);transform:translateY(0);}
+
+
+

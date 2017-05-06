@@ -1,17 +1,2 @@
 /WEB-INF/
-/upload/
 /download/
-/ap/
-/bak/
-*.DS_Store
-/changepwd.html
-/forgetpwd.html
-/login.html
-/mytn.html
-/parent.html
-/reg.html
-/student.html
-/studentlist.html
-/tngo.html
-/tnstate.html
-/layer/
