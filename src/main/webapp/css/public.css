@@ -1,0 +1,420 @@
+body, div, a, ul, li, span, select, input {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #fcfafa;
+}
+
+#head {
+	background-color: #367fa9;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+}
+
+.titles {
+	float: left;
+	width: 40%;
+	min-width: 300px;
+	text-indent: 1em;
+	color: #fff;
+	font-size: 26px;
+}
+
+.user_info {
+	float: right;
+	padding-right: 2em;
+	color: #fff;
+	font-size: 14px;
+}
+
+.col1 {
+	color: #f08300;
+}
+
+.datagrid-header td, .datagrid-body td, .datagrid-footer td {
+	border-style: solid;
+}
+
+#right {
+	margin-left: 10px;
+	padding: 10px;
+	background: #fff;
+	height: auto;
+	overflow: auto;
+	width: 90%;
+	float: left;
+	margin-left: 50px;
+}
+
+.right_head {
+	height: 50px;
+	line-height: 50px;
+	font-size: 16px;
+	text-indent: 20px;
+	font-weight: bold;
+	ox-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.right_content {
+	padding: 20px 10px;
+	background-color: #fff;
+}
+
+.datagrid-btable, .datagrid-header-inner, .datagrid-htable {
+	width: 100%;
+}
+
+.form {
+	padding: 20px;
+}
+
+.form_items {
+	height: auto;
+	line-height: 25px;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+
+.form_items_btn {
+	height: auto;
+	line-height: 25px;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+
+.form_items_btn input {
+	float: left;
+}
+
+.form_items label, .form_items_btn label {
+	padding: 0 10px;
+	font-size: 14px;
+	text-align: right;
+	float: left;
+}
+
+.form_items input {
+	height: 25px;
+	line-height: 24px;
+	float: left;
+}
+
+.form_items .combo {
+	float: left;
+}
+
+.form_items .a-href {
+	float: left;
+	color: #0081ce;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.c {
+	display: none;
+}
+
+.width100 {
+	width: 100px;
+}
+
+.width150 {
+	width: 150px;
+}
+
+.width180 {
+	width: 180px;
+}
+
+.width200 {
+	width: 200px;
+}
+
+.width80 {
+	width: 80px;
+}
+
+.width60 {
+	width: 65px;
+}
+
+.width300 {
+	width: 250px;
+}
+
+.width350 {
+	width: 350px;
+}
+
+.width500 {
+	width: 500px;
+}
+
+.height24 {
+	height: 24px;
+}
+
+.height26 {
+	height: 26px;
+}
+
+.login_div {
+	width: 360px;
+	height: auto;
+	margin: 40px auto;
+	background-color: #3c8dbc;
+}
+
+#dlg {
+	display: none;
+}
+
+.sub_btn {
+	width: 150px;
+	height: 26px;
+	line--height: 26px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #3c8dbc !important;
+	color: #fff;
+	cursor: pointer;
+}
+
+.search_btn_noWidth {
+	padding: 4px 15px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #3c8dbc !important;
+	color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.sub_btn_noWidth {
+	padding: 4px 15px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #3c8dbc !important;
+	color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.sub_btn2 {
+	width: 320px;
+	margin-left: 30px;
+	height: 26px;
+	line--height: 26px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #3c8dbc !important;
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.login_back {
+	width: 380px;
+	height: auto;
+	margin: 76px auto;
+}
+
+.login_back .left {
+	margin-left: 35px;
+}
+
+.login_back form {
+	overflow: hidden;
+	margin: 0px auto;
+	padding: 25px 0 0px;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	background-color: #fff;
+}
+
+.login_head {
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	background-color: #3c8dbc;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	color: #fff;
+	font-size: 24px;
+}
+
+.user_info a {
+	fint-size: 14px;
+	color: #fff;
+	font-weight: 100;
+	text-decoration: none;
+}
+
+.user_info a img {
+	vertical-align: middle;
+}
+
+.ver_code {
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #3c8dbc !important;
+	color: #fff;
+	cursor: pointer;
+	border: 0;
+	height: 30px;
+}
+
+.bk_color a {
+	float: left;
+	display: block;
+	color: #333;
+	width: 100px;
+	margin: 10px 5px 0px 160px;
+}
+
+.k-edit-field {
+	width: 100%;
+	overflow: hidden;
+	padding: 10px 0px;
+}
+
+.k-edit-field label, .k-edit-field input {
+	float: left;
+}
+
+#isOverride {
+	margin: 2px 5px 0px 0px;
+}
+
+.tr_line {
+	height: auto;
+	ling-height: 30px;
+	margin-bottom: 10px;
+}
+
+.tr_line .td_line {
+	padding: 10px;
+	display: inline-block;
+}
+
+.td_line label {
+	line-height: 26px;
+}
+
+.radios label {
+	font-size: 14px;
+}
+
+.postion {
+	position: absolute;
+	right: 10px;
+}
+
+.noborder {
+	border: 0;
+	border: none;
+}
+
+.text_url_color {
+	color: red
+}
+
+.background-logo {
+	background: url(../images/img091.jpg);
+}
+
+.logo-titles {
+	font-size: 40px;
+	font-weight: bold;
+	color: #fff;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.bk_color2 {
+	text-align: center;
+}
+
+.bk_color2 a {
+	display: inline-block;
+	padding: 4px 10px;
+}
+
+.panel-header {
+	cursor: pointer;
+}
+
+#left .header {
+	background: linear-gradient(to bottom, #eaf4fc 0px, #e9e7e7 100%)
+		repeat-x scroll 0 0 rgba(0, 0, 0, 0)
+}
+
+/* update  easyui  style */
+#grids .datagrid-btable, #grids .datagrid-header-inner, #grids .datagrid-header-inner table
+	{
+	width: 100%;
+}
+
+.datagrid-header td, .datagrid-body td, .datagrid-footer td {
+	border: none;
+	border: 0;
+}
+
+.datagrid-header, .datagrid-toolbar, .datagrid-pager,
+	.datagrid-footer-inner, .panel-body-noheader {
+	border: 0;
+	border: none;
+}
+
+.datagrid-header {
+	background: #e5e5e5;
+}
+
+.datagrid-header-row, .datagrid-row {
+	height: 35px;
+}
+
+.datagrid-header .datagrid-cell span {
+	font-size: 14px;
+}
+
+.datagrid .datagrid-pager {
+	border: 0;
+	border: none;
+}
+
+.pagination-info {
+	float: left;
+}
+
+.datagrid-header-inner, .datagrid-htable {
+	width: 100%;
+}
+
+.datagrid-body table, .datagrid-htable tabel {
+	width: 100%;
+}
