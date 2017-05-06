@@ -42,6 +42,7 @@ $(document).ready(function(){
                     $con.find(".tel .txt").text(curData['parent']['mobileNumber']);
                     //取号时间
                     $con.find(".create .txt").text(curData['createdOn']);
+                    $con.find(".message .txt").text(curData['baomingMsg']);
                     //追加到列表
                     $list.append($cloneHtml[0]);
                 }

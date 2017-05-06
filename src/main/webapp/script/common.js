@@ -3,9 +3,9 @@
  */
 
 //项目定义
-var ajaxUrlBase = "http://sch.winasdaq.com";
-if(window.location.href.indexOf("queue.dandgedu.com") != -1){
-    ajaxUrlBase = "https://queue.dandgedu.com";
+var ajaxUrlBase = "https://queue.dandgedu.com";
+if(window.location.href.indexOf("queuetest.dandgedu.com") != -1){
+    ajaxUrlBase = "https://queuetest.dandgedu.com";
 }
 //通信协议强制切换到https
 var curProtocol = window.location.protocol;
@@ -18,7 +18,7 @@ if((curHost == 'queue.dandgedu.com')&&(curProtocol == 'http:')){
 var indexUrl = "tnstate.html";  //取号页面
 var loginUrl = "login.html";    //登录页面
 var stdListUrl = "studentlist.html";  //我的小朋友页面
-var mytnUrl = "mytn.html";  //我的取号信息页面
+var mytnUrl = "mytn.html?v=1.0";  //我的取号信息页面
 var tngoUrl = "tngo.html";  //具体校区取号页面
 
 /* 取消事件的默认行为(兼容IE) */
@@ -135,13 +135,14 @@ function weuiTabbarGo(elem){
 }
 // 底部导航栏菜单
 function mainMenuInit(){
+    var $actionSheetWrap = $("#actionSheetWrap");
     var $tnActionsheet = $('#tnActionsheet');
     var $iosActionsheet = $('#iosActionsheet');
+    var $informActionsheet = $('#informActionsheet');
     var $iosMask = $('#iosMask');
 
     function hideActionSheet() {
-        $tnActionsheet.removeClass('weui-actionsheet_toggle');
-        $iosActionsheet.removeClass('weui-actionsheet_toggle');
+        $actionSheetWrap.find(".weui-actionsheet").removeClass('weui-actionsheet_toggle');
         $iosMask.fadeOut(200);
     }
 
@@ -151,7 +152,7 @@ function mainMenuInit(){
     $("#centerMenuGo").on("click", function(ev){
         stopDefault(ev);
         weuiTabbarGo(this);
-        $tnActionsheet.removeClass('weui-actionsheet_toggle');
+        $actionSheetWrap.find(".weui-actionsheet").removeClass('weui-actionsheet_toggle');
         $iosActionsheet.addClass('weui-actionsheet_toggle');
         $iosMask.fadeIn(200);
     });
@@ -160,8 +161,17 @@ function mainMenuInit(){
     $("#takeNumGo").on("click", function(ev){
         stopDefault(ev);
         weuiTabbarGo(this);
-        $iosActionsheet.removeClass('weui-actionsheet_toggle');
+        $actionSheetWrap.find(".weui-actionsheet").removeClass('weui-actionsheet_toggle');
         $tnActionsheet.addClass('weui-actionsheet_toggle');
+        $iosMask.fadeIn(200);
+    });
+    //通知
+    $('#informActionsheetCancel').on('click', hideActionSheet);
+    $("#informGo").on("click", function(ev){
+        stopDefault(ev);
+        weuiTabbarGo(this);
+        $actionSheetWrap.find(".weui-actionsheet").removeClass('weui-actionsheet_toggle');
+        $informActionsheet.addClass('weui-actionsheet_toggle');
         $iosMask.fadeIn(200);
     });
 

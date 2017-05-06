@@ -60,6 +60,7 @@ body,html{height:100%;background-color:#F8F8F8;}
 .campusli-con .campusli-go a{display:inline-block;padding:5px 10px;font-size:14px;line-height:16px;}
 .mytn-list .mytn-li{margin-top:10px;padding:2px 5px;border:1px solid #AAA;background:#D8D8D8;}
 .mytnli-tit{font-size:20px;margin-bottom:5px;}
+.mytnli-con p{margin-top:3px;}
 .minbtn{display:inline-block;padding:5px 10px;font-size:14px;line-height:14px;vertical-align:middle;}
 .smallbtn{display:inline-block;margin:0 3px;padding:4px 8px;font-size:14px;line-height:14px;vertical-align:middle;}
 .tngo-list .tngo-li{margin-top:10px;padding-bottom:5px;border-bottom:1px dashed #999;}
