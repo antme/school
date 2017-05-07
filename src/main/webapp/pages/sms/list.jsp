@@ -3,16 +3,6 @@
 <script>
 	
 
-
-	function formatterOperation(val, row) {
-		var a = "";
-		if (row.successCount < row.totalSend) {
-			a = '<a style="margin-left:5px" onclick="exportData(\'' + row.id
-					+ '\');" href="#"> 下载失败号码 </a>';
-		}
-		return a;
-	}
-
 	function sendSms() {
 		var schoolId = $("#schoo_select").combobox('getValue');
 		var startNumber = $("#startNumber").val();
@@ -70,7 +60,7 @@
 		};
 
 		if (can_submit) {
-			$.messager.confirm('发送短信', '确认发送短信通知？', function(r) {
+			$.messager.confirm('发送通知', '确认发送通知？', function(r) {
 				if (r) {
 
 					postAjaxRequest('/sms/school/book/notice.do', data,
@@ -107,7 +97,7 @@
 </script>
 
 <div>
-	<label style="font-size: 20px">短信通知管理</label>
+	<label style="font-size: 20px">通知管理</label>
 </div>
 <br>
 <br>
@@ -142,31 +132,27 @@
 		id="endTime" />
 	</span> </span>
 
-	<button class="search_btn_noWidth" onclick="sendSms();">发送短信</button>
+	<button class="search_btn_noWidth" onclick="sendSms();">发送通知</button>
 </div>
 
 
 <p></p>
 
-<label>由于短信发送有延迟，建议在发送6个小时候才下载失败号码</label>
 <table id="datalist" class="easyui-datagrid"
 	data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true"
 	url="/sms/school/book/list.do" iconCls="icon-save" sortOrder="asc"
 	pagination="true">
 	<thead>
 		<tr>
-			<th align="center" field="schoolName" width="100" sortable="false"
+			<th align="center" field="schoolName" width="120" sortable="false"
 				resizable="true">校区</th>
-			<th align="center" field="startNumber" width="80" sortable="false"
+			<th align="center" field="startNumber" width="70" sortable="false"
 				resizable="true">开始号码</th>
-			<th align="center" field="endNumber" width="80" sortable="false"
+			<th align="center" field="endNumber" width="70" sortable="false"
 				resizable="true">结束号码</th>
-			<th align="center" field="successCount" width="80" sortable="false"
-				resizable="true">成功数量</th>
-			<th align="center" field="totalSend" width="80" sortable="false"
-				resizable="true">发送总数</th>
-
-			<th align="center" field="signDate" width="80"
+			<th align="center" field="successCount" width="50" sortable="false"
+				resizable="true">总数</th>
+			<th align="center" field="signDate" width="150"
 				data-options="formatter:formatterSignDate" sortable="false"
 				resizable="true">报名日期</th>
 			<th align="center" field="place" width="200" sortable="false"
@@ -174,8 +160,7 @@
 
 			<th align="center" field="createdOn" width="150" sortable="false"
 				resizable="true" data-options="">发送时间</th>
-			<th align="center"
-				data-options="field:'id',formatter:formatterOperation,width:100">操作</th>
+	
 		</tr>
 	</thead>
 </table>

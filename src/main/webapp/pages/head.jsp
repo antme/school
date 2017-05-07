@@ -36,7 +36,7 @@
 
 	<div style="margin-left:20px; float:left; margin-top:10px;">
 		<a href="index.jsp?p=sms/list">
-		<span style="margin-left: 10px;">短信通知</span></a>
+		<span style="margin-left: 10px;">通知</span></a>
 	</div>
 
 	<div style="margin-left:20px; float:left; margin-top:10px;">

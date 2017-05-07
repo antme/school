@@ -173,7 +173,7 @@
 
 <p></p>
 
-<div style="height:20px; width:100%;">
+<div style="height:30px; width:100%;">
  	<div style="float:right; margin-right:100px;">
 	<span class="r-edit-label">会员总数: </span>
 	<label id="isVipCount" style="color:red; margin-left:5px;"></label>
