@@ -116,11 +116,13 @@ public class MessageServiceImpl implements IMessageService {
 
 		smsLog.setMobileNumbers(EweblibUtil.toJson(mobileSet).replace("[", "").replace("]", "").replaceAll("\"", ""));
 
-		School school = this.dao.findById(smsLog.getSchoolId(), School.TABLE_NAME, School.class);
+//		School school = this.dao.findById(smsLog.getSchoolId(), School.TABLE_NAME, School.class);
 
-		Set<String> failedMobiles = SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()),
-				smsLog.getStartTime(), smsLog.getEndTime(), school.getName(), smsLog.getPlace(),
-				smsLog.getMobileNumbers());
+		Set<String> failedMobiles  = new HashSet<String>();
+		
+//		Set<String> failedMobiles = SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()),
+//				smsLog.getStartTime(), smsLog.getEndTime(), school.getName(), smsLog.getPlace(),
+//				smsLog.getMobileNumbers());
 		smsLog.setSuccessCount(smsLog.getTotalSend() - failedMobiles.size());
 		smsLog.setFailedCount(failedMobiles.size());
 		smsLog.setFailedMobileNumbers(
@@ -212,7 +214,7 @@ public class MessageServiceImpl implements IMessageService {
 		String msg = "";
 		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
 		logQuery.and(SmsLog.SCHOOL_ID, info.getSchool().getId());
-		logQuery.orderBy(SmsLog.CREATED_ON, true);
+		logQuery.orderBy(SmsLog.CREATED_ON, false);
 		List<SmsLog> logList = this.dao.listByQuery(logQuery, SmsLog.class);
 		SmsLog result = null;
 		for (SmsLog log : logList) {
