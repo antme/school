@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+import com.eweblib.annotation.column.IntegerColumn;
 import com.eweblib.bean.BaseEntity;
 
 @Table(name = SmsLog.TABLE_NAME)
@@ -47,9 +48,11 @@ public class SmsLog extends BaseEntity {
 	public String schoolId;
 
 	@Column(name = START_NUMBER)
+	@IntegerColumn
 	public Integer startNumber;
 
 	@Column(name = END_NUMBER)
+	@IntegerColumn
 	public Integer endNumber;
 
 	@Column(name = TOTAL_SEND)

@@ -4,38 +4,28 @@
 	
 
 	function sendSms() {
-		var schoolId = $("#schoo_select").combobox('getValue');
-		var startNumber = $("#startNumber").val();
-		var endNumber = $("#endNumber").val();
-		var place = $("#place").val();
 
-		var signDate = $("#signDate").datebox('getValue');
-		var startTime = $("#startTime").timespinner('getValue');
-		var endTime = $("#endTime").timespinner('getValue');
 
-		var data = {
-			signDate : signDate,
-			startTime : startTime,
-			endTime : endTime,
-			schoolId : schoolId,
-			place : place,
-			endNumber : endNumber,
-			startNumber : startNumber
 
-		};
+		$('#datalist').datagrid({
+			url: "/sms/school/book/list.do",
+		    queryParams: {
+		    	schoolId : $("#schoo_select").combobox('getValue'),
+		    	startNumber : $("#startNumber").val(),
+		    	endNumber : $("#endNumber").val()
+			}
+		});
 
-		
 	/* 		$.messager.confirm('发送通知', '确认发送通知？', function(r) {
 				if (r) {
-
-					postAjaxRequest('/sms/school/book/notice.do', data,
+	}); */
+	/* 				postAjaxRequest('/sms/school/book/list.do', data,
 							function(data) {
 								$.messager.alert('提示', '发送成功');
 								$("#datalist").datagrid('reload');
 							});
-				}
-			}); */
-		
+				} */
+
 
 	}
 
@@ -83,19 +73,8 @@
 	</label> <input class=" easyui-validatebox" type="number" name="startNumber"
 		value="" style="height: 26px; width: 50px;" id="startNumber" /> <label>
 			- </label> <input class=" easyui-validatebox" type="number" name="endNumber"
-		value="" style="height: 26px; width: 50px;" id="endNumber" /> <label
-		style="margin-left: 10px;">校区地址: </label> <input
-		class=" easyui-validatebox" name="place" value=""
-		style="height: 26px; width: 350px;" id="place" />
-	</span> <br> <br> <span class="tab-m"> <label> 报名时间:
-	</label> <input class=" easyui-validatebox easyui-datebox" type="number"
-		name="cpc" value="" style="height: 26px;" id="signDate" /> <input
-		class="easyui-timespinner" label="Start Time:" labelPosition="top"
-		value="09:00" style="width: 100%; height: 30px;" id="startTime" /> <label>
-			- </label> <input class="easyui-timespinner" label="End Time:"
-		labelPosition="top" value="18:00" style="width: 100%; height: 30px;"
-		id="endTime" />
-	</span> </span>
+		value="" style="height: 26px; width: 50px;" id="endNumber" />
+	</span> 
 
 	<button class="search_btn_noWidth" onclick="sendSms();">查询</button>
 </div>
