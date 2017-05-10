@@ -452,12 +452,23 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				if (EweblibUtil.isEmpty(schoolName)) {
 					throw new ResponseException("第" + (i + 1) + "行的学生校区不能为空");
 				}
+				
+			
 
 				Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
 
 				if (birthDay == null) {
 
 					birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
+				}
+				
+				if (birthDay == null) {
+
+					try {
+						birthDay = new Date(birthdaryStr);
+					} catch (Exception e) {
+						logger.error(birthdaryStr + " parser error", e);
+					}
 				}
 
 				if (birthDay == null) {

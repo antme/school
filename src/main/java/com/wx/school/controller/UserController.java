@@ -25,7 +25,9 @@ import com.eweblib.annotation.role.Permission;
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.controller.AbstractController;
 import com.eweblib.exception.ResponseException;
+import com.eweblib.util.DateUtil;
 import com.eweblib.util.EWeblibThreadLocal;
+import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ImgUtil;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.user.Student;
@@ -155,6 +157,11 @@ public class UserController extends AbstractController {
 		User user = (User) parserJsonParameters(request, true, User.class);
 		Student s = (Student) parserJsonParameters(request, true, Student.class);
 
+		String birthDay = request.getParameter("birthDay");
+		if(EweblibUtil.isValid(birthDay)){
+			s.setBirthday(DateUtil.getDateTime(birthDay));
+		}
+		
 		user = userService.submitPersonInfo(user, s);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);

@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 
 import com.eweblib.annotation.column.BooleanColumn;
+import com.eweblib.annotation.column.DateColumn;
 import com.eweblib.bean.BaseEntity;
 
 @Table(name = Student.TABLE_NAME)
@@ -35,6 +36,7 @@ public class Student extends BaseEntity {
 	public String name;
 
 	@Column(name = BIRTH_DAY)
+	@DateColumn
 	public Date birthday;
 
 	@Column(name = OWNER_ID)

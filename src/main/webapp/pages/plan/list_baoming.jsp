@@ -177,6 +177,11 @@
 			<div class="form_items">
 				<label class="r-edit-label width100">单批次报名人数:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="signUpCount" id="signUpCount"/> <label class="r-edit-label ">人</label>
 			</div>
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">最后批次少于:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" value="0" name="lastMergeSignUpCount" id="lastMergeSignUpCount"/> <label class="r-edit-label ">人合并到上批次</label>
+			</div>
+			
 			<div class="form_items">
 				<label class="r-edit-label width100">报名地址:</label><textarea name="place" cols="50" rows="5"></textarea>
 			</div>

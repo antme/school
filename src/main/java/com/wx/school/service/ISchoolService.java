@@ -60,5 +60,7 @@ public interface ISchoolService {
 	void deleteSchoolBaomingPlan(SchoolBaoMingPlan plan);
 
 	SchoolBaoMingPlan loadSchoolBaomingPlan(SchoolBaoMingPlan plan);
+	
+	void renewBaomingPlanItem();
 
 }

@@ -467,71 +467,83 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		String[] updateFields = new String[] { SchoolBaoMingPlan.SIGN_UP_COUNT, SchoolBaoMingPlan.KEEP_ON_HOURS,
 				SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_HOURS,
-				SchoolBaoMingPlan.START_TIME };
+				SchoolBaoMingPlan.START_TIME, SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT };
 		this.dao.updateById(plan, updateFields);
 
 	}
 
-	private void renewBaomingPlanItem(SchoolPlan plan) {
+	public void renewBaomingPlanItem() {
 
-		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
-		logQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
-		logQuery.orderBy(SmsLog.END_NUMBER, false);
-		SmsLog last = this.dao.findOneByQuery(logQuery, SmsLog.class);
-		int startCount = 1;
+		List<SchoolPlan> planList = this.dao.listByQuery(new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME),
+				SchoolPlan.class);
 
-		if (last != null) {
-			startCount = last.getEndNumber() + 1;
-		}
+		for (SchoolPlan plan : planList) {
 
-		DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
-		baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
-		baomingQuery.orderBy(SchoolBaoMingPlan.CREATED_ON, false);
-		SchoolBaoMingPlan baoming = this.dao.findOneByQuery(baomingQuery, SchoolBaoMingPlan.class);
+			DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+			logQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
+			logQuery.orderBy(SmsLog.END_NUMBER, false);
+			SmsLog last = this.dao.findOneByQuery(logQuery, SmsLog.class);
+			int startCount = 1;
 
-		if (baoming != null) {
-			DataBaseQueryBuilder studentNumberQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
-			studentNumberQuery.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
-			studentNumberQuery.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, startCount);
+			if (last != null) {
+				startCount = last.getEndNumber() + 1;
+			}
 
-			int newStudentCount = this.dao.count(studentNumberQuery);
+			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
+			baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
+			baomingQuery.orderBy(SchoolBaoMingPlan.CREATED_ON, false);
+			SchoolBaoMingPlan baoming = this.dao.findOneByQuery(baomingQuery, SchoolBaoMingPlan.class);
 
-			if (newStudentCount > 0) {
+			if (baoming != null) {
+				DataBaseQueryBuilder studentNumberQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+				studentNumberQuery.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
+				studentNumberQuery.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, startCount);
 
-				int signUpCount = baoming.getSignUpCount();
+				int newStudentCount = this.dao.count(studentNumberQuery);
 
-				int length = newStudentCount / signUpCount;
-				int remaining = newStudentCount % signUpCount;
-				String endTime = baoming.getStartTime();
+				if (newStudentCount > 0) {
 
-				if (last != null) {
-					endTime = last.getEndTime();
-				}
-				Date startDate = DateUtil
-						.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + endTime + ":00");
-				Calendar c = Calendar.getInstance();
-				c.setTime(startDate);
+					int signUpCount = baoming.getSignUpCount();
 
-				for (int i = 0; i < length; i++) {
+					int length = newStudentCount / signUpCount;
+					int remaining = newStudentCount % signUpCount;
+					String endTime = baoming.getStartTime();
 
-					createSmsLog(last, startCount, baoming, signUpCount, c, i);
-				}
+					if (last != null) {
+						endTime = last.getEndTime();
+					}
+					Date startDate = DateUtil
+							.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + endTime + ":00");
+					Calendar c = Calendar.getInstance();
+					c.setTime(startDate);
 
-				if (remaining > 0) {
-					Date date = DateUtil.getDateTime(
-							DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
+					for (int i = 0; i < length; i++) {
 
-					if (date.getTime() < new Date().getTime()) {
-						if (remaining < baoming.getLastMergeSignUpCount()) {
-							int total = last.getEndNumber() + remaining;
-							last.setEndNumber(total);
-							last.setSuccessCount(total);
-							last.setTotalSend(total);
-							this.dao.updateById(last,
-									new String[] { SmsLog.END_NUMBER, SmsLog.SUCCESS_COUNT, SmsLog.TOTAL_SEND });
-						} else {
-							createSmsLog(last, startCount, baoming, signUpCount, c, 0);
+						createSmsLog(last, startCount, baoming, signUpCount, c, i);
+					}
+
+					if (remaining > 0) {
+						Date date = DateUtil.getDateTime(
+								DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
+
+						if (date.getTime() < new Date().getTime()) {
+							if (remaining < baoming.getLastMergeSignUpCount()) {
+
+								if (last != null) {
+									int total = last.getEndNumber() + remaining;
+									last.setEndNumber(total);
+									last.setSuccessCount(total);
+									last.setTotalSend(total);
+									this.dao.updateById(last, new String[] { SmsLog.END_NUMBER, SmsLog.SUCCESS_COUNT,
+											SmsLog.TOTAL_SEND });
+								} else {
+									createSmsLog(last, startCount, baoming, remaining, c, 0);
+								}
+							} else {
+								createSmsLog(last, startCount, baoming, signUpCount, c, 0);
+							}
 						}
+
 					}
 
 				}
