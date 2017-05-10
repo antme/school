@@ -153,8 +153,9 @@ public class UserController extends AbstractController {
 	@RequestMapping("/parent/submit.do")
 	public void submitPersonInfo(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) parserJsonParameters(request, true, User.class);
+		Student s = (Student) parserJsonParameters(request, true, Student.class);
 
-		user = userService.submitPersonInfo(user);
+		user = userService.submitPersonInfo(user, s);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);
 	}
@@ -266,6 +267,33 @@ public class UserController extends AbstractController {
 
 		try {
 			userService.importParentInfo(uploadFile.getInputStream());
+		} catch (IOException e) {
+			logger.fatal("文件导入失败", e);
+			throw new ResponseException("文件导入失败，请稍后再试");
+		}
+
+		responseWithEntity(null, request, response);
+
+	}
+
+	@RequestMapping("/admin/student/import.do")
+	public void importStudentInfo(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		MultipartFile uploadFile = multipartRequest.getFile("studentfile");
+		String name = uploadFile.getOriginalFilename().toLowerCase().trim().replaceAll(" ", "");
+		int index = name.lastIndexOf(".");
+		if (index == -1) {
+			throw new ResponseException("请上传xls或者xlsx格式的文件");
+		}
+		String fType = name.substring(index, name.length());
+		if (!fType.equals(".xls") && !fType.equals(".xlsx")) {
+			throw new ResponseException("文件格式仅支持xls和xlsx");
+		}
+
+		try {
+			userService.importStudentInfo(uploadFile.getInputStream());
 		} catch (IOException e) {
 			logger.fatal("文件导入失败", e);
 			throw new ResponseException("文件导入失败，请稍后再试");

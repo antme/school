@@ -21,6 +21,7 @@ public class CacheServiceImpl extends AbstractService implements ICacheService {
 
 	public static Map<String, SchoolPlan> shcoolPlanMap = new HashMap<String, SchoolPlan>();
 
+
 	public static List<SchoolPlan> list = null;
 
 	@Override

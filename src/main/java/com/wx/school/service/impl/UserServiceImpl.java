@@ -1,6 +1,7 @@
 package com.wx.school.service.impl;
 
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.eweblib.util.EWeblibThreadLocal;
 import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.SearchVO;
+import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
@@ -96,7 +98,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	}
 
-	public User submitPersonInfo(User user) {
+	public User submitPersonInfo(User user, Student student) {
 
 		if (EweblibUtil.isEmpty(user.getName())) {
 			throw new ResponseException("姓名不能为空");
@@ -117,6 +119,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		checkPassword(user);
 		ms.checkSms(user, 0);
 
+		submitStudentInfo(student);
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
@@ -149,11 +152,11 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public void submitStudentInfo(Student student) {
 		if (EweblibUtil.isEmpty(student.getName())) {
-			throw new ResponseException("姓名不能为空");
+			throw new ResponseException("学生姓名不能为空");
 		}
 
 		if (EweblibUtil.isEmpty(student.getSex())) {
-			throw new ResponseException("性别不能为空");
+			throw new ResponseException("学生性别不能为空");
 		}
 
 		if (EweblibUtil.isEmpty(student.getBirthday())) {
@@ -168,39 +171,61 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("请先登录");
 		}
 
-		checkStudent(student, true);
-
-		student.setIsVip(false);
+		Student s = checkStudent(student, true, false);
 		student.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
-		this.dao.insert(student);
-
+		student.setId(s.getId());
+		student.setCreatedOn(new Date());
+		this.dao.updateById(student, new String[] { Student.CREATED_ON, Student.BIRTH_DAY, Student.OWNER_ID });
+		// this.dao.insert(student);
 	}
 
-	private void checkStudent(Student student, boolean isNew) {
+	private Student checkStudent(Student student, boolean isNew, boolean isEdit) {
 		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
 		checkQuery.and(Student.NAME, student.getName());
 		checkQuery.and(Student.SEX, student.getSex());
-		checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
-		if (!isNew) {
-			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, Student.ID, student.getId());
+
+		// checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(student.getBirthday());
+
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+
+		checkQuery.and(Student.BIRDARY_YEAR, year);
+		checkQuery.and(Student.BIRDARY_MONTH, month);
+
+		if (isNew) {
+			String currentUserId = EWeblibThreadLocal.getCurrentUserId();
+			if (EweblibUtil.isValid(currentUserId)) {
+				DataBaseQueryBuilder checkCountQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+				checkCountQuery.and(Student.OWNER_ID, currentUserId);
+
+				if (this.dao.exists(checkCountQuery)) {
+					throw new ResponseException("一个家长只能创建一个学生");
+				}
+			}
+		}
+		Student s = null;
+		if (isEdit) {
 
 			if (EweblibUtil.isEmpty(student.getId())) {
 				throw new ResponseException("非法参数");
 			}
-		}
+			checkQuery.and(DataBaseQueryOpertion.NOT_EQUALS, Student.ID, student.getId());
 
-		if (isNew) {
-			DataBaseQueryBuilder checkCountQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
-			checkCountQuery.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
-
-			if (this.dao.exists(checkCountQuery)) {
-				throw new ResponseException("一个家长只能创建一个学生");
+			s = this.dao.findOneByQuery(checkQuery, Student.class);
+			if (s != null) {
+				throw new ResponseException("提交的学生信息有重复");
 			}
 
+		} else {
+			s = this.dao.findOneByQuery(checkQuery, Student.class);
+			if (s == null) {
+				throw new ResponseException("此学生信息不存在");
+			}
 		}
-		if (this.dao.exists(checkQuery)) {
-			throw new ResponseException("此学生信息已经提交");
-		}
+		return s;
 	}
 
 	public List<Student> listStudentInfo() {
@@ -276,7 +301,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				query.and(DataBaseQueryOpertion.LIKE, User.TABLE_NAME + "." + User.MOBILE_NUMBER,
 						uvo.getMobileNumber());
 			}
-			
+
 			if (EweblibUtil.isValid(uvo.getRemark())) {
 				query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.REMARK, uvo.getRemark());
 			}
@@ -302,7 +327,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public void updateStudentInfo(Student student) {
 
-		checkStudent(student, false);
+		checkStudent(student, false, true);
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK });
 	}
 
@@ -352,20 +377,18 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		List<Student> userList = this.dao.listByQuery(query, Student.class);
 
 		for (int index = 0; index < excleUtil.getNumberOfSheets(); index++) {
-			
+
 			List<String[]> list = excleUtil.getAllData(index);
 
 			if (list.isEmpty()) {
 				continue;
 			}
 
-			logger.info(excleUtil.getSheetName(index) + ":" + list.size());
 			for (int i = 0; i < list.size(); i++) {// 从第2行开始读数据
 
 				String[] row = list.get(i);
 
 				String name = row[0].trim();
-				System.out.println(name);
 				for (Student student : userList) {
 					if (student.getName().trim().equals(name.trim())) {
 						student.setIsVip(true);
@@ -376,6 +399,120 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			}
 		}
 
+	}
+
+	public void importStudentInfo(InputStream inputStream) {
+		ExcelUtil excleUtil = new ExcelUtil(inputStream);
+		Map<String, School> schoolMap = new HashMap<String, School>();
+
+		for (int index = 0; index < excleUtil.getNumberOfSheets(); index++) {
+
+			List<String[]> list = excleUtil.getAllData(index);
+
+			if (list.isEmpty()) {
+				continue;
+			}
+
+			logger.info(excleUtil.getSheetName(index) + ":" + list.size());
+			for (int i = 1; i < list.size(); i++) {// 从第2行开始读数据
+
+				String[] row = list.get(i);
+
+				String name = row[0].trim();
+				String sex = row[1].trim();
+				String birthdaryStr = row[2].trim();
+				String schoolName = row[3].trim();
+				String remark = null;
+
+				if (row.length > 4) {
+					remark = row[4].trim();
+				}
+
+				if (EweblibUtil.isEmpty(name)) {
+					throw new ResponseException("第" + (i + 1) + "行的学生姓名不能为空");
+				}
+
+				if (EweblibUtil.isEmpty(sex)) {
+					throw new ResponseException("第" + (i + 1) + "行的学生性别不能为空");
+				}
+
+				if (EweblibUtil.isEmpty(birthdaryStr)) {
+					throw new ResponseException("第" + (i + 1) + "行的学生出生日期不能为空");
+				}
+
+				if (EweblibUtil.isEmpty(schoolName)) {
+					throw new ResponseException("第" + (i + 1) + "行的学生校区不能为空");
+				}
+
+				Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
+
+				if (birthDay == null) {
+
+					birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
+				}
+
+				if (birthDay == null) {
+					throw new ResponseException("第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
+				}
+
+				Calendar c = Calendar.getInstance();
+				c.setTime(birthDay);
+
+				int year = c.get(Calendar.YEAR);
+				int month = c.get(Calendar.MONTH) + 1;
+
+				String sexEn = null;
+				if (sex.equalsIgnoreCase("男")) {
+					sexEn = "m";
+				} else if (sex.equalsIgnoreCase("女")) {
+					sexEn = "f";
+				}
+
+				if (EweblibUtil.isEmpty(sexEn)) {
+					throw new ResponseException("第" + (i + 1) + "行的学生性别填写错误");
+				}
+				School school = schoolMap.get(schoolName);
+
+				if (school == null) {
+					school = this.dao.findByKeyValue(School.NAME, schoolName, School.TABLE_NAME, School.class);
+					if (school != null) {
+						schoolMap.put(schoolName, school);
+					}
+				}
+
+				if (school == null) {
+					if (name.contains("校区")) {
+						throw new ResponseException(schoolName + "  不存在,请先创建");
+					} else {
+						throw new ResponseException(schoolName + "  校区不存在,请先创建");
+					}
+				}
+				Student student = new Student();
+				student.setName(name);
+				student.setSex(sexEn);
+				student.setBirthday(birthDay);
+				student.setIsVip(true);
+				student.setRemark(remark);
+				student.setBirdaryMonth(month);
+				student.setBirdaryYear(year);
+				student.setSchoolId(school.getId());
+
+				DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+				query.and(Student.NAME, name);
+				query.and(Student.SEX, sexEn);
+				query.and(Student.BIRDARY_YEAR, year);
+				query.and(Student.BIRDARY_MONTH, month);
+
+				Student old = this.dao.findOneByQuery(query, Student.class);
+				if (old != null) {
+					student.setId(old.getId());
+					this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY, Student.REMARK });
+				} else {
+					this.dao.insert(student);
+				}
+
+			}
+		}
 	}
 
 }

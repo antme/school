@@ -24,7 +24,7 @@ public interface IUserService {
 
 	public void editUserForAdmin(User user);
 
-	public User submitPersonInfo(User user);
+	public User submitPersonInfo(User user, Student student);
 
 	public User loadMyPersonInfo();
 
@@ -53,6 +53,9 @@ public interface IUserService {
 
 
 	public void importParentInfo(InputStream inputStream);
+	
+	public void importStudentInfo(InputStream inputStream);
+
 
 
 

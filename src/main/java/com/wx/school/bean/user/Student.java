@@ -11,6 +11,12 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = Student.TABLE_NAME)
 public class Student extends BaseEntity {
 
+	public static final String SCHOOL_ID = "schoolId";
+
+	public static final String BIRDARY_MONTH = "birdaryMonth";
+
+	public static final String BIRDARY_YEAR = "birdaryYear";
+
 	public static final String REMARK = "remark";
 
 	public static final String SEX = "sex";
@@ -22,6 +28,8 @@ public class Student extends BaseEntity {
 	public static final String TABLE_NAME = "Student";
 
 	public static final String NAME = "name";
+
+	public static final String IS_VIP = "isVip";
 
 	@Column(name = NAME)
 	public String name;
@@ -37,12 +45,53 @@ public class Student extends BaseEntity {
 
 	@Column(name = REMARK)
 	public String remark;
-	
-	public static final String IS_VIP = "isVip";
 
 	@Column(name = IS_VIP)
 	@BooleanColumn
 	public Boolean isVip;
+
+	@Column(name = BIRDARY_YEAR)
+	public Integer birdaryYear;
+
+	@Column(name = BIRDARY_MONTH)
+	public Integer birdaryMonth;
+
+	@Column(name = SCHOOL_ID)
+	public String schoolId;
+
+	public String studentName;
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
+	public String getSchoolId() {
+		return schoolId;
+	}
+
+	public void setSchoolId(String schoolId) {
+		this.schoolId = schoolId;
+	}
+
+	public Integer getBirdaryYear() {
+		return birdaryYear;
+	}
+
+	public void setBirdaryYear(Integer birdaryYear) {
+		this.birdaryYear = birdaryYear;
+	}
+
+	public Integer getBirdaryMonth() {
+		return birdaryMonth;
+	}
+
+	public void setBirdaryMonth(Integer birdaryMonth) {
+		this.birdaryMonth = birdaryMonth;
+	}
 
 	public Boolean getIsVip() {
 		return isVip;
@@ -51,7 +100,6 @@ public class Student extends BaseEntity {
 	public void setIsVip(Boolean isVip) {
 		this.isVip = isVip;
 	}
-
 
 	public Boolean hasNumber = false;
 
