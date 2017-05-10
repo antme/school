@@ -12,41 +12,6 @@
 		var signDate = $("#signDate").datebox('getValue');
 		var startTime = $("#startTime").timespinner('getValue');
 		var endTime = $("#endTime").timespinner('getValue');
-	
-		
-
-		var can_submit = true;
-		if (!schoolId) {
-			$.messager.alert('提示', '请选择校区');
-			can_submit = false;
-		}
-
-		else if (!startNumber) {
-			$.messager.alert('提示', '请输入号段开始');
-			can_submit = false;
-		}
-
-		else if (!endNumber) {
-			$.messager.alert('提示', '请输入号段结束');
-			can_submit = false;
-		}
-
-		else if (!place) {
-			$.messager.alert('提示', '请输入报名地点');
-			can_submit = false;
-		} else if (!signDate) {
-			$.messager.alert('提示', '请选择报名日期');
-			can_submit = false;
-		} else if (!startTime) {
-			$.messager.alert('提示', '请选择报名开始时间');
-			can_submit = false;
-		} else if (!endTime) {
-			$.messager.alert('提示', '请选择报名结束时间');
-			can_submit = false;
-		} else if (parseInt(startNumber) > parseInt(endNumber)) {
-			$.messager.alert('提示', '结束号段不能小于开始号段');
-			can_submit = false;
-		}
 
 		var data = {
 			signDate : signDate,
@@ -59,8 +24,8 @@
 
 		};
 
-		if (can_submit) {
-			$.messager.confirm('发送通知', '确认发送通知？', function(r) {
+		
+	/* 		$.messager.confirm('发送通知', '确认发送通知？', function(r) {
 				if (r) {
 
 					postAjaxRequest('/sms/school/book/notice.do', data,
@@ -69,8 +34,8 @@
 								$("#datalist").datagrid('reload');
 							});
 				}
-			});
-		}
+			}); */
+		
 
 	}
 
@@ -132,7 +97,7 @@
 		id="endTime" />
 	</span> </span>
 
-	<button class="search_btn_noWidth" onclick="sendSms();">发送通知</button>
+	<button class="search_btn_noWidth" onclick="sendSms();">查询</button>
 </div>
 
 
