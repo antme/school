@@ -170,7 +170,7 @@ public class UserController extends AbstractController {
 	public void submitStudentInfo(HttpServletRequest request, HttpServletResponse response) {
 		Student person = (Student) parserJsonParameters(request, true, Student.class);
 
-		userService.submitStudentInfo(person);
+		userService.submitStudentInfo(person, false);
 		responseWithEntity(null, request, response);
 	}
 

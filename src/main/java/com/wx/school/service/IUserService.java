@@ -28,7 +28,7 @@ public interface IUserService {
 
 	public User loadMyPersonInfo();
 
-	public void submitStudentInfo(Student student);
+	public Student submitStudentInfo(Student student, boolean isReg);
 
 	public List<Student> listStudentInfo();
 

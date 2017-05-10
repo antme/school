@@ -120,11 +120,18 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		checkPassword(user);
 		ms.checkSms(user, 0);
 
-		submitStudentInfo(student);
+		Student s = submitStudentInfo(student, true);
+		
+		
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
 		this.dao.insert(user);
+		
+		student.setOwnerId(user.getId());
+		student.setId(s.getId());
+		student.setCreatedOn(new Date());
+		this.dao.updateById(student, new String[] { Student.CREATED_ON, Student.BIRTH_DAY, Student.OWNER_ID });
 
 		return user;
 
@@ -151,7 +158,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		return this.dao.findOneByQuery(query, User.class);
 	}
 
-	public void submitStudentInfo(Student student) {
+	public Student submitStudentInfo(Student student, boolean isReg) {
 		if (EweblibUtil.isEmpty(student.getName())) {
 			throw new ResponseException("学生姓名不能为空");
 		}
@@ -168,15 +175,16 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("性别参数错误");
 		}
 
-		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
-			throw new ResponseException("请先登录");
+		if (!isReg) {
+			if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
+				throw new ResponseException("请先登录");
+			}
 		}
 
 		Student s = checkStudent(student, true, false);
-		student.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
-		student.setId(s.getId());
-		student.setCreatedOn(new Date());
-		this.dao.updateById(student, new String[] { Student.CREATED_ON, Student.BIRTH_DAY, Student.OWNER_ID });
+		return s;
+		
+	
 		// this.dao.insert(student);
 	}
 
