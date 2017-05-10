@@ -144,6 +144,18 @@ public class MessageServiceImpl implements IMessageService {
 		query.leftJoin(SmsLog.TABLE_NAME, School.TABLE_NAME, SmsLog.SCHOOL_ID, School.ID);
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
 		query.limitColumns(new SmsLog().getColumnList());
+		
+		if(EweblibUtil.isValid(smsLog.getSchoolId())){
+			query.and(SmsLog.SCHOOL_ID, smsLog.getSchoolId());
+		}
+		
+		if(EweblibUtil.isValid(smsLog.getStartNumber())){
+			query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.START_NUMBER, smsLog.getStartNumber());
+		}
+		
+		if(EweblibUtil.isValid(smsLog.getEndNumber())){
+			query.and(DataBaseQueryOpertion.LESS_THAN_EQUAILS, SmsLog.END_NUMBER, smsLog.getEndNumber());
+		}
 
 		return this.dao.listByQueryWithPagnation(query, SmsLog.class);
 	}
