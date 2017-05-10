@@ -100,6 +100,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public User submitPersonInfo(User user, Student student) {
 
+		student.setName(student.getStudentName());
 		if (EweblibUtil.isEmpty(user.getName())) {
 			throw new ResponseException("姓名不能为空");
 		}
