@@ -116,13 +116,16 @@ public class MessageServiceImpl implements IMessageService {
 
 		smsLog.setMobileNumbers(EweblibUtil.toJson(mobileSet).replace("[", "").replace("]", "").replaceAll("\"", ""));
 
-//		School school = this.dao.findById(smsLog.getSchoolId(), School.TABLE_NAME, School.class);
+		// School school = this.dao.findById(smsLog.getSchoolId(),
+		// School.TABLE_NAME, School.class);
 
-		Set<String> failedMobiles  = new HashSet<String>();
-		
-//		Set<String> failedMobiles = SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()),
-//				smsLog.getStartTime(), smsLog.getEndTime(), school.getName(), smsLog.getPlace(),
-//				smsLog.getMobileNumbers());
+		Set<String> failedMobiles = new HashSet<String>();
+
+		// Set<String> failedMobiles =
+		// SmsHelp.sendSchoolNoticeSms(DateUtil.getDateString(smsLog.getSignDate()),
+		// smsLog.getStartTime(), smsLog.getEndTime(), school.getName(),
+		// smsLog.getPlace(),
+		// smsLog.getMobileNumbers());
 		smsLog.setSuccessCount(smsLog.getTotalSend() - failedMobiles.size());
 		smsLog.setFailedCount(failedMobiles.size());
 		smsLog.setFailedMobileNumbers(
@@ -226,8 +229,10 @@ public class MessageServiceImpl implements IMessageService {
 		if (result != null) {
 			School school = this.dao.findById(result.getSchoolId(), School.TABLE_NAME, School.class);
 
+			String name = school.getName().replaceAll("校区", "");
+
 			msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
-					+ result.getEndTime() + "至" + school.getName() + "（地址：" + result.getPlace()
+					+ result.getEndTime() + "至" + name + "（地址：" + result.getPlace()
 					+ ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
 
 		}

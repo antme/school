@@ -1,5 +1,7 @@
 package com.wx.school.bean;
 
+import java.util.Date;
+
 import com.eweblib.annotation.column.BooleanColumn;
 import com.eweblib.annotation.column.IntegerColumn;
 import com.wx.school.bean.user.User;
@@ -17,6 +19,16 @@ public class SearchVO extends User {
 
 	@BooleanColumn
 	public Boolean isVip;
+
+	public Date signUpDate;
+
+	public Date getSignUpDate() {
+		return signUpDate;
+	}
+
+	public void setSignUpDate(Date signUpDate) {
+		this.signUpDate = signUpDate;
+	}
 
 	public Boolean getIsVip() {
 		return isVip;

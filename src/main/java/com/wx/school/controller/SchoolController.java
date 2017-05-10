@@ -12,6 +12,7 @@ import com.eweblib.annotation.role.Permission;
 import com.eweblib.controller.AbstractController;
 import com.eweblib.util.EWeblibThreadLocal;
 import com.wx.school.bean.SearchVO;
+import com.wx.school.bean.plan.SchoolBaoMingPlan;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.school.StudentNumber;
@@ -174,6 +175,63 @@ public class SchoolController extends AbstractController {
 
 		responseWithDataPagnation(schoolService.listStudentPlanForAdmin(svo), request, response);
 	}
+	
+	@RequestMapping("/admin/plan/baoming/add.do")
+	@LoginRequired(required = false)
+	public void addSchoolBaomingPlan(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SchoolBaoMingPlan plan = (SchoolBaoMingPlan) parserJsonParameters(request, false, SchoolBaoMingPlan.class);
+		schoolService.addSchoolBaomingPlan(plan);
+		responseWithEntity(null, request, response);
+
+	}
+	
+	@RequestMapping("/admin/plan/baoming/update.do")
+	@LoginRequired(required = false)
+	public void updateSchoolBaomingPlan(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SchoolBaoMingPlan plan = (SchoolBaoMingPlan) parserJsonParameters(request, false, SchoolBaoMingPlan.class);
+		schoolService.updateSchoolBaomingPlan(plan);
+		responseWithEntity(null, request, response);
+
+	}
+	
+	@RequestMapping("/admin/plan/baoming/list.do")
+	@LoginRequired(required = false)
+	public void listSchoolBaomingPlanForAdmin(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SearchVO svo = (SearchVO) parserJsonParameters(request, true, SearchVO.class);
+
+		responseWithDataPagnation(schoolService.listSchoolBaomingPlanForAdmin(svo), request, response);
+	}
+	
+	@RequestMapping("/admin/plan/baoming/delete.do")
+	@LoginRequired(required = false)
+	public void deleteSchoolBaomingPlan(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SchoolBaoMingPlan plan = (SchoolBaoMingPlan) parserJsonParameters(request, false, SchoolBaoMingPlan.class);
+		schoolService.deleteSchoolBaomingPlan(plan);
+		responseWithEntity(null, request, response);
+
+	}
+	
+
+	@RequestMapping("/admin/plan/baoming/load.do")
+	@LoginRequired(required = false)
+	public void loadSchoolBaomingPlan(HttpServletRequest request, HttpServletResponse response) {
+		userService.validAdmin(EWeblibThreadLocal.getCurrentUserId());
+
+		SchoolBaoMingPlan plan = (SchoolBaoMingPlan) parserJsonParameters(request, false, SchoolBaoMingPlan.class);;
+
+		responseWithEntity(schoolService.loadSchoolBaomingPlan(plan), request, response);
+
+	}
+	
+	
 	
 	
 	@RequestMapping("/student/number/export.do")

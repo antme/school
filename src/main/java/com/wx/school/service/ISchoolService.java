@@ -6,6 +6,7 @@ import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.StudentPlanInfo;
+import com.wx.school.bean.plan.SchoolBaoMingPlan;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.school.StudentNumber;
@@ -15,7 +16,7 @@ import com.wx.school.bean.user.Student;
 public interface ISchoolService {
 
 	List<SchoolPlan> listSchoolPlan();
-	
+
 	public void addSchool(School school);
 
 	StudentNumber bookSchool(StudentNumber sn);
@@ -49,5 +50,15 @@ public interface ISchoolService {
 	StudentNumber loadStudentPlanRemark(StudentNumber number);
 
 	void updateStudentPlanRemark(StudentNumber number);
+
+	void addSchoolBaomingPlan(SchoolBaoMingPlan plan);
+
+	void updateSchoolBaomingPlan(SchoolBaoMingPlan plan);
+
+	EntityResults<SchoolBaoMingPlan> listSchoolBaomingPlanForAdmin(SearchVO svo);
+
+	void deleteSchoolBaomingPlan(SchoolBaoMingPlan plan);
+
+	SchoolBaoMingPlan loadSchoolBaomingPlan(SchoolBaoMingPlan plan);
 
 }

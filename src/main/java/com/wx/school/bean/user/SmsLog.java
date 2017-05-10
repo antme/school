@@ -10,6 +10,8 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = SmsLog.TABLE_NAME)
 public class SmsLog extends BaseEntity {
 
+	public static final String BAOMING_PLAN_ID = "baomingPlanId";
+
 	public static final String FAILED_COUNT = "failedCount";
 
 	public static final String SUCCESS_COUNT = "successCount";
@@ -76,6 +78,17 @@ public class SmsLog extends BaseEntity {
 
 	@Column(name = PLACE)
 	public String place;
+
+	@Column(name = BAOMING_PLAN_ID)
+	public String baomingPlanId;
+
+	public String getBaomingPlanId() {
+		return baomingPlanId;
+	}
+
+	public void setBaomingPlanId(String baomingPlanId) {
+		this.baomingPlanId = baomingPlanId;
+	}
 
 	public String parentName;
 

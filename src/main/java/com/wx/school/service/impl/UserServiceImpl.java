@@ -100,7 +100,6 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public User submitPersonInfo(User user, Student student) {
 
-		student.setName(student.getStudentName());
 		if (EweblibUtil.isEmpty(user.getName())) {
 			throw new ResponseException("姓名不能为空");
 		}
@@ -119,7 +118,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		checkPassword(user);
 		ms.checkSms(user, 0);
-
+		student.setName(student.getStudentName());
 		Student s = submitStudentInfo(student, true);
 		
 		
@@ -159,6 +158,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	}
 
 	public Student submitStudentInfo(Student student, boolean isReg) {
+		
 		if (EweblibUtil.isEmpty(student.getName())) {
 			throw new ResponseException("学生姓名不能为空");
 		}

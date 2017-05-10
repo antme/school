@@ -1,6 +1,7 @@
 package com.wx.school.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,10 +26,12 @@ import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.SearchVO;
 import com.wx.school.bean.StudentPlanInfo;
+import com.wx.school.bean.plan.SchoolBaoMingPlan;
 import com.wx.school.bean.school.School;
 import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.school.StudentSchoolInfo;
+import com.wx.school.bean.user.SmsLog;
 import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.ICacheService;
@@ -47,13 +50,32 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	@Autowired
 	private IMessageService ms;
-	
-	
+
 	@Override
 	public List<SchoolPlan> listSchoolPlan() {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		query.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
+
+		List<Student> studentList = this.dao.listByQuery(query, Student.class);
+
 		List<SchoolPlan> list = CacheServiceImpl.list;
-		updateStatus(list);
-		return list;
+
+		List<SchoolPlan> finalList = new ArrayList<SchoolPlan>();
+
+		for (SchoolPlan plan : list) {
+			for (Student s : studentList) {
+				if (s.getSchoolId() != null) {
+					if (plan.getSchoolId().equalsIgnoreCase(s.getSchoolId())) {
+						finalList.add(plan);
+						break;
+					}
+				}
+
+			}
+		}
+		updateStatus(finalList);
+		return finalList;
 	}
 
 	private void updateStatus(List<SchoolPlan> list) {
@@ -144,12 +166,12 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (this.dao.exists(StudentNumber.STUDENT_ID, sn.getStudentId(), StudentNumber.TABLE_NAME)) {
 			throw new ResponseException("此学生已经选择校区");
 		}
+
 		setBookNumber(sn, plan);
 		sn.setOwnerId(EWeblibThreadLocal.getCurrentUserId());
 		sn.setIsSmsSent(false);
 		this.dao.insert(sn);
 
-		System.out.println(new Date().getTime());
 		logger.info(sn.toString());
 		StudentNumber tmp = new StudentNumber();
 		tmp.setNumber(sn.getNumber());
@@ -431,4 +453,148 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	public void updateStudentPlanRemark(StudentNumber number) {
 		this.dao.updateById(number, new String[] { StudentNumber.REMARK });
 	}
+
+	public void addSchoolBaomingPlan(SchoolBaoMingPlan plan) {
+
+		if (EweblibUtil.isValid(plan.getId())) {
+			updateSchoolBaomingPlan(plan);
+		} else {
+			this.dao.insert(plan);
+		}
+	}
+
+	public void updateSchoolBaomingPlan(SchoolBaoMingPlan plan) {
+
+		String[] updateFields = new String[] { SchoolBaoMingPlan.SIGN_UP_COUNT, SchoolBaoMingPlan.KEEP_ON_HOURS,
+				SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_HOURS,
+				SchoolBaoMingPlan.START_TIME };
+		this.dao.updateById(plan, updateFields);
+
+	}
+
+	private void renewBaomingPlanItem(SchoolPlan plan) {
+
+		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+		logQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
+		logQuery.orderBy(SmsLog.END_NUMBER, false);
+		SmsLog last = this.dao.findOneByQuery(logQuery, SmsLog.class);
+		int startCount = 1;
+
+		if (last != null) {
+			startCount = last.getEndNumber() + 1;
+		}
+
+		DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
+		baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
+		baomingQuery.orderBy(SchoolBaoMingPlan.CREATED_ON, false);
+		SchoolBaoMingPlan baoming = this.dao.findOneByQuery(baomingQuery, SchoolBaoMingPlan.class);
+
+		if (baoming != null) {
+			DataBaseQueryBuilder studentNumberQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
+			studentNumberQuery.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
+			studentNumberQuery.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, startCount);
+
+			int newStudentCount = this.dao.count(studentNumberQuery);
+
+			if (newStudentCount > 0) {
+
+				int signUpCount = baoming.getSignUpCount();
+
+				int length = newStudentCount / signUpCount;
+				int remaining = newStudentCount % signUpCount;
+				String endTime = baoming.getStartTime();
+
+				if (last != null) {
+					endTime = last.getEndTime();
+				}
+				Date startDate = DateUtil
+						.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + endTime + ":00");
+				Calendar c = Calendar.getInstance();
+				c.setTime(startDate);
+
+				for (int i = 0; i < length; i++) {
+
+					createSmsLog(last, startCount, baoming, signUpCount, c, i);
+				}
+
+				if (remaining > 0) {
+					Date date = DateUtil.getDateTime(
+							DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
+
+					if (date.getTime() < new Date().getTime()) {
+						if (remaining < baoming.getLastMergeSignUpCount()) {
+							int total = last.getEndNumber() + remaining;
+							last.setEndNumber(total);
+							last.setSuccessCount(total);
+							last.setTotalSend(total);
+							this.dao.updateById(last,
+									new String[] { SmsLog.END_NUMBER, SmsLog.SUCCESS_COUNT, SmsLog.TOTAL_SEND });
+						} else {
+							createSmsLog(last, startCount, baoming, signUpCount, c, 0);
+						}
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	private void createSmsLog(SmsLog last, int startCount, SchoolBaoMingPlan baoming, int signUpCount, Calendar c,
+			int i) {
+		SmsLog log = new SmsLog();
+		log.setBaomingPlanId(baoming.getId());
+		log.setStartNumber(startCount + i * signUpCount);
+		log.setEndNumber(startCount - 1 + (i + 1) * signUpCount);
+		log.setTotalSend(signUpCount);
+		log.setSuccessCount(signUpCount);
+		log.setPlace(baoming.getPlace());
+		log.setSchoolId(baoming.getSchoolId());
+		log.setSignDate(baoming.getSignUpDate());
+
+		if (last != null) {
+			// 如果已经有批次了，要加上 skipHours
+			c.add(Calendar.MINUTE, (int) (baoming.getSkipHours() * 60) + 1);
+		}
+		String newStartTime = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
+
+		log.setStartTime(newStartTime);
+
+		if (last != null) {
+			c.add(Calendar.MINUTE, (int) (baoming.getKeepOnHours() * 60) - 1);
+		} else {
+			c.add(Calendar.MINUTE, (int) (baoming.getKeepOnHours() * 60));
+		}
+		String newEndTime = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
+
+		log.setEndTime(newEndTime);
+		this.dao.insert(log);
+	}
+
+	public EntityResults<SchoolBaoMingPlan> listSchoolBaomingPlanForAdmin(SearchVO svo) {
+
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
+
+		if (svo.getSignUpDate() != null) {
+			query.and(SchoolBaoMingPlan.SIGN_UP_DATE, svo.getSignUpDate());
+		}
+
+		if (EweblibUtil.isValid(svo.getSchoolId())) {
+			query.and(SchoolBaoMingPlan.SCHOOL_ID, svo.getSchoolId());
+		}
+		return this.dao.listByQueryWithPagnation(query, SchoolBaoMingPlan.class);
+	}
+
+	public void deleteSchoolBaomingPlan(SchoolBaoMingPlan plan) {
+
+		this.dao.deleteById(plan);
+	}
+
+	public SchoolBaoMingPlan loadSchoolBaomingPlan(SchoolBaoMingPlan plan) {
+
+		return this.dao.findById(plan.getId(), SchoolBaoMingPlan.TABLE_NAME, SchoolBaoMingPlan.class);
+	}
+
 }

@@ -21,7 +21,7 @@
 
 	<div style="float:left;margin-left:20px; margin-top:10px;">
 		<a href="index.jsp?p=school/list">
-		<span style="margin-left: 5px;">报名批次管理</span></a>
+		<span style="margin-left: 5px;">取号批次管理</span></a>
 	</div>
 	
 	<div style="float:left;margin-left:20px; margin-top:10px;">
@@ -36,7 +36,12 @@
 
 	<div style="margin-left:20px; float:left; margin-top:10px;">
 		<a href="index.jsp?p=sms/list">
-		<span style="margin-left: 10px;">通知</span></a>
+		<span style="margin-left: 10px;">报名批次查询</span></a>
+	</div>
+	
+	<div style="margin-left:20px; float:left; margin-top:10px;">
+		<a href="index.jsp?p=plan/list_baoming">
+		<span style="margin-left: 10px;">报名计划管理</span></a>
 	</div>
 
 	<div style="margin-left:20px; float:left; margin-top:10px;">
