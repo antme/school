@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+import com.eweblib.annotation.column.IntegerColumn;
 import com.eweblib.bean.BaseEntity;
 
 @Table(name = SchoolBaoMingPlan.TABLE_NAME)
@@ -16,9 +17,9 @@ public class SchoolBaoMingPlan extends BaseEntity {
 
 	public static final String SIGN_UP_COUNT = "signUpCount";
 
-	public static final String SKIP_HOURS = "skipHours";
+	public static final String SKIP_MINUTES = "skipMinutes";
 
-	public static final String KEEP_ON_HOURS = "keepOnHours";
+	public static final String KEEP_ON_MINUTES = "keepOnMinutes";
 
 	public static final String START_TIME = "startTime";
 
@@ -37,11 +38,13 @@ public class SchoolBaoMingPlan extends BaseEntity {
 	@Column(name = START_TIME)
 	public String startTime;
 
-	@Column(name = KEEP_ON_HOURS)
-	public Float keepOnHours;
+	@Column(name = KEEP_ON_MINUTES)
+	@IntegerColumn
+	public Integer keepOnMinutes;
 
-	@Column(name = SKIP_HOURS)
-	public Float skipHours;
+	@Column(name = SKIP_MINUTES)
+	@IntegerColumn
+	public Integer skipMinutes;
 
 	@Column(name = SIGN_UP_COUNT)
 	public Integer signUpCount;
@@ -51,6 +54,16 @@ public class SchoolBaoMingPlan extends BaseEntity {
 
 	@Column(name = PLACE)
 	public String place;
+
+	public String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public Integer getLastMergeSignUpCount() {
 		return lastMergeSignUpCount;
@@ -84,20 +97,20 @@ public class SchoolBaoMingPlan extends BaseEntity {
 		this.signUpDate = signUpDate;
 	}
 
-	public Float getKeepOnHours() {
-		return keepOnHours;
+	public Integer getKeepOnMinutes() {
+		return keepOnMinutes;
 	}
 
-	public void setKeepOnHours(Float keepOnHours) {
-		this.keepOnHours = keepOnHours;
+	public void setKeepOnMinutes(Integer keepOnMinutes) {
+		this.keepOnMinutes = keepOnMinutes;
 	}
 
-	public Float getSkipHours() {
-		return skipHours;
+	public Integer getSkipMinutes() {
+		return skipMinutes;
 	}
 
-	public void setSkipHours(Float skipHours) {
-		this.skipHours = skipHours;
+	public void setSkipMinutes(Integer skipMinutes) {
+		this.skipMinutes = skipMinutes;
 	}
 
 	public Integer getSignUpCount() {

@@ -20,6 +20,6 @@ public interface IMessageService {
 
 	String exportFailedNotice(SmsLog smsLog);
 	
-	String loadNoticeMsg(StudentSchoolInfo info);
+	String loadNoticeMsg(StudentSchoolInfo info, boolean admin);
 	
 }

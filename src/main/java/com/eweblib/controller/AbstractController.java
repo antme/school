@@ -416,6 +416,7 @@ public abstract class AbstractController {
 			String nextElement = e.nextElement();
 			request.getSession().removeAttribute(nextElement);
 		}
+	
 	}
 
 	protected void clearLoginSession(HttpServletRequest request, HttpServletResponse response) {

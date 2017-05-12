@@ -129,7 +129,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		student.setOwnerId(user.getId());
 		student.setId(s.getId());
 		student.setCreatedOn(new Date());
-		this.dao.updateById(student, new String[] { Student.CREATED_ON, Student.BIRTH_DAY, Student.OWNER_ID });
+		this.dao.updateById(student, new String[] { Student.CREATED_ON, Student.OWNER_ID });
 
 		return user;
 
@@ -194,7 +194,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		// checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
 
 		Calendar c = Calendar.getInstance();
-		c.setTime(student.getBirthday());
+		c.setTime(DateUtil.getDate(student.getBirthday(), DateUtil.DATE_FORMAT));
 
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH) + 1;
@@ -543,7 +543,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				Student student = new Student();
 				student.setName(name);
 				student.setSex(sexEn);
-				student.setBirthday(birthDay);
+				
+				
+				String monthStr = month + "";
+				if (month < 10) {
+					monthStr = "0" + month + "";
+				}
+				String birthDayStr = year + "" + monthStr;
+				student.setBirthday(birthDayStr);
 				student.setIsVip(true);
 				student.setRemark(remark);
 				student.setBirdaryMonth(month);

@@ -243,7 +243,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 			info.setSchool(loadSchool(planMap.get(sn.getPlanId())));
 			info.setStudent(loadStudentInfo(sn.getStudentId()));
-			info.setBaomingMsg(ms.loadNoticeMsg(info));
+			info.setBaomingMsg(ms.loadNoticeMsg(info, false));
 			results.add(info);
 
 		}
@@ -265,7 +265,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 		query.and(Student.ID, id);
 		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.SIGN_UP_SCHOOL_ID,
-				Student.SIGN_UP_PLACE });
+				Student.SIGN_UP_PLACE, Student.SCHOOL_ID, Student.SIGN_UP_SCHOOL_ID });
 
 		return this.dao.findOneByQuery(query, Student.class);
 	}
@@ -360,8 +360,34 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	public EntityResults<StudentPlanInfo> listStudentPlanForAdmin(SearchVO svo) {
 		DataBaseQueryBuilder query = getNumberQuery(svo);
 
-		return this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);
+		EntityResults<StudentPlanInfo> infoList = this.dao.listByQueryWithPagnation(query, StudentPlanInfo.class);
+		List<StudentPlanInfo> list = infoList.getEntityList();
 
+		mergeStudentPlanInfo(list);
+
+		return infoList;
+
+	}
+
+	private void mergeStudentPlanInfo(List<StudentPlanInfo> list) {
+		List<SchoolPlan> planList = this.dao.listByQuery(new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME),
+				SchoolPlan.class);
+		Map<String, String> planMap = new HashMap<String, String>();
+		for (SchoolPlan plan : planList) {
+			planMap.put(plan.getId(), plan.getSchoolId());
+		}
+		for (StudentPlanInfo i : list) {
+
+			StudentSchoolInfo info = new StudentSchoolInfo();
+			info.setNumber(i.getNumber());
+			info.setSchool(loadSchool(planMap.get(i.getPlanId())));
+			Student loadStudentInfo = loadStudentInfo(i.getStudentId());
+			info.setStudent(loadStudentInfo);
+
+			i.setOriginSchoolName(loadSchool(loadStudentInfo.getSchoolId()).getName());
+			i.setBaomingInfo(ms.loadNoticeMsg(info, true));
+
+		}
 	}
 
 	private DataBaseQueryBuilder getNumberQuery(SearchVO svo) {
@@ -375,7 +401,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
 		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName", User.MOBILE_NUMBER });
 		query.limitColumns(new String[] { StudentNumber.CREATED_ON, StudentNumber.NUMBER, StudentNumber.ID,
-				StudentNumber.REMARK });
+				StudentNumber.REMARK, StudentNumber.PLAN_ID, StudentNumber.STUDENT_ID });
 
 		if (EweblibUtil.isValid(svo.getName())) {
 			query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.NAME, svo.getName());
@@ -402,7 +428,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		}
 
 		if (EweblibUtil.isValid(svo.getSchoolId())) {
-			query.and(School.TABLE_NAME + "." + School.ID, svo.getSchoolId());
+			query.and(Student.TABLE_NAME + "." + Student.SCHOOL_ID, svo.getSchoolId());
 		}
 
 		if (EweblibUtil.isValid(svo.getNumber())) {
@@ -418,6 +444,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	}
 
 	public String exportStudentNumberForAdmin(SearchVO svo) {
+
 		DataBaseQueryBuilder query = getNumberQuery(svo);
 		List<StudentPlanInfo> list = this.dao.listByQuery(query, StudentPlanInfo.class);
 		for (StudentPlanInfo s : list) {
@@ -432,13 +459,17 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			} else {
 				s.setIsVipStr("否");
 			}
+
 		}
+		
+		mergeStudentPlanInfo(list);
+		
 		String dowload_path = "取号_" + DateUtil.getDateString(new Date()) + ".xls";
 		String f = ConfigManager.getProperty("download_path") + dowload_path;
 		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区",
-				"是否会员", "备注" };
+				"是否会员", "备注", "报名校区", "报名时间" };
 		String[] colunmHeaders = new String[] { "number", "name", "sexCn", "birthday", "parentName", "mobileNumber",
-				"studentRegDate", "createdOn", "schoolName", "isVipStr", "remark" };
+				"studentRegDate", "createdOn", "originSchoolName", "isVipStr", "remark", "schoolName", "baomingInfo" };
 		ExcelUtil.createExcelListFileByEntity(list, colunmTitleHeaders, colunmHeaders, f);
 
 		return dowload_path;
@@ -474,8 +505,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public void updateSchoolBaomingPlan(SchoolBaoMingPlan plan) {
 
-		String[] updateFields = new String[] { SchoolBaoMingPlan.SIGN_UP_COUNT, SchoolBaoMingPlan.KEEP_ON_HOURS,
-				SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_HOURS,
+		String[] updateFields = new String[] { SchoolBaoMingPlan.SIGN_UP_COUNT, SchoolBaoMingPlan.KEEP_ON_MINUTES,
+				SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_MINUTES,
 				SchoolBaoMingPlan.START_TIME, SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT };
 		this.dao.updateById(plan, updateFields);
 
@@ -528,7 +559,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 					for (int i = 0; i < length; i++) {
 
-						createSmsLog(last, startCount, baoming, signUpCount, c, i);
+						last = createSmsLog(last, startCount, baoming, signUpCount, c, i);
+						startCount = last.getEndNumber() + 1;
 					}
 
 					if (remaining > 0) {
@@ -549,7 +581,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 									createSmsLog(last, startCount, baoming, remaining, c, 0);
 								}
 							} else {
-								createSmsLog(last, startCount, baoming, signUpCount, c, 0);
+								createSmsLog(last, startCount, baoming, remaining, c, 0);
 							}
 						}
 
@@ -563,12 +595,12 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	}
 
-	private void createSmsLog(SmsLog last, int startCount, SchoolBaoMingPlan baoming, int signUpCount, Calendar c,
+	private SmsLog createSmsLog(SmsLog last, int startCount, SchoolBaoMingPlan baoming, int signUpCount, Calendar c,
 			int i) {
 		SmsLog log = new SmsLog();
 		log.setBaomingPlanId(baoming.getId());
-		log.setStartNumber(startCount + i * signUpCount);
-		log.setEndNumber(startCount - 1 + (i + 1) * signUpCount);
+		log.setStartNumber(startCount );
+		log.setEndNumber(startCount - 1 + signUpCount);
 		log.setTotalSend(signUpCount);
 		log.setSuccessCount(signUpCount);
 		log.setPlace(baoming.getPlace());
@@ -576,28 +608,54 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		log.setSignDate(baoming.getSignUpDate());
 
 		if (last != null) {
-			// 如果已经有批次了，要加上 skipHours
-			c.add(Calendar.MINUTE, (int) (baoming.getSkipHours() * 60) + 1);
+			// 如果已经有批次了，要加上 skipMinutes
+			c.add(Calendar.MINUTE, baoming.getSkipMinutes());
 		}
-		String newStartTime = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		int minutes = c.get(Calendar.MINUTE);
 
-		log.setStartTime(newStartTime);
+		log.setStartTime(mergeHoursDisplay(hour, minutes));
 
-		if (last != null) {
-			c.add(Calendar.MINUTE, (int) (baoming.getKeepOnHours() * 60) - 1);
-		} else {
-			c.add(Calendar.MINUTE, (int) (baoming.getKeepOnHours() * 60));
-		}
-		String newEndTime = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
+		// if (last != null) {
+		// c.add(Calendar.MINUTE, baoming.getKeepOnMinutes()- 1);
+		// } else {
+		c.add(Calendar.MINUTE, baoming.getKeepOnMinutes());
+		// }
 
-		log.setEndTime(newEndTime);
+		hour = c.get(Calendar.HOUR_OF_DAY);
+		minutes = c.get(Calendar.MINUTE);
+
+		log.setEndTime(mergeHoursDisplay(hour, minutes));
 		this.dao.insert(log);
+		return log;
+	}
+
+	private String mergeHoursDisplay(int hour, int mites) {
+
+		String hourstr = hour + "";
+
+		if (hour < 10) {
+			hourstr = "0" + hour + "";
+		}
+
+		String mtr = mites + "";
+
+		if (mites < 10) {
+			mtr = "0" + mites + "";
+		}
+
+		return hourstr + ":" + mtr;
 	}
 
 	public EntityResults<SchoolBaoMingPlan> listSchoolBaomingPlanForAdmin(SearchVO svo) {
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
 
+		query.leftJoin(SchoolBaoMingPlan.TABLE_NAME, School.TABLE_NAME, SchoolBaoMingPlan.SCHOOL_ID, School.ID);
+		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME });
+		query.limitColumns(new String[] { SchoolBaoMingPlan.ID, SchoolBaoMingPlan.KEEP_ON_MINUTES,
+				SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT, SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_COUNT,
+				SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_MINUTES, SchoolBaoMingPlan.START_TIME });
 		if (svo.getSignUpDate() != null) {
 			query.and(SchoolBaoMingPlan.SIGN_UP_DATE, svo.getSignUpDate());
 		}

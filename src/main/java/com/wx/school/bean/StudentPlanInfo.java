@@ -30,6 +30,46 @@ public class StudentPlanInfo extends BaseEntity {
 
 	public String remark;
 
+	public String planId;
+
+	public String studentId;
+
+	public String baomingInfo;
+
+	public String originSchoolName;
+
+	public String getOriginSchoolName() {
+		return originSchoolName;
+	}
+
+	public void setOriginSchoolName(String originSchoolName) {
+		this.originSchoolName = originSchoolName;
+	}
+
+	public String getBaomingInfo() {
+		return baomingInfo;
+	}
+
+	public void setBaomingInfo(String baomingInfo) {
+		this.baomingInfo = baomingInfo;
+	}
+
+	public String getStudentId() {
+		return studentId;
+	}
+
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
+	}
+
+	public String getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(String planId) {
+		this.planId = planId;
+	}
+
 	public String getRemark() {
 		return remark;
 	}

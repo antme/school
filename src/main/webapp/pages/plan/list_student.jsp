@@ -185,15 +185,17 @@
 	<thead>
 		<tr>
 		    <th align="center" field="number" width="50" sortable="false" resizable="true" >号数</th>	
+		    <th align="center" field="originSchoolName" width="150" sortable="false" resizable="true" >校区</th>	
 			<th align="center" field="name" width="100" sortable="false" resizable="true" >学生姓名</th>					
 			<th align="center" field="sex" width="50" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
 			<th align="center" field="birthday" width="80" sortable="false" resizable="true" >出生日期</th>
 			<th align="center" field="parentName" width="100" sortable="false" resizable="true" >家长姓名</th>	
 			<th align="center" field="mobileNumber" width="100" sortable="false" resizable="true" >家长手机</th>	
-			<th align="center" field="isVip" width="70" sortable="false" resizable="true" data-options="formatter:formatterVip" >会员</th>	
-			<th align="center" field="studentRegDate" width="150" sortable="false" resizable="true" >学生注册时间</th>	
+			<th align="center" field="studentRegDate" width="150" sortable="false" resizable="true" >注册时间</th>	
 			<th align="center" field="createdOn" width="150" sortable="false" resizable="true" >取号时间</th>
-			<th align="center" field="schoolName" width="150" sortable="false" resizable="true" >校区</th>
+			<th align="center" field="schoolName" width="150" sortable="false" resizable="true" >报名校区</th>		
+			
+			<th align="center" field="baomingInfo" width="150" sortable="false" resizable="true" >报名时间</th>
 			<th align="center" field="remark" width="250" sortable="false" resizable="true"  data-options="formatter:formatterRemark">备注</th>
 			<th align="center" data-options="field:'id',formatter:formatterOperation,width:70" >操作</th>
 			

@@ -57,6 +57,10 @@ public class UserController extends AbstractController {
 		// response.addHeader("Accept-Encoding", "gzip, deflate");
 		// response.addHeader("Location", "index.jsp");
 
+		Cookie cookie = new Cookie("baiHuaId", "");
+		cookie.setMaxAge(0 * 60);
+		response.addCookie(cookie);
+
 		responseWithEntity(null, request, response);
 
 	}
@@ -158,10 +162,10 @@ public class UserController extends AbstractController {
 		Student s = (Student) parserJsonParameters(request, true, Student.class);
 
 		String birthDay = request.getParameter("birthDay");
-		if(EweblibUtil.isValid(birthDay)){
-			s.setBirthday(DateUtil.getDateTime(birthDay));
+		if (EweblibUtil.isValid(birthDay)) {
+			s.setBirthday(birthDay);
 		}
-		
+
 		user = userService.submitPersonInfo(user, s);
 		setLoginSessionInfo(request, response, user);
 		responseWithEntity(null, request, response);

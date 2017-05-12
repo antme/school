@@ -224,7 +224,7 @@ public class MessageServiceImpl implements IMessageService {
 		return dowload_path;
 	}
 
-	public String loadNoticeMsg(StudentSchoolInfo info) {
+	public String loadNoticeMsg(StudentSchoolInfo info, boolean admin) {
 
 		String msg = "";
 		DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
@@ -250,9 +250,16 @@ public class MessageServiceImpl implements IMessageService {
 					place = info.getStudent().getSignUpPlace();
 				}
 			}
-			msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
-					+ result.getEndTime() + "至" + name + "（地址：" + place + ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
 
+			if (admin) {
+				return DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
+						+ result.getEndTime() + "(" + place + ")";
+			} else {
+				msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
+						+ result.getEndTime() + "至" + name + "（地址：" + place
+						+ ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
+
+			}
 		}
 
 		return msg;

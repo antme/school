@@ -40,8 +40,7 @@ public class Student extends BaseEntity {
 	public String name;
 
 	@Column(name = BIRTH_DAY)
-	@DateColumn
-	public Date birthday;
+	public String birthday;
 
 	@Column(name = OWNER_ID)
 	public String ownerId;
@@ -187,11 +186,11 @@ public class Student extends BaseEntity {
 		this.parentCreatedOn = parentCreatedOn;
 	}
 
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthDay) {
+	public void setBirthday(String birthDay) {
 		this.birthday = birthDay;
 	}
 

@@ -38,8 +38,8 @@
 		$('#edit_form').form('clear');
 		$("#schoolId").combobox('readonly', false);
 		var data = {
-			"keepOnHours": 0.5,
-			"skipHours": 0.5,
+			"keepOnMinutes": 30,
+			"skipMinutes": 30,
 			"signUpCount": 30
 		}
 		$("#edit_form").form('load',data);
@@ -120,12 +120,12 @@
 <table id="datalist" class="easyui-datagrid" data-options="checkOnSelect:false, remoteFilter:true, fitColumns: true" url="/sch/admin/plan/baoming/list.do"  iconCls="icon-save" sortOrder="asc" pagination="true" >
 	<thead>
 		<tr>
-			<th align="center" field="schoolName" width="100" sortable="false" resizable="true" >校区</th>
+			<th align="center" field="name" width="100" sortable="false" resizable="true" >校区</th>
 			<th align="center" field="signUpDate" width="80" sortable="false" resizable="true">报名日期</th>	
 			<th align="center" field="startTime" width="70" sortable="false" resizable="true">开始时间</th>
-			<th align="center" field="keepOnHours" width="80" sortable="false" resizable="true" >单批次报名持续时间</th>
-			<th align="center" field="skipHours" width="100" sortable="false" resizable="true" >每批次报名间隔时间</th>	
-			<th align="center" field=signUpCount width="70" sortable="false" resizable="true">单批次报名人数</th>	
+			<th align="center" field="keepOnMinutes" width="80" sortable="false" resizable="true" >单场时间</th>
+			<th align="center" field="skipMinutes" width="100" sortable="false" resizable="true" >间隔时间</th>	
+			<th align="center" field=signUpCount width="70" sortable="false" resizable="true">单场人数</th>	
 			<th align="center" field=place width="150" sortable="false" resizable="true">报名地址</th>	
 			<th align="center" data-options="field:'id',formatter:formatterOperation,width:100" >操作</th>
 			
@@ -167,19 +167,19 @@
 			</div>
 			
 			<div class="form_items">
-				<label class="r-edit-label width100">单批次报名持续时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="keepOnHours" id="keepOnHours"/> <label class="r-edit-label ">小时</label>
+				<label class="r-edit-label width100">单场时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="keepOnMinutes" id="keepOnMinutes"/> <label class="r-edit-label ">分钟</label>
 			</div>
 			
 			<div class="form_items">
-				<label class="r-edit-label width100">每批次报名间隔时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="skipHours" id="skipHours"/> <label class="r-edit-label ">小时</label>
+				<label class="r-edit-label width100">间隔时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="skipMinutes" id="skipMinutes"/> <label class="r-edit-label ">分钟</label>
 			</div>
 			
 			<div class="form_items">
-				<label class="r-edit-label width100">单批次报名人数:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="signUpCount" id="signUpCount"/> <label class="r-edit-label ">人</label>
+				<label class="r-edit-label width100">单场报名人数:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="signUpCount" id="signUpCount"/> <label class="r-edit-label ">人</label>
 			</div>
 			
 			<div class="form_items">
-				<label class="r-edit-label width100">最后批次少于:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" value="0" name="lastMergeSignUpCount" id="lastMergeSignUpCount"/> <label class="r-edit-label ">人合并到上批次</label>
+				<label class="r-edit-label width100">最后场少于:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" value="0" name="lastMergeSignUpCount" id="lastMergeSignUpCount"/> <label class="r-edit-label ">人合并到上场</label>
 			</div>
 			
 			<div class="form_items">
