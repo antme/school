@@ -193,12 +193,15 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		// checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
 
-		Calendar c = Calendar.getInstance();
-		c.setTime(DateUtil.getDate(student.getBirthday(), DateUtil.DATE_FORMAT));
+		int year = EweblibUtil.getInteger(student.getBirthday().split("-")[0], 0);
+		int month = EweblibUtil.getInteger(student.getBirthday().split("-")[1], 0);
 
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH) + 1;
+		if (year == 0 || month == 0) {
+			throw new ResponseException("日期格式错误");
+		}
 
+		student.setBirdaryMonth(month);
+		student.setBirdaryYear(year);
 		checkQuery.and(Student.BIRDARY_YEAR, year);
 		checkQuery.and(Student.BIRDARY_MONTH, month);
 
@@ -334,8 +337,17 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public void updateStudentInfo(Student student) {
 
+		if (EweblibUtil.isEmpty(student.getBirthday())) {
+			throw new ResponseException("出生日期不能为空");
+		}
+
+		if (!student.getBirthday().contains("-")) {
+			throw new ResponseException("日期格式为yyyy-mm");
+		}
+
 		checkStudent(student, false, true);
-		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK });
+		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK,
+				Student.BIRDARY_MONTH, Student.BIRDARY_YEAR });
 	}
 
 	public Map<String, Object> sumtUserInfo() {
@@ -543,8 +555,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				Student student = new Student();
 				student.setName(name);
 				student.setSex(sexEn);
-				
-				
+
 				String monthStr = month + "";
 				if (month < 10) {
 					monthStr = "0" + month + "";

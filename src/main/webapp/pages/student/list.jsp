@@ -185,7 +185,8 @@
 			</div>
 
 			<div class="form_items">
-				<label class="r-edit-label width100">出生日期:</label>  <input class="easyui-datebox" style="height:30px; width:200px" name="birthday" id="birthday"/>
+				<label class="r-edit-label width100">出生日期(YYYY-MM):</label> 
+				 <input class="easyui-validatebox textbox width300"  style="height:30px; width:200px" name="birthday" id="birthday"/>
 			</div>
 			
 			<div class="form_items">

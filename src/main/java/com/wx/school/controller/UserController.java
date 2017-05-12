@@ -179,10 +179,11 @@ public class UserController extends AbstractController {
 
 	@RequestMapping("/parent/submitStudent.do")
 	public void submitStudentInfo(HttpServletRequest request, HttpServletResponse response) {
-		Student person = (Student) parserJsonParameters(request, true, Student.class);
+		//Student person = (Student) parserJsonParameters(request, true, Student.class);
 
-		userService.submitStudentInfo(person, false);
-		responseWithEntity(null, request, response);
+		throw new ResponseException("请在注册的时候填写学生信息");
+//		userService.submitStudentInfo(person, false);
+//		responseWithEntity(null, request, response);
 	}
 
 	@RequestMapping("/parent/listStudent.do")
