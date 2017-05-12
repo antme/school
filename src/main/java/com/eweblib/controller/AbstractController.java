@@ -49,7 +49,8 @@ public abstract class AbstractController {
 
 	private static Logger logger = LogManager.getLogger(AbstractController.class);
 
-	protected <T extends BaseEntity> BaseEntity parserJsonParameters(HttpServletRequest request, boolean emptyParameter, Class<T> claszz) {
+	protected <T extends BaseEntity> BaseEntity parserJsonParameters(HttpServletRequest request, boolean emptyParameter,
+			Class<T> claszz) {
 		HashMap<String, Object> parametersMap = parserJsonParameters(request, emptyParameter);
 
 		return EweblibUtil.toEntity(parametersMap, claszz);
@@ -89,13 +90,14 @@ public abstract class AbstractController {
 		return isLocalNetWork;
 	}
 
-	protected <T extends BaseEntity> List<T> parserListJsonParameters(HttpServletRequest request, boolean emptyParameter, Class<T> claszz) {
+	protected <T extends BaseEntity> List<T> parserListJsonParameters(HttpServletRequest request,
+			boolean emptyParameter, Class<T> claszz) {
 		Map<String, Object> params = this.parserJsonParameters(request, false);
 		List<T> list = EweblibUtil.toJsonList(params, claszz);
 
 		return list;
 	}
-	
+
 	protected HashMap<String, Object> urlParam2Map(HttpServletRequest request) {
 		HashMap<String, Object> parametersMap = new HashMap<String, Object>();
 		Enumeration<?> parameterNames = request.getParameterNames();
@@ -199,8 +201,8 @@ public abstract class AbstractController {
 		if (EweblibUtil.isValid(postStr)) {
 			parametersMap.put("body", postStr);
 		}
-        logger.info("--------------Client called of path {} with  parameters {}", request.getServletPath(), parametersMap);
-
+		logger.info(getRemoteIP(request) + ":  called of path {} with  parameters {}", request.getServletPath(),
+				parametersMap);
 
 		return parametersMap;
 	}
@@ -211,11 +213,13 @@ public abstract class AbstractController {
 		responseMsg(map, ResponseStatus.SUCCESS, request, response, null);
 	}
 
-	protected void responseWithMapData(Map<String, Object> data, HttpServletRequest request, HttpServletResponse response) {
+	protected void responseWithMapData(Map<String, Object> data, HttpServletRequest request,
+			HttpServletResponse response) {
 		responseMsg(data, ResponseStatus.SUCCESS, request, response, null);
 	}
 
-	protected <T extends BaseEntity> void responseWithDataPagnation(EntityResults<T> listBean, HttpServletRequest request, HttpServletResponse response) {
+	protected <T extends BaseEntity> void responseWithDataPagnation(EntityResults<T> listBean,
+			HttpServletRequest request, HttpServletResponse response) {
 		if (listBean != null) {
 			Map<String, Object> list = new HashMap<String, Object>();
 			list.put("total", listBean.getPagnation().getTotal());
@@ -251,7 +255,8 @@ public abstract class AbstractController {
 		return buffer.toString();
 	}
 
-	protected <T extends BaseEntity> void responseWithDataPagnation(EntityResults<T> listBean, Map<String, Object> results, HttpServletRequest request, HttpServletResponse response) {
+	protected <T extends BaseEntity> void responseWithDataPagnation(EntityResults<T> listBean,
+			Map<String, Object> results, HttpServletRequest request, HttpServletResponse response) {
 		if (results == null) {
 			results = new HashMap<String, Object>();
 		}
@@ -264,7 +269,8 @@ public abstract class AbstractController {
 		}
 	}
 
-	protected <T extends BaseEntity> void responseWithListData(List<T> listBean, HttpServletRequest request, HttpServletResponse response) {
+	protected <T extends BaseEntity> void responseWithListData(List<T> listBean, HttpServletRequest request,
+			HttpServletResponse response) {
 		if (listBean != null) {
 			Map<String, Object> list = new HashMap<String, Object>();
 			list.put("rows", listBean);
@@ -274,7 +280,8 @@ public abstract class AbstractController {
 		}
 	}
 
-	protected void responseWithKeyValue(String key, Object value, HttpServletRequest request, HttpServletResponse response) {
+	protected void responseWithKeyValue(String key, Object value, HttpServletRequest request,
+			HttpServletResponse response) {
 		if (key == null) {
 			responseWithMapData(null, request, response);
 		} else {
@@ -299,7 +306,8 @@ public abstract class AbstractController {
 	 *            0:FAIL, 1: SUCCESS
 	 * @return
 	 */
-	protected void responseMsg(Map<String, Object> data, ResponseStatus status, HttpServletRequest request, HttpServletResponse response, String msgKey) {
+	protected void responseMsg(Map<String, Object> data, ResponseStatus status, HttpServletRequest request,
+			HttpServletResponse response, String msgKey) {
 		if (data == null) {
 			data = new HashMap<String, Object>();
 		}
@@ -311,7 +319,8 @@ public abstract class AbstractController {
 		}
 		response.setContentType("text/plain;charset=UTF-8");
 		response.addHeader("Accept-Encoding", "gzip, deflate");
-//		response.addHeader("P3P","CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"); 
+		// response.addHeader("P3P","CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR
+		// INT DEM STA PRE COM NAV OTC NOI DSP COR");
 		String jsonReturn = EweblibUtil.toJson(data);
 		String callback = request.getParameter("callback");
 
@@ -366,7 +375,7 @@ public abstract class AbstractController {
 			response.addHeader("Accept-Encoding", "gzip, deflate");
 			PrintWriter writer = response.getWriter();
 			writer.write(txt);
-			
+
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
@@ -378,11 +387,11 @@ public abstract class AbstractController {
 	protected void responseServerError(Throwable throwable, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> temp = new HashMap<String, Object>();
 		temp.put(CODE, ResponseStatus.ERROR.toString());
-		if (throwable instanceof ResponseException ) {
+		if (throwable instanceof ResponseException) {
 			ResponseException apiException = (ResponseException) throwable;
 			temp.put(MSG, apiException.getMessage());
 			logger.debug(apiException.getMessage());
-		}else if(throwable.getCause() instanceof ResponseException){
+		} else if (throwable.getCause() instanceof ResponseException) {
 			ResponseException apiException = (ResponseException) throwable.getCause();
 			temp.put(MSG, apiException.getMessage());
 			logger.debug(apiException.getMessage());
@@ -416,20 +425,20 @@ public abstract class AbstractController {
 			String nextElement = e.nextElement();
 			request.getSession().removeAttribute(nextElement);
 		}
-	
+
 	}
 
 	protected void clearLoginSession(HttpServletRequest request, HttpServletResponse response) {
 		String uid = EWeblibThreadLocal.getCurrentUserId();
 
-//		if (EweblibUtil.isValid(uid)) {
-//			Set<String> keys = UserController.safariLoginData.keySet();
-//			for (String key : keys) {
-//				if (UserController.safariLoginData.get(key).equalsIgnoreCase(uid)) {
-//					UserController.safariLoginData.remove(key);
-//				}
-//			}
-//		}
+		// if (EweblibUtil.isValid(uid)) {
+		// Set<String> keys = UserController.safariLoginData.keySet();
+		// for (String key : keys) {
+		// if (UserController.safariLoginData.get(key).equalsIgnoreCase(uid)) {
+		// UserController.safariLoginData.remove(key);
+		// }
+		// }
+		// }
 		removeSessionInfo(request);
 		EWeblibThreadLocal.removeAll();
 	}
@@ -448,29 +457,28 @@ public abstract class AbstractController {
 
 	}
 
-	private String uploadFile(HttpServletRequest request, String relativeFilePath, String parameterName, int size, String[] suffixes) {
+	private String uploadFile(HttpServletRequest request, String relativeFilePath, String parameterName, int size,
+			String[] suffixes) {
 
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		MultipartFile uploadFile = multipartRequest.getFile(parameterName);
-		
-		
 
 		if (uploadFile == null || uploadFile.getSize() < 1) {
 			return null;
 		}
-		
-	
+
 		String uploadFileName = uploadFile.getOriginalFilename().toLowerCase().trim().replaceAll(" ", "");
-		uploadFileName  = uploadFileName.replaceAll("_", "");
-		
+		uploadFileName = uploadFileName.replaceAll("_", "");
+
 		String ms = Long.toString(new Date().getTime());
 
-		if (uploadFileName.endsWith(".png") || uploadFileName.endsWith(".jpg") || uploadFileName.endsWith(".jpeg") || uploadFileName.endsWith(".gif")) {
+		if (uploadFileName.endsWith(".png") || uploadFileName.endsWith(".jpg") || uploadFileName.endsWith(".jpeg")
+				|| uploadFileName.endsWith(".gif")) {
 
 			if (uploadFile.getSize() > 50 * 1024) {
 				throw new ResponseException("图片大小不能超过50K");
 			}
-			
+
 			try {
 				BufferedImage img = ImageIO.read(uploadFile.getInputStream());
 
@@ -525,7 +533,8 @@ public abstract class AbstractController {
 
 	}
 
-	public String uploadFileByInputStream(HttpServletRequest request, String relativeFilePath, String fileName, InputStream inputStream) {
+	public String uploadFileByInputStream(HttpServletRequest request, String relativeFilePath, String fileName,
+			InputStream inputStream) {
 		String webPath = request.getSession().getServletContext().getRealPath("/");
 
 		Map<String, Object> map = new HashMap<String, Object>();

@@ -549,7 +549,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				if (month < 10) {
 					monthStr = "0" + month + "";
 				}
-				String birthDayStr = year + "" + monthStr;
+				String birthDayStr = year + "-" + monthStr;
 				student.setBirthday(birthDayStr);
 				student.setIsVip(true);
 				student.setRemark(remark);

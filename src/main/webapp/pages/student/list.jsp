@@ -170,7 +170,7 @@
 </table>
 
 
-<div id="editwindow" class="easyui-window" title="修改学生信息" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:600px;height:400px;padding:10px; top:100px;">
+<div id="editwindow" class="easyui-window" title="修改学生信息" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:650px; height:500px; padding:10px; top:100px;">
        
 <div style="padding: 10px 60px 20px 60px">
 	<form id="edit_form" method="post" novalidate>
