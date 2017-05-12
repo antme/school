@@ -120,13 +120,12 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		ms.checkSms(user, 0);
 		student.setName(student.getStudentName());
 		Student s = submitStudentInfo(student, true);
-		
-		
+
 		user.setUserName(user.getMobileNumber());
 		user.setUserType(User.USER_TYPE_PARENT);
 		user.setIsAdmin(false);
 		this.dao.insert(user);
-		
+
 		student.setOwnerId(user.getId());
 		student.setId(s.getId());
 		student.setCreatedOn(new Date());
@@ -158,7 +157,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	}
 
 	public Student submitStudentInfo(Student student, boolean isReg) {
-		
+
 		if (EweblibUtil.isEmpty(student.getName())) {
 			throw new ResponseException("学生姓名不能为空");
 		}
@@ -183,8 +182,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		Student s = checkStudent(student, true, false);
 		return s;
-		
-	
+
 		// this.dao.insert(student);
 	}
 
@@ -422,7 +420,9 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				continue;
 			}
 
-			logger.info(excleUtil.getSheetName(index) + ":" + list.size());
+			String sheetName = excleUtil.getSheetName(index);
+			String errorMsg = sheetName + "sheet 中的";
+			logger.info(sheetName + ":" + list.size());
 			for (int i = 1; i < list.size(); i++) {// 从第2行开始读数据
 
 				String[] row = list.get(i);
@@ -437,23 +437,34 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					remark = row[4].trim();
 				}
 
+				String mergedSchoolName = null;
+				if (row.length > 5) {
+					mergedSchoolName = row[5];
+				}
+
+				String place = null;
+				if (row.length > 6) {
+					place = row[6];
+				}
+				if (EweblibUtil.isEmpty(name) && EweblibUtil.isEmpty(sex)) {
+					continue;
+				}
+
 				if (EweblibUtil.isEmpty(name)) {
-					throw new ResponseException("第" + (i + 1) + "行的学生姓名不能为空");
+					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生姓名不能为空");
 				}
 
 				if (EweblibUtil.isEmpty(sex)) {
-					throw new ResponseException("第" + (i + 1) + "行的学生性别不能为空");
+					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别不能为空");
 				}
 
 				if (EweblibUtil.isEmpty(birthdaryStr)) {
-					throw new ResponseException("第" + (i + 1) + "行的学生出生日期不能为空");
+					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期不能为空");
 				}
 
 				if (EweblibUtil.isEmpty(schoolName)) {
-					throw new ResponseException("第" + (i + 1) + "行的学生校区不能为空");
+					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生校区不能为空");
 				}
-				
-			
 
 				Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
 
@@ -461,7 +472,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 					birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
 				}
-				
+
 				if (birthDay == null) {
 
 					try {
@@ -472,7 +483,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				}
 
 				if (birthDay == null) {
-					throw new ResponseException("第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
+					throw new ResponseException(
+							errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
 				}
 
 				Calendar c = Calendar.getInstance();
@@ -489,7 +501,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				}
 
 				if (EweblibUtil.isEmpty(sexEn)) {
-					throw new ResponseException("第" + (i + 1) + "行的学生性别填写错误");
+					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别填写错误");
 				}
 				School school = schoolMap.get(schoolName);
 
@@ -502,11 +514,32 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 				if (school == null) {
 					if (name.contains("校区")) {
-						throw new ResponseException(schoolName + "  不存在,请先创建");
+						throw new ResponseException(errorMsg + schoolName + "  不存在,请先创建");
 					} else {
-						throw new ResponseException(schoolName + "  校区不存在,请先创建");
+						throw new ResponseException(errorMsg + schoolName + "  校区不存在,请先创建");
 					}
 				}
+				School mergedSchool = null;
+				if (EweblibUtil.isValid(mergedSchoolName)) {
+					mergedSchool = schoolMap.get(mergedSchoolName);
+					if (mergedSchool == null) {
+						mergedSchool = this.dao.findByKeyValue(School.NAME, mergedSchoolName, School.TABLE_NAME,
+								School.class);
+						if (mergedSchool != null) {
+							schoolMap.put(mergedSchoolName, mergedSchool);
+						}
+					}
+
+					if (mergedSchool == null) {
+						if (mergedSchoolName.contains("校区")) {
+							throw new ResponseException(errorMsg + mergedSchoolName + "  不存在,请先创建");
+						} else {
+							throw new ResponseException(errorMsg + mergedSchoolName + "  校区不存在,请先创建");
+						}
+					}
+
+				}
+
 				Student student = new Student();
 				student.setName(name);
 				student.setSex(sexEn);
@@ -517,6 +550,12 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				student.setBirdaryYear(year);
 				student.setSchoolId(school.getId());
 
+				if (mergedSchool != null) {
+					student.setSignUpSchoolId(mergedSchool.getId());
+				}
+
+				student.setSignUpPlace(place);
+
 				DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 				query.and(Student.NAME, name);
 				query.and(Student.SEX, sexEn);
@@ -526,7 +565,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				Student old = this.dao.findOneByQuery(query, Student.class);
 				if (old != null) {
 					student.setId(old.getId());
-					this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY, Student.REMARK });
+					this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY, Student.REMARK,
+							Student.SIGN_UP_SCHOOL_ID, Student.SIGN_UP_PLACE });
 				} else {
 					this.dao.insert(student);
 				}

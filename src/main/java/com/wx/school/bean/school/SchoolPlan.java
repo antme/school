@@ -10,6 +10,8 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = SchoolPlan.TABLE_NAME)
 public class SchoolPlan extends BaseEntity {
 
+	public static final String SCHOOL_NAME = "schoolName";
+
 	public static final String SCHOOL_ID = "schoolId";
 
 	public static final String IS_DISPLAY_FOR_WX = "isDisplayForWx";
@@ -51,15 +53,28 @@ public class SchoolPlan extends BaseEntity {
 
 	@Column(name = SCHOOL_ID)
 	public String schoolId;
+	
+	@Column(name = SCHOOL_NAME)
+	public String schoolName;
+	
 
 	// @Column(name = TAKE_NUMBER_DATE)
 	// public Date startDate;
 	//
 	// @Column(name = TAKE_NUMBER_DATE)
 	// public Date endDate;
+	
 
 	public Boolean getIsDisplayForWx() {
 		return isDisplayForWx;
+	}
+
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
 	}
 
 	public String getSchoolId() {

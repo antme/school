@@ -110,10 +110,16 @@
 		var takeDate = $("#takeDate").datebox('getValue');
 		var startTime = $("#startTime").timespinner('getValue');
 		var endTime = $("#endTime").timespinner('getValue');
+		var name =  $("#planname").val();
 		
 		var can_submit = true;
 		if(!schoolId){
 			$.messager.alert('提示', '请选择校区');
+			can_submit = false;
+		}
+		
+		if(!name){
+			$.messager.alert('提示', '请填写批次名称');
 			can_submit = false;
 		}
 		
@@ -136,7 +142,8 @@
 				takeNumberDate: takeDate,
 				startTime: startTime,
 				endTime: endTime,
-				schoolId: schoolId
+				schoolId: schoolId,
+				name: name
 		};
 		
 		if(can_submit){
@@ -206,7 +213,7 @@
 <div>
 	      <span class="tab-m">
            <label>选择校区: </label>
-           <input class="easyui-combobox"  type="text" style="width:200px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
+           <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
                     method:'get',
                     valueField:'id',
                     textField:'name',
@@ -215,14 +222,18 @@
 						return data.rows;
 					}"/>
         </span>
+         <span class="tab-m">
+           	<label>批次名称: </label>
+            <input  type="text" style="width:150px; height:30px;" id="planname"/>
+         </span>  
         <span class="tab-m">
            	<label>取号日期: </label>
-            <input class="easyui-datebox" label="Start Date:" labelPosition="top" style="width:100%; height:30px;" id="takeDate"/>
+            <input class="easyui-datebox" style="width:100%; height:30px;" id="takeDate"/>
          </span>    
          <span class="tab-m">
-            <input class="easyui-timespinner" label="Start Time:" labelPosition="top" value="09:00" style="width:100%; height:30px;" id="startTime"/>
+            <input class="easyui-timespinner"  value="09:00" style="width:100%; height:30px;" id="startTime"/>
             <label> - </label>
-	        <input class="easyui-timespinner" label="End Time:" labelPosition="top" value="18:00" style="width:100%; height:30px;" id="endTime"/>
+	        <input class="easyui-timespinner" value="18:00" style="width:100%; height:30px;" id="endTime"/>
         </span>
         <button class="search_btn_noWidth" onclick="submitPlan();">提交</button>
 </div>
@@ -237,6 +248,8 @@
 		<tr>
 			<th data-options="field:'ck',checkbox:true"></th>
 			<th align="center" field="name" width="150" sortable="false"
+				resizable="true">批次名称</th>
+			<th align="center" field="schoolName" width="150" sortable="false"
 				resizable="true">校区</th>
 			<th align="center" field="takeNumberDate" width="120" sortable="false"
 				resizable="true">取号日期</th>	

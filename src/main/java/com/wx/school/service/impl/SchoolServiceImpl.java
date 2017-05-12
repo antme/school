@@ -66,9 +66,17 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		for (SchoolPlan plan : list) {
 			for (Student s : studentList) {
 				if (s.getSchoolId() != null) {
-					if (plan.getSchoolId().equalsIgnoreCase(s.getSchoolId())) {
-						finalList.add(plan);
-						break;
+
+					if (EweblibUtil.isValid(s.getSignUpSchoolId())) {
+						if (plan.getSchoolId().equalsIgnoreCase(s.getSignUpSchoolId())) {
+							finalList.add(plan);
+							break;
+						}
+					} else {
+						if (plan.getSchoolId().equalsIgnoreCase(s.getSchoolId())) {
+							finalList.add(plan);
+							break;
+						}
 					}
 				}
 
@@ -256,7 +264,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 		query.and(Student.ID, id);
-		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX });
+		query.limitColumns(new String[] { Student.NAME, Student.BIRTH_DAY, Student.SEX, Student.SIGN_UP_SCHOOL_ID,
+				Student.SIGN_UP_PLACE });
 
 		return this.dao.findOneByQuery(query, Student.class);
 	}
@@ -309,7 +318,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public void addSchoolPlan(SchoolPlan plan) {
 		School s = loadSchool(plan.getSchoolId());
-		plan.setName(s.getName());
+		plan.setSchoolName(s.getName());
 
 		this.dao.insert(plan);
 		cs.refreshCach();

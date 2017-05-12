@@ -12,6 +12,10 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = Student.TABLE_NAME)
 public class Student extends BaseEntity {
 
+	public static final String SIGN_UP_SCHOOL_ID = "signUpSchoolId";
+
+	public static final String SIGN_UP_PLACE = "signUpPlace";
+
 	public static final String SCHOOL_ID = "schoolId";
 
 	public static final String BIRDARY_MONTH = "birdaryMonth";
@@ -61,7 +65,29 @@ public class Student extends BaseEntity {
 	@Column(name = SCHOOL_ID)
 	public String schoolId;
 
+	@Column(name = SIGN_UP_PLACE)
+	public String signUpPlace;
+
+	@Column(name = SIGN_UP_SCHOOL_ID)
+	public String signUpSchoolId;
+
 	public String studentName;
+
+	public String getSignUpPlace() {
+		return signUpPlace;
+	}
+
+	public void setSignUpPlace(String signUpPlace) {
+		this.signUpPlace = signUpPlace;
+	}
+
+	public String getSignUpSchoolId() {
+		return signUpSchoolId;
+	}
+
+	public void setSignUpSchoolId(String signUpSchoolId) {
+		this.signUpSchoolId = signUpSchoolId;
+	}
 
 	public String getStudentName() {
 		return studentName;

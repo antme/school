@@ -144,16 +144,16 @@ public class MessageServiceImpl implements IMessageService {
 		query.leftJoin(SmsLog.TABLE_NAME, School.TABLE_NAME, SmsLog.SCHOOL_ID, School.ID);
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName" });
 		query.limitColumns(new SmsLog().getColumnList());
-		
-		if(EweblibUtil.isValid(smsLog.getSchoolId())){
+
+		if (EweblibUtil.isValid(smsLog.getSchoolId())) {
 			query.and(SmsLog.SCHOOL_ID, smsLog.getSchoolId());
 		}
-		
-		if(EweblibUtil.isValid(smsLog.getStartNumber())){
+
+		if (EweblibUtil.isValid(smsLog.getStartNumber())) {
 			query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.START_NUMBER, smsLog.getStartNumber());
 		}
-		
-		if(EweblibUtil.isValid(smsLog.getEndNumber())){
+
+		if (EweblibUtil.isValid(smsLog.getEndNumber())) {
 			query.and(DataBaseQueryOpertion.LESS_THAN_EQUAILS, SmsLog.END_NUMBER, smsLog.getEndNumber());
 		}
 
@@ -243,9 +243,15 @@ public class MessageServiceImpl implements IMessageService {
 
 			String name = school.getName().replaceAll("校区", "");
 
+			String place = result.getPlace();
+
+			if (info.getStudent() != null && EweblibUtil.isValid(info.getStudent().getSignUpSchoolId())) {
+				if (EweblibUtil.isValid(info.getStudent().getSignUpPlace())) {
+					place = info.getStudent().getSignUpPlace();
+				}
+			}
 			msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
-					+ result.getEndTime() + "至" + name + "（地址：" + result.getPlace()
-					+ ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
+					+ result.getEndTime() + "至" + name + "（地址：" + place + ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
 
 		}
 

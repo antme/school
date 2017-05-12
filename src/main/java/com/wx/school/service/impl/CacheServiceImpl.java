@@ -26,8 +26,9 @@ public class CacheServiceImpl extends AbstractService implements ICacheService {
 	@Override
 	public void refreshCach() {
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
-		query.limitColumns(new String[] { SchoolPlan.ID, SchoolPlan.NAME, SchoolPlan.ONLY_FOR_VIP,
-				SchoolPlan.TAKE_NUMBER_DATE, SchoolPlan.START_TIME, SchoolPlan.END_TIME, SchoolPlan.SCHOOL_ID });
+		query.limitColumns(
+				new String[] { SchoolPlan.ID, SchoolPlan.NAME, SchoolPlan.ONLY_FOR_VIP, SchoolPlan.TAKE_NUMBER_DATE,
+						SchoolPlan.START_TIME, SchoolPlan.END_TIME, SchoolPlan.SCHOOL_ID, SchoolPlan.SCHOOL_NAME });
 		query.and(DataBaseQueryOpertion.IS_TRUE, SchoolPlan.IS_DISPLAY_FOR_WX);
 
 		List<SchoolPlan> datalist = this.dao.listByQuery(query, SchoolPlan.class);
