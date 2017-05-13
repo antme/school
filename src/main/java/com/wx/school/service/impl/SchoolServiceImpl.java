@@ -461,9 +461,9 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			}
 
 		}
-		
+
 		mergeStudentPlanInfo(list);
-		
+
 		String dowload_path = "取号_" + DateUtil.getDateString(new Date()) + ".xls";
 		String f = ConfigManager.getProperty("download_path") + dowload_path;
 		String[] colunmTitleHeaders = new String[] { "号数", "姓名", "性别", "出生日期", "家长姓名", "家长手机", "学生注册时间", "取号时间", "校区",
@@ -519,15 +519,12 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		for (SchoolPlan plan : planList) {
 
-			DataBaseQueryBuilder logQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
-			logQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
-			logQuery.orderBy(SmsLog.END_NUMBER, false);
-			SmsLog last = this.dao.findOneByQuery(logQuery, SmsLog.class);
+			SmsLog last = null;
 			int startCount = 1;
-
-			if (last != null) {
-				startCount = last.getEndNumber() + 1;
-			}
+			
+			DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+			delQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
+			this.dao.deleteByQuery(delQuery);
 
 			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
 			baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
@@ -537,21 +534,20 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			if (baoming != null) {
 				DataBaseQueryBuilder studentNumberQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 				studentNumberQuery.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
-				studentNumberQuery.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, StudentNumber.NUMBER, startCount);
 
 				int newStudentCount = this.dao.count(studentNumberQuery);
+				studentNumberQuery.orderBy(StudentNumber.CREATED_ON, false);
+				StudentNumber lastSn = this.dao.findOneByQuery(studentNumberQuery, StudentNumber.class);
 
 				if (newStudentCount > 0) {
 
+					newStudentCount = lastSn.getNumber();
 					int signUpCount = baoming.getSignUpCount();
 
 					int length = newStudentCount / signUpCount;
 					int remaining = newStudentCount % signUpCount;
 					String endTime = baoming.getStartTime();
 
-					if (last != null) {
-						endTime = last.getEndTime();
-					}
 					Date startDate = DateUtil
 							.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + endTime + ":00");
 					Calendar c = Calendar.getInstance();
@@ -599,7 +595,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			int i) {
 		SmsLog log = new SmsLog();
 		log.setBaomingPlanId(baoming.getId());
-		log.setStartNumber(startCount );
+		log.setStartNumber(startCount);
 		log.setEndNumber(startCount - 1 + signUpCount);
 		log.setTotalSend(signUpCount);
 		log.setSuccessCount(signUpCount);
