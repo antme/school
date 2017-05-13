@@ -325,6 +325,11 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	}
 
 	public void deleteSchoolPlan(SchoolPlan plan) {
+		plan = this.dao.findById(plan.getId(), SchoolPlan.TABLE_NAME, SchoolPlan.class);
+		if (plan != null) {
+			ms.deleteSmsLog(plan.getSchoolId());
+		}
+		
 		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		delQuery.and(StudentNumber.PLAN_ID, plan.getId());
 
@@ -522,9 +527,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			SmsLog last = null;
 			int startCount = 1;
 			
-			DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
-			delQuery.and(SmsLog.SCHOOL_ID, plan.getSchoolId());
-			this.dao.deleteByQuery(delQuery);
+			ms.deleteSmsLog(plan.getSchoolId());
 
 			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
 			baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
@@ -664,6 +667,11 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	public void deleteSchoolBaomingPlan(SchoolBaoMingPlan plan) {
 
+		plan = this.dao.findById(plan.getId(), SchoolBaoMingPlan.TABLE_NAME, SchoolBaoMingPlan.class);
+		if (plan != null) {
+			ms.deleteSmsLog(plan.getSchoolId());
+		}
+		
 		this.dao.deleteById(plan);
 	}
 

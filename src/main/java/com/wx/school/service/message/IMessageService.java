@@ -22,4 +22,6 @@ public interface IMessageService {
 	
 	String loadNoticeMsg(StudentSchoolInfo info, boolean admin);
 	
+	void deleteSmsLog(String schoolId);
+	
 }

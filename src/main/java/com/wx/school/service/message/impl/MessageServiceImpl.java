@@ -265,4 +265,10 @@ public class MessageServiceImpl implements IMessageService {
 		return msg;
 
 	}
+
+	public void deleteSmsLog(String schoolId) {
+		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+		delQuery.and(SmsLog.SCHOOL_ID, schoolId);
+		this.dao.deleteByQuery(delQuery);
+	}
 }
