@@ -256,8 +256,7 @@ public class MessageServiceImpl implements IMessageService {
 						+ result.getEndTime() + "(" + place + ")";
 			} else {
 				msg = "请于" + DateUtil.getDateString(result.getSignDate()) + "，" + result.getStartTime() + "-"
-						+ result.getEndTime() + "至" + name + "（地址：" + place
-						+ ")报名。报名详情请点击右下方“通知”选项中的“校区报名须知”，提前准备好报名所需资料。";
+						+ result.getEndTime() + "（地址：" + place + ")前往报名。";
 
 			}
 		}
