@@ -221,9 +221,9 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		List<SchoolPlan> planList = this.dao.listByQuery(new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME),
 				SchoolPlan.class);
-		Map<String, String> planMap = new HashMap<String, String>();
+		Map<String, SchoolPlan> planMap = new HashMap<String, SchoolPlan>();
 		for (SchoolPlan plan : planList) {
-			planMap.put(plan.getId(), plan.getSchoolId());
+			planMap.put(plan.getId(), plan);
 		}
 
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
@@ -241,7 +241,12 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			info.setParent(user);
 			info.setCreatedOn(sn.getCreatedOn());
 
-			info.setSchool(loadSchool(planMap.get(sn.getPlanId())));
+			SchoolPlan plan = planMap.get(sn.getPlanId());
+			School loadSchool = loadSchool(plan.getSchoolId());
+			if (loadSchool != null) {
+				loadSchool.setName(plan.getName());
+			}
+			info.setSchool(loadSchool);
 			info.setStudent(loadStudentInfo(sn.getStudentId()));
 			info.setBaomingMsg(ms.loadNoticeMsg(info, false));
 			results.add(info);
@@ -329,13 +334,14 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (plan != null) {
 			ms.deleteSmsLog(plan.getSchoolId());
 		}
-		
+
 		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
 		delQuery.and(StudentNumber.PLAN_ID, plan.getId());
 
 		this.dao.deleteByQuery(delQuery);
 
 		this.dao.deleteById(plan);
+		lastCountMap.clear();
 		cs.refreshCach();
 	}
 
@@ -526,7 +532,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 			SmsLog last = null;
 			int startCount = 1;
-			
+
 			ms.deleteSmsLog(plan.getSchoolId());
 
 			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
@@ -671,7 +677,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (plan != null) {
 			ms.deleteSmsLog(plan.getSchoolId());
 		}
-		
+
 		this.dao.deleteById(plan);
 	}
 
