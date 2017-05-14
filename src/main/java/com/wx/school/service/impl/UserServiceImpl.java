@@ -233,6 +233,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			s = this.dao.findOneByQuery(checkQuery, Student.class);
 			if (s == null) {
 				throw new ResponseException("此学生信息不存在");
+			}else{
+				if(EweblibUtil.isValid(s.getOwnerId())){
+					throw new ResponseException("此学生已经注册");
+				}
 			}
 		}
 		return s;
