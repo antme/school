@@ -9,6 +9,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				targetSchoolId:$("#baoming_schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
 				number : $("#number").val(),
 				isVip: $("#isVip").val()
