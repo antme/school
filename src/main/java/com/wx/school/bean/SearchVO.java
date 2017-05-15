@@ -22,6 +22,16 @@ public class SearchVO extends User {
 
 	public Date signUpDate;
 
+	public String targetSchoolId;
+
+	public String getTargetSchoolId() {
+		return targetSchoolId;
+	}
+
+	public void setTargetSchoolId(String targetSchoolId) {
+		this.targetSchoolId = targetSchoolId;
+	}
+
 	public Date getSignUpDate() {
 		return signUpDate;
 	}

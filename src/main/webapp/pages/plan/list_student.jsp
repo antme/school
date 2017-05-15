@@ -40,6 +40,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				targetSchoolId:$("#baoming_schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
 				number : $("#number").val(),
 				isVip: $("#isVip").val()
@@ -61,6 +62,7 @@
 				parentName : $("#parentName").val(),
 				mobileNumber : $("#mobileNumber").val(),
 				schoolId : $("#schoo_select").combobox('getValue'),
+				targetSchoolId:$("#baoming_schoo_select").combobox('getValue'),
 				remark : $("#remark").val(),
 				number : $("#number").val(),
 				isVip: $("#isVip").val()
@@ -134,8 +136,18 @@
 <br>
 <div >
 
- 	<span class="r-edit-label">校区:</span>
+ 	<span class="r-edit-label">就读校区:</span>
  	 <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
+                    method:'get',
+                    valueField:'id',
+                    textField:'name',
+                    panelHeight:'auto',
+                    loadFilter:function(data){
+						return data.rows;
+					}"/>
+					
+	<span class="r-edit-label">报名校区:</span>
+ 	 <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="baoming_schoo_select" data-options="url:'/sch/admin/select.do',
                     method:'get',
                     valueField:'id',
                     textField:'name',
