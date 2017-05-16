@@ -440,159 +440,161 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			String errorMsg = sheetName + "sheet 中的";
 			logger.info(sheetName + ":" + list.size());
 			for (int i = 1; i < list.size(); i++) {// 从第2行开始读数据
-
+				logger.debug(sheetName + ":" + i + ":" + list.size());
 				String[] row = list.get(i);
 
-				String name = row[0].trim();
-				String sex = row[1].trim();
-				String birthdaryStr = row[2].trim();
-				String schoolName = row[3].trim();
-				String remark = null;
+				if (row.length > 3) {
+					String name = row[0].trim();
+					String sex = row[1].trim();
+					String birthdaryStr = row[2].trim();
+					String schoolName = row[3].trim();
+					String remark = null;
 
-				if (row.length > 4) {
-					remark = row[4].trim();
-				}
-
-				String mergedSchoolName = null;
-				if (row.length > 5) {
-					mergedSchoolName = row[5];
-				}
-
-				String place = null;
-				if (row.length > 6) {
-					place = row[6];
-				}
-				if (EweblibUtil.isEmpty(name) && EweblibUtil.isEmpty(sex)) {
-					continue;
-				}
-
-				if (EweblibUtil.isEmpty(name)) {
-					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生姓名不能为空");
-				}
-
-				if (EweblibUtil.isEmpty(sex)) {
-					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别不能为空");
-				}
-
-				if (EweblibUtil.isEmpty(birthdaryStr)) {
-					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期不能为空");
-				}
-
-				if (EweblibUtil.isEmpty(schoolName)) {
-					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生校区不能为空");
-				}
-
-				Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
-
-				if (birthDay == null) {
-
-					birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
-				}
-
-				if (birthDay == null) {
-
-					try {
-						birthDay = new Date(birthdaryStr);
-					} catch (Exception e) {
-						logger.error(birthdaryStr + " parser error", e);
+					if (row.length > 4) {
+						remark = row[4].trim();
 					}
-				}
 
-				if (birthDay == null) {
-					throw new ResponseException(
-							errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
-				}
-
-				Calendar c = Calendar.getInstance();
-				c.setTime(birthDay);
-
-				int year = c.get(Calendar.YEAR);
-				int month = c.get(Calendar.MONTH) + 1;
-
-				String sexEn = null;
-				if (sex.equalsIgnoreCase("男")) {
-					sexEn = "m";
-				} else if (sex.equalsIgnoreCase("女")) {
-					sexEn = "f";
-				}
-
-				if (EweblibUtil.isEmpty(sexEn)) {
-					throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别填写错误");
-				}
-				School school = schoolMap.get(schoolName);
-
-				if (school == null) {
-					school = this.dao.findByKeyValue(School.NAME, schoolName, School.TABLE_NAME, School.class);
-					if (school != null) {
-						schoolMap.put(schoolName, school);
+					String mergedSchoolName = null;
+					if (row.length > 5) {
+						mergedSchoolName = row[5];
 					}
-				}
 
-				if (school == null) {
-					if (name.contains("校区")) {
-						throw new ResponseException(errorMsg + schoolName + "  不存在,请先创建");
-					} else {
-						throw new ResponseException(errorMsg + schoolName + "  校区不存在,请先创建");
+					String place = null;
+					if (row.length > 6) {
+						place = row[6];
 					}
-				}
-				School mergedSchool = null;
-				if (EweblibUtil.isValid(mergedSchoolName)) {
-					mergedSchool = schoolMap.get(mergedSchoolName);
-					if (mergedSchool == null) {
-						mergedSchool = this.dao.findByKeyValue(School.NAME, mergedSchoolName, School.TABLE_NAME,
-								School.class);
-						if (mergedSchool != null) {
-							schoolMap.put(mergedSchoolName, mergedSchool);
+					if (EweblibUtil.isEmpty(name) && EweblibUtil.isEmpty(sex)) {
+						continue;
+					}
+
+					if (EweblibUtil.isEmpty(name)) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生姓名不能为空");
+					}
+
+					if (EweblibUtil.isEmpty(sex)) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别不能为空");
+					}
+
+					if (EweblibUtil.isEmpty(birthdaryStr)) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期不能为空");
+					}
+
+					if (EweblibUtil.isEmpty(schoolName)) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生校区不能为空");
+					}
+
+					Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
+
+					if (birthDay == null) {
+
+						birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
+					}
+
+					if (birthDay == null) {
+
+						try {
+							birthDay = new Date(birthdaryStr);
+						} catch (Exception e) {
+							logger.error(birthdaryStr + " parser error", e);
 						}
 					}
 
-					if (mergedSchool == null) {
-						if (mergedSchoolName.contains("校区")) {
-							throw new ResponseException(errorMsg + mergedSchoolName + "  不存在,请先创建");
+					if (birthDay == null) {
+						throw new ResponseException(
+								errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
+					}
+
+					Calendar c = Calendar.getInstance();
+					c.setTime(birthDay);
+
+					int year = c.get(Calendar.YEAR);
+					int month = c.get(Calendar.MONTH) + 1;
+
+					String sexEn = null;
+					if (sex.equalsIgnoreCase("男")) {
+						sexEn = "m";
+					} else if (sex.equalsIgnoreCase("女")) {
+						sexEn = "f";
+					}
+
+					if (EweblibUtil.isEmpty(sexEn)) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生性别填写错误");
+					}
+					School school = schoolMap.get(schoolName);
+
+					if (school == null) {
+						school = this.dao.findByKeyValue(School.NAME, schoolName, School.TABLE_NAME, School.class);
+						if (school != null) {
+							schoolMap.put(schoolName, school);
+						}
+					}
+
+					if (school == null) {
+						if (name.contains("校区")) {
+							throw new ResponseException(errorMsg + schoolName + "  不存在,请先创建");
 						} else {
-							throw new ResponseException(errorMsg + mergedSchoolName + "  校区不存在,请先创建");
+							throw new ResponseException(errorMsg + schoolName + "  校区不存在,请先创建");
 						}
+					}
+					School mergedSchool = null;
+					if (EweblibUtil.isValid(mergedSchoolName)) {
+						mergedSchool = schoolMap.get(mergedSchoolName);
+						if (mergedSchool == null) {
+							mergedSchool = this.dao.findByKeyValue(School.NAME, mergedSchoolName, School.TABLE_NAME,
+									School.class);
+							if (mergedSchool != null) {
+								schoolMap.put(mergedSchoolName, mergedSchool);
+							}
+						}
+
+						if (mergedSchool == null) {
+							if (mergedSchoolName.contains("校区")) {
+								throw new ResponseException(errorMsg + mergedSchoolName + "  不存在,请先创建");
+							} else {
+								throw new ResponseException(errorMsg + mergedSchoolName + "  校区不存在,请先创建");
+							}
+						}
+
+					}
+
+					Student student = new Student();
+					student.setName(name);
+					student.setSex(sexEn);
+
+					String monthStr = month + "";
+					if (month < 10) {
+						monthStr = "0" + month + "";
+					}
+					String birthDayStr = year + "-" + monthStr;
+					student.setBirthday(birthDayStr);
+					student.setIsVip(true);
+					student.setRemark(remark);
+					student.setBirdaryMonth(month);
+					student.setBirdaryYear(year);
+					student.setSchoolId(school.getId());
+
+					if (mergedSchool != null) {
+						student.setSignUpSchoolId(mergedSchool.getId());
+					}
+
+					student.setSignUpPlace(place);
+
+					DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+					query.and(Student.NAME, name);
+					query.and(Student.SEX, sexEn);
+					query.and(Student.BIRDARY_YEAR, year);
+					query.and(Student.BIRDARY_MONTH, month);
+
+					Student old = this.dao.findOneByQuery(query, Student.class);
+					if (old != null) {
+						student.setId(old.getId());
+						this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY,
+								Student.REMARK, Student.SIGN_UP_SCHOOL_ID, Student.SIGN_UP_PLACE });
+					} else {
+						this.dao.insert(student);
 					}
 
 				}
-
-				Student student = new Student();
-				student.setName(name);
-				student.setSex(sexEn);
-
-				String monthStr = month + "";
-				if (month < 10) {
-					monthStr = "0" + month + "";
-				}
-				String birthDayStr = year + "-" + monthStr;
-				student.setBirthday(birthDayStr);
-				student.setIsVip(true);
-				student.setRemark(remark);
-				student.setBirdaryMonth(month);
-				student.setBirdaryYear(year);
-				student.setSchoolId(school.getId());
-
-				if (mergedSchool != null) {
-					student.setSignUpSchoolId(mergedSchool.getId());
-				}
-
-				student.setSignUpPlace(place);
-
-				DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
-				query.and(Student.NAME, name);
-				query.and(Student.SEX, sexEn);
-				query.and(Student.BIRDARY_YEAR, year);
-				query.and(Student.BIRDARY_MONTH, month);
-
-				Student old = this.dao.findOneByQuery(query, Student.class);
-				if (old != null) {
-					student.setId(old.getId());
-					this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY, Student.REMARK,
-							Student.SIGN_UP_SCHOOL_ID, Student.SIGN_UP_PLACE });
-				} else {
-					this.dao.insert(student);
-				}
-
 			}
 		}
 	}
