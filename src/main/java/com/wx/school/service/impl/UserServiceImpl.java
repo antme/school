@@ -180,13 +180,13 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			}
 		}
 
-		Student s = checkStudent(student, true, false);
+		Student s = checkStudent(student, true, false, isReg);
 		return s;
 
 		// this.dao.insert(student);
 	}
 
-	private Student checkStudent(Student student, boolean isNew, boolean isEdit) {
+	private Student checkStudent(Student student, boolean isNew, boolean isEdit, boolean isReg) {
 		DataBaseQueryBuilder checkQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
 		checkQuery.and(Student.NAME, student.getName());
 		checkQuery.and(Student.SEX, student.getSex());
@@ -211,7 +211,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 				DataBaseQueryBuilder checkCountQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
 				checkCountQuery.and(Student.OWNER_ID, currentUserId);
 
-				if (this.dao.exists(checkCountQuery)) {
+				if (!isReg && this.dao.exists(checkCountQuery)) {
 					throw new ResponseException("一个家长只能创建一个学生");
 				}
 			}
@@ -349,7 +349,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			throw new ResponseException("日期格式为yyyy-mm");
 		}
 
-		checkStudent(student, false, true);
+		checkStudent(student, false, true, false);
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK,
 				Student.BIRDARY_MONTH, Student.BIRDARY_YEAR });
 	}
