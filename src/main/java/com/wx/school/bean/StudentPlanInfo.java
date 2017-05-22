@@ -10,7 +10,7 @@ public class StudentPlanInfo extends BaseEntity {
 
 	public String sex;
 
-	public Date birthday;
+	public String birthday;
 
 	public String parentName;
 
@@ -102,11 +102,11 @@ public class StudentPlanInfo extends BaseEntity {
 		this.sexCn = sexCn;
 	}
 
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 

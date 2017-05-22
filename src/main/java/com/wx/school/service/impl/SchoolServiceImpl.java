@@ -144,6 +144,10 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (sn.getPlanId().length() != 36) {
 			throw new ResponseException("参数异常");
 		}
+		
+		if (EweblibUtil.isEmpty(EWeblibThreadLocal.getCurrentUserId())) {
+			throw new ResponseException("请先登录");
+		}
 
 		if (processMap.contains(sn.getStudentId())) {
 			throw new ResponseException("你的取号已经再处理中，请稍后在我的取号信息里查询结果");

@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 
 import com.eweblib.annotation.column.BooleanColumn;
-import com.eweblib.annotation.column.DateColumn;
 import com.eweblib.bean.BaseEntity;
 
 @Table(name = Student.TABLE_NAME)
