@@ -90,25 +90,29 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		if (list != null) {
 			for (SchoolPlan school : list) {
-				Date date = new Date();
-
-				String date2 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getStartTime() + ":00";
-				Date startDate = DateUtil.getDateTime(date2);
-				String date3 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getEndTime() + ":00";
-				Date endDate = DateUtil.getDateTime(date3);
-
-				if (date.getTime() < startDate.getTime()) {
-					// 未开始
-					school.setTakeStatus(0);
-				} else if (date.getTime() < endDate.getTime()) {
-					// 正在取号
-					school.setTakeStatus(1);
-				} else {
-					// 已结束
-					school.setTakeStatus(2);
-				}
+				updateStatus(school);
 
 			}
+		}
+	}
+
+	private void updateStatus(SchoolPlan school) {
+		Date date = new Date();
+
+		String date2 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getStartTime() + ":00";
+		Date startDate = DateUtil.getDateTime(date2);
+		String date3 = DateUtil.getDateString(school.getTakeNumberDate()) + " " + school.getEndTime() + ":00";
+		Date endDate = DateUtil.getDateTime(date3);
+
+		if (date.getTime() < startDate.getTime()) {
+			// 未开始
+			school.setTakeStatus(0);
+		} else if (date.getTime() < endDate.getTime()) {
+			// 正在取号
+			school.setTakeStatus(1);
+		} else {
+			// 已结束
+			school.setTakeStatus(2);
 		}
 	}
 
@@ -144,6 +148,8 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (processMap.contains(sn.getStudentId())) {
 			throw new ResponseException("你的取号已经再处理中，请稍后在我的取号信息里查询结果");
 		}
+		
+		
 
 		// if (!this.dao.exists(Student.ID, sn.getStudentId(),
 		// Student.TABLE_NAME)) {
@@ -155,6 +161,13 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		if (plan == null) {
 			throw new ResponseException("此取号批次不存在");
 		}
+		
+		updateStatus(plan);
+
+		if (plan.getTakeStatus() != null && plan.getTakeStatus() != 1) {
+			throw new ResponseException("取号已经结束或者还未开始");
+		}
+
 		processMap.add(sn.getStudentId());
 		StudentNumber p = null;
 		try {
