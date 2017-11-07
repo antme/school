@@ -21,6 +21,7 @@ echo "---------------"
 rm -rf /usr/local/tomcat/webapps/school/pages/*
 rm -rf /usr/local/tomcat/webapps/school/WEB-INF/*
 cp -r /root/workspace/school/target/school/* /usr/local/tomcat/webapps/school/
+cp -r /root/workspace/BaiHua/BaiHua/* /usr/local/tomcat/webapps/school/
 
 
 sh /usr/local/tomcat/bin/startup.sh
