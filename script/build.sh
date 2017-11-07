@@ -1,4 +1,4 @@
-export PATH=/usr/local/maven/bin/:/usr/java/jdk1.8.0_112/:$PATH
+export PATH=/usr/local/maven/bin/:/usr/java/jdk1.8.0_151/:$PATH
 #sudo su
 cd /root/workspace/school
 sudo git pull
