@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" id="viewportId" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="Cache-Control" content="no-transform,no-siteapp"/>
+    <meta name="applicable-device" content="pc,mobile"/>
+    <title>大班会员取号系统</title>
+    <link type="text/css" href="css/weui.min.css" rel="stylesheet"/>
+    <link type="text/css" href="css/bass.css" rel="stylesheet"/>
+    <link type="text/css" href="css/tn.css" rel="stylesheet"/>
+    <script type="text/javascript" src="script/jquery-1.9.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="script/jquery.tips.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="script/weui.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="script/common.js?v=1.0" charset="UTF-8"></script>
+    <script type="text/javascript" src="script/parent.js" charset="UTF-8"></script>
+</head>
+<body>
+    <div class="ls-wrap tnwrap">
+        <div class="weui-tab">
+            <div class="weui-tab__panel">
+                <!--标题-->
+                <h2 class="tnpage-tit">在读家长信息</h2>
+                <div class="tnpage-body">
+                    <!--输入-->
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd">
+                                <label for="userTel" class="weui-label">手机号码：</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <div class="tnin-txt fontblack" id="userTel"></div>
+                                <!--<input class="weui-input " type="tel" id="userTel" placeholder="仅供大陆手机号" disabled>-->
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd">
+                                <label for="parentName" class="weui-label">家长姓名：</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <div class="tnin-txt fontblack" id="parentName"></div>
+                                <!--<input class="weui-input fontblack" type="text" id="parentName" placeholder="家长姓名" disabled>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tn-explain">
+                        <p>以上信息为注册时所填写，不可修改。</p>
+                    </div>
+                </div>
+            </div>
+            <!--底部导航-->
+            <div class="weui-tabbar tntab" id="tnTabbar">
+                <a href="javascript:void(0);" class="weui-tabbar__item" id="takeNumGo">
+                    <p class="weui-tabbar__label">取号入口</p>
+                </a>
+                <a href="javascript:void(0);" class="weui-tabbar__item weui-bar__item_on" id="centerMenuGo">
+                    <p class="weui-tabbar__label">个人中心</p>
+                </a>
+                <a href="javascript:void(0);" class="weui-tabbar__item" id="informGo">
+                    <p class="weui-tabbar__label">通知</p>
+                </a>
+            </div>
+        </div>
+        <!--底部导航弹窗菜单-->
+        <div class="tncenter-pop" id="actionSheetWrap">
+            <div class="weui-mask tndemo" id="iosMask" style="display:none"></div>
+            <!--取号信息-->
+            <div class="weui-actionsheet" id="tnActionsheet">
+                <div class="weui-actionsheet__menu">
+                    <div class="weui-actionsheet__cell">
+                        <a href="tnstate.html" class="weui-btn weui-btn_plain-default">取号状态</a>
+                    </div>
+                    <div class="weui-actionsheet__cell">
+                        <a href="mytn.html?v=1.0" class="weui-btn weui-btn_plain-default">我的取号信息</a>
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell" id="tnActionsheetCancel">取消</div>
+                </div>
+            </div>
+            <!--个人中心-->
+            <div class="weui-actionsheet" id="iosActionsheet">
+                <div class="weui-actionsheet__menu">
+                    <div class="weui-actionsheet__cell">
+                        <a href="parent.html" class="weui-btn weui-btn_plain-default">家长信息</a>
+                    </div>
+                    <div class="weui-actionsheet__cell">
+                        <a href="studentlist.html" class="weui-btn weui-btn_plain-default">我的小朋友</a>
+                    </div>
+                    <div class="weui-actionsheet__cell">
+                        <a href="changepwd.html" class="weui-btn weui-btn_plain-default">修改密码</a>
+                    </div>
+                    <div class="weui-actionsheet__cell">
+                        <a href="javascript:void(0);" class="weui-btn weui-btn_plain-default" id="loginOutObj">退出登录</a>
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell" id="iosActionsheetCancel">取消</div>
+                </div>
+            </div>
+            <!--通知-->
+            <div class="weui-actionsheet" id="informActionsheet">
+                <div class="weui-actionsheet__menu">
+                    <div class="weui-actionsheet__cell">
+                        <a href="http://mp.weixin.qq.com/s/Ki6PXJi0Ro2zQ0q5HWA7RQ" class="weui-btn weui-btn_plain-default">微信取号须知</a>
+                    </div>
+                    <div class="weui-actionsheet__cell">
+                        <a href="http://mp.weixin.qq.com/s/TFIMojn_1-qJvHczeYMIow" class="weui-btn weui-btn_plain-default">校区报名须知</a>
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell" id="informActionsheetCancel">取消</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
