@@ -4,7 +4,7 @@
 
 //登录校验
 checkLogin();
-//仅限百花在读中班下会员取号
+//仅限百花在读大班下会员取号
 $(document).ready(function(){
     var goTextArr = ["取号", "已经取号"];
 
