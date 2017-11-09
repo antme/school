@@ -495,6 +495,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					if (EweblibUtil.isEmpty(birthdaryStr)) {
 						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期不能为空");
 					}
+					
+					if(birthdaryStr.endsWith("/0") || birthdaryStr.endsWith("/00") ) {
+						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期不能为0");
+					}
 
 					if (EweblibUtil.isEmpty(schoolName)) {
 						throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生校区不能为空");
