@@ -541,7 +541,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 		String[] updateFields = new String[] { SchoolBaoMingPlan.SIGN_UP_COUNT, SchoolBaoMingPlan.KEEP_ON_MINUTES,
 				SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_MINUTES,
-				SchoolBaoMingPlan.START_TIME, SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT };
+				SchoolBaoMingPlan.START_TIME, SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT, SchoolBaoMingPlan.MIDDAY_REST_HOURS};
 		this.dao.updateById(plan, updateFields);
 
 	}

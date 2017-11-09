@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+import com.eweblib.annotation.column.FloatColumn;
 import com.eweblib.annotation.column.IntegerColumn;
 import com.eweblib.bean.BaseEntity;
 
@@ -57,6 +58,7 @@ public class SchoolBaoMingPlan extends BaseEntity {
 	public Integer lastMergeSignUpCount;
 
 	@Column(name = MIDDAY_REST_HOURS)
+	@FloatColumn
 	public Float middayRestHours;
 
 	@Column(name = PLACE)
