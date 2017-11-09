@@ -212,7 +212,7 @@
 			</div>
 
 			<div class="form_items">
-				<label class="r-edit-label width100">出生日期(YYYY-MM):</label> 
+				<label class="r-edit-label width100">出生日期(YYYY/MM/DD):</label> 
 				 <input class="easyui-validatebox textbox width300"  style="height:30px; width:200px" name="birthday" id="birthday"/>
 			</div>
 			
