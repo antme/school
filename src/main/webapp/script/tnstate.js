@@ -76,4 +76,29 @@ $(document).ready(function(){
         error:function(res){
         }
     });
+    
+    
+    //取号结束通知
+    $.ajax({
+        type: 'post',
+        url: ajaxUrlBase+"/sch/notice.do",
+        async: true,
+        data: '',
+        dataType: 'jsonp',
+        jsonp: "callback",
+        success: function (data) {
+            var jsonData = eval(data);
+            if(jsonData['takeDate']){
+                $("#weui-dialog__bd_2").html("错过取号的家长：可于报名当天（" + jsonData['takeDate'] + "）直接到校区报名。由于您没有取号，我们将在所有已取号家长报名完成以后再对您进行报名。")
+            }
+        },
+        error:function(res){
+        }
+    });
 });
+
+
+function hideDialog(){
+	
+	$("#iosDialog2").hide();
+}

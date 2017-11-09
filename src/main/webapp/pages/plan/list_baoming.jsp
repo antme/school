@@ -125,6 +125,7 @@
 			<th align="center" field="startTime" width="70" sortable="false" resizable="true">开始时间</th>
 			<th align="center" field="keepOnMinutes" width="80" sortable="false" resizable="true" >单场时间</th>
 			<th align="center" field="skipMinutes" width="100" sortable="false" resizable="true" >间隔时间</th>	
+			<th align="center" field="middayRestHours" width="100" sortable="false" resizable="true" >午休时间</th>	
 			<th align="center" field=signUpCount width="70" sortable="false" resizable="true">单场人数</th>	
 			<th align="center" field=place width="150" sortable="false" resizable="true">报名地址</th>	
 			<th align="center" data-options="field:'id',formatter:formatterOperation,width:100" >操作</th>
@@ -137,7 +138,7 @@
 
 
 
-<div id="editwindow" class="easyui-window" title="修改报名批次" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:800px;height:520px;padding:10px; top:100px;">
+<div id="editwindow" class="easyui-window" title="修改报名批次" data-options="iconCls:'icon-save',modal:true, closed:true, maximizable:false, minimizable:false, draggable:false" style="width:800px;height:550px;padding:10px; top:100px;">
        
 <div style="padding: 0px 0px 0px 60px">
 	<form id="edit_form" method="post" novalidate>
@@ -172,6 +173,10 @@
 			
 			<div class="form_items">
 				<label class="r-edit-label width100">间隔时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="skipMinutes" id="skipMinutes"/> <label class="r-edit-label ">分钟</label>
+			</div>
+			
+			<div class="form_items">
+				<label class="r-edit-label width100">午休时间:</label>  <input class=" easyui-validatebox" type="number"  required style="height:30px; width:200px" name="middayRestHours" id="middayRestHours"/> <label class="r-edit-label ">小时</label>
 			</div>
 			
 			<div class="form_items">

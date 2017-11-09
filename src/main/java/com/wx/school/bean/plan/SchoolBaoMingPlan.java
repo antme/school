@@ -11,6 +11,10 @@ import com.eweblib.bean.BaseEntity;
 @Table(name = SchoolBaoMingPlan.TABLE_NAME)
 public class SchoolBaoMingPlan extends BaseEntity {
 
+	public static final String MIDDAY_REST_HOURS = "middayRestHours";
+
+	public static final String REST_HOURS = "restHours";
+
 	public static final String LAST_MERGE_SIGN_UP_COUNT = "lastMergeSignUpCount";
 
 	public static final String PLACE = "place";
@@ -51,13 +55,22 @@ public class SchoolBaoMingPlan extends BaseEntity {
 
 	@Column(name = LAST_MERGE_SIGN_UP_COUNT)
 	public Integer lastMergeSignUpCount;
-	
-	
+
+	@Column(name = MIDDAY_REST_HOURS)
+	public Float middayRestHours;
 
 	@Column(name = PLACE)
 	public String place;
 
 	public String name;
+
+	public Float getMiddayRestHours() {
+		return middayRestHours;
+	}
+
+	public void setMiddayRestHours(Float middayRestHours) {
+		this.middayRestHours = middayRestHours;
+	}
 
 	public String getName() {
 		return name;

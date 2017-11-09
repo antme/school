@@ -38,6 +38,15 @@ public class SchoolController extends AbstractController {
 		responseWithListData(schoolService.listSchoolPlan(), request, response);
 
 	}
+	
+	
+	@RequestMapping("/notice.do")
+	@LoginRequired(required = false)
+	public void getNoticeInfo(HttpServletRequest request, HttpServletResponse response) {
+
+		responseWithMapData(schoolService.getNoticeInfo(), request, response);
+
+	}
 
 
 	@RequestMapping("/book.do")

@@ -1,6 +1,7 @@
 package com.wx.school.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.eweblib.bean.BaseEntity;
 import com.eweblib.bean.vo.EntityResults;
@@ -62,5 +63,7 @@ public interface ISchoolService {
 	SchoolBaoMingPlan loadSchoolBaomingPlan(SchoolBaoMingPlan plan);
 	
 	void renewBaomingPlanItem();
+
+	Map<String, Object> getNoticeInfo();
 
 }

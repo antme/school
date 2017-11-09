@@ -1,5 +1,6 @@
 package com.wx.school.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -555,16 +556,14 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 			SmsLog last = null;
 			int startCount = 1;
 
-			ms.deleteSmsLog(plan.getSchoolId());
+			String schoolId = plan.getSchoolId();
+			ms.deleteSmsLog(schoolId);
 
-			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
-			baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, plan.getSchoolId());
-			baomingQuery.orderBy(SchoolBaoMingPlan.CREATED_ON, false);
-			SchoolBaoMingPlan baoming = this.dao.findOneByQuery(baomingQuery, SchoolBaoMingPlan.class);
+			SchoolBaoMingPlan baoming = loadSchoolBaomingPlan(schoolId);
 
 			if (baoming != null) {
 				DataBaseQueryBuilder studentNumberQuery = new DataBaseQueryBuilder(StudentNumber.TABLE_NAME);
-				studentNumberQuery.and(StudentNumber.SCHOOL_ID, plan.getSchoolId());
+				studentNumberQuery.and(StudentNumber.SCHOOL_ID, schoolId);
 
 				int newStudentCount = this.dao.count(studentNumberQuery);
 				studentNumberQuery.orderBy(StudentNumber.CREATED_ON, false);
@@ -577,16 +576,15 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 					int length = newStudentCount / signUpCount;
 					int remaining = newStudentCount % signUpCount;
-					String endTime = baoming.getStartTime();
 
 					Date startDate = DateUtil
-							.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + endTime + ":00");
+							.getDateTime(DateUtil.getDateString(baoming.getSignUpDate()) + " " + baoming.getStartTime() + ":00");
 					Calendar c = Calendar.getInstance();
 					c.setTime(startDate);
 
 					for (int i = 0; i < length; i++) {
 
-						last = createSmsLog(last, startCount, baoming, signUpCount, c, i);
+						last = createSmsLog(last, startCount, baoming, signUpCount, c);
 						startCount = last.getEndNumber() + 1;
 					}
 
@@ -605,10 +603,10 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 									this.dao.updateById(last, new String[] { SmsLog.END_NUMBER, SmsLog.SUCCESS_COUNT,
 											SmsLog.TOTAL_SEND });
 								} else {
-									createSmsLog(last, startCount, baoming, remaining, c, 0);
+									createSmsLog(last, startCount, baoming, remaining, c);
 								}
 							} else {
-								createSmsLog(last, startCount, baoming, remaining, c, 0);
+								createSmsLog(last, startCount, baoming, remaining, c);
 							}
 						}
 
@@ -622,8 +620,24 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 
 	}
 
-	private SmsLog createSmsLog(SmsLog last, int startCount, SchoolBaoMingPlan baoming, int signUpCount, Calendar c,
-			int i) {
+	private SchoolBaoMingPlan loadSchoolBaomingPlan(String schoolId) {
+		DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolBaoMingPlan.TABLE_NAME);
+		baomingQuery.and(SchoolBaoMingPlan.SCHOOL_ID, schoolId);
+		baomingQuery.orderBy(SchoolBaoMingPlan.CREATED_ON, false);
+		SchoolBaoMingPlan baoming = this.dao.findOneByQuery(baomingQuery, SchoolBaoMingPlan.class);
+		return baoming;
+	}
+
+	/**
+	 * 没调用一次 c都会加上相应的时间
+	 * @param last
+	 * @param startCount
+	 * @param baoming
+	 * @param signUpCount
+	 * @param c
+	 * @return
+	 */
+	private SmsLog createSmsLog(SmsLog last, int startCount, SchoolBaoMingPlan baoming, int signUpCount, Calendar c) {
 		SmsLog log = new SmsLog();
 		log.setBaomingPlanId(baoming.getId());
 		log.setStartNumber(startCount);
@@ -633,13 +647,23 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		log.setPlace(baoming.getPlace());
 		log.setSchoolId(baoming.getSchoolId());
 		log.setSignDate(baoming.getSignUpDate());
+		
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		int minutes = c.get(Calendar.MINUTE);
+		
+		if ((hour == 11 && minutes >= 45) || (hour == 12)) {
+			//午休时间
+			int skipMinutes = (int) (baoming.getMiddayRestHours() * 60);		
+			c.add(Calendar.MINUTE, skipMinutes);
 
-		if (last != null) {
+		}else if (last != null) {
 			// 如果已经有批次了，要加上 skipMinutes
 			c.add(Calendar.MINUTE, baoming.getSkipMinutes());
 		}
-		int hour = c.get(Calendar.HOUR_OF_DAY);
-		int minutes = c.get(Calendar.MINUTE);
+		
+		
+		hour = c.get(Calendar.HOUR_OF_DAY);
+		minutes = c.get(Calendar.MINUTE);
 
 		log.setStartTime(mergeHoursDisplay(hour, minutes));
 
@@ -682,7 +706,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME });
 		query.limitColumns(new String[] { SchoolBaoMingPlan.ID, SchoolBaoMingPlan.KEEP_ON_MINUTES,
 				SchoolBaoMingPlan.LAST_MERGE_SIGN_UP_COUNT, SchoolBaoMingPlan.PLACE, SchoolBaoMingPlan.SIGN_UP_COUNT,
-				SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_MINUTES, SchoolBaoMingPlan.START_TIME });
+				SchoolBaoMingPlan.SIGN_UP_DATE, SchoolBaoMingPlan.SKIP_MINUTES, SchoolBaoMingPlan.START_TIME, SchoolBaoMingPlan.MIDDAY_REST_HOURS });
 		if (svo.getSignUpDate() != null) {
 			query.and(SchoolBaoMingPlan.SIGN_UP_DATE, svo.getSignUpDate());
 		}
@@ -706,6 +730,47 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 	public SchoolBaoMingPlan loadSchoolBaomingPlan(SchoolBaoMingPlan plan) {
 
 		return this.dao.findById(plan.getId(), SchoolBaoMingPlan.TABLE_NAME, SchoolBaoMingPlan.class);
+	}
+	
+	
+	public Map<String, Object> getNoticeInfo(){
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
+		
+		query.and(Student.OWNER_ID, EWeblibThreadLocal.getCurrentUserId());
+		
+		Student student = this.dao.findOneByQuery(query, Student.class);
+		
+		if(student!=null) {
+			
+			//
+			DataBaseQueryBuilder baomingQuery = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
+			baomingQuery.and(SchoolPlan.SCHOOL_ID, student.getSignUpSchoolId());
+			baomingQuery.orderBy(SchoolPlan.CREATED_ON, false);
+			SchoolPlan plan = this.dao.findOneByQuery(baomingQuery, SchoolPlan.class);
+			
+			if (plan != null) {
+
+				Date endDate = DateUtil.getDateTime(
+						DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
+
+				if (endDate.getTime() > new Date().getTime()) {
+
+					SchoolBaoMingPlan sp = loadSchoolBaomingPlan(student.getSignUpSchoolId());
+					if (sp != null) {
+						SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+						result.put("takeDate", f.format(sp.getSignUpDate()));
+					}
+
+				}
+
+			}
+		}
+		
+		return result;
+		
 	}
 
 }

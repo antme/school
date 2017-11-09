@@ -53,12 +53,12 @@ $(document).ready(function(){
     $('#birthDay').on('click', function () {
         weui.datePicker({
             start: 2006,
-            depth:2,
+            depth:3,
             end: new Date().getFullYear(),
             onChange: function (result) {
             },
             onConfirm: function (result) {
-                result = result.splice(0,2);
+                result = result.splice(0,3);
                 $("#birthDay").text(result.join('-'));
             }
         });
