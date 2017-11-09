@@ -51,6 +51,8 @@ public class SchoolBaoMingPlan extends BaseEntity {
 
 	@Column(name = LAST_MERGE_SIGN_UP_COUNT)
 	public Integer lastMergeSignUpCount;
+	
+	
 
 	@Column(name = PLACE)
 	public String place;

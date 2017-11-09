@@ -15,6 +15,7 @@ body,html{height:100%;background-color:#F8F8F8;}
 .tn-explain p{margin-bottom:5px;}
 .tn-handle{padding-top:15px;}
 .weui-label{width:95px;}
+.weui-longlabel{width:125px;}
 .weui-vcode-btn{font-size:15px;padding:0 5px;}
 .weui-btn_primary{background:#586c94;}
 .weui-btn_primary:not(.weui-btn_disabled):active{background-color:#506488}
@@ -61,9 +62,11 @@ body,html{height:100%;background-color:#F8F8F8;}
 .mytn-list .mytn-li{margin-top:10px;padding:2px 5px;border:1px solid #AAA;background:#D8D8D8;}
 .mytnli-tit{font-size:20px;margin-bottom:5px;}
 .mytnli-con p{margin-top:3px;}
+.mytnTips{margin-top:10px;padding:2px 5px;border:1px solid #AAA;background:#D8D8D8;margin-left: 15px;margin-right: 15px;}
 .minbtn{display:inline-block;padding:5px 10px;font-size:14px;line-height:14px;vertical-align:middle;}
 .smallbtn{display:inline-block;margin:0 3px;padding:4px 8px;font-size:14px;line-height:14px;vertical-align:middle;}
 .tngo-list .tngo-li{margin-top:10px;padding-bottom:5px;border-bottom:1px dashed #999;}
+.tngotips{text-align: right;padding-right: 15px;font-size:14px;color: #000000;font-weight:bold;}
 /*菜单*/
 .weui-mask{bottom:46px;top:-2px;}
 .weui-actionsheet{bottom:42px;-webkit-transform:translateY(130%);transform:translateY(130%);}

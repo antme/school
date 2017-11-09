@@ -4,8 +4,9 @@
 
 //登录校验
 checkLogin();
-
 $(document).ready(function(){
+    var $mytnTips = $("#mytnTips"); 
+    $mytnTips.hide();
     //获取列表
     $.ajax({
         type: 'get',
@@ -42,13 +43,24 @@ $(document).ready(function(){
                     $con.find(".tel .txt").text(curData['parent']['mobileNumber']);
                     //取号时间
                     $con.find(".create .txt").text(curData['createdOn']);
-                    $con.find(".message .txt").text(curData['baomingMsg']);
+                    var baomingMsg = curData['baomingMsg'];
+                    if (baomingMsg.length == 0) {
+                        baomingMsg = "校区取号时间段结束后，再过10-15分钟在此处查看报名时间地点通知";
+                    }
+
+                    $con.find(".message .txt").text(baomingMsg);
                     //追加到列表
                     $list.append($cloneHtml[0]);
                 }
                 $list.show();
+                if (arrSize > 0) {
+                    $mytnTips.hide();    
+                }else{
+                    $mytnTips.show();    
+                }
+                
             }else{
-                tipShow($list, jsonData['msg']);
+                tipShow($list, jsonData['msg']); 
             }
         },
         error:function(res){

@@ -9,7 +9,7 @@
     <meta name="renderer" content="webkit"/>
     <meta http-equiv="Cache-Control" content="no-transform,no-siteapp"/>
     <meta name="applicable-device" content="pc,mobile"/>
-    <title>大班会员取号系统</title>
+    <title>会员取号系统</title>
     <link type="text/css" href="css/weui.min.css" rel="stylesheet"/>
     <link type="text/css" href="css/bass.css" rel="stylesheet"/>
     <link type="text/css" href="css/tn.css" rel="stylesheet"/>
@@ -29,6 +29,34 @@
                 <div class="tnpage-body reg-body">
                     <!--输入-->
                     <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd">
+                                <label for="studentName" class="weui-longlabel">小朋友姓名：</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" id="studentName" placeholder="请输入小朋友姓名">
+                            </div>
+                        </div>
+
+                         <div class="weui-cell">
+                            <div class="weui-cell__hd">
+                                <label for="sex" class="weui-longlabel">选择小朋友性别：</label>
+                            </div>
+                            <div class="weui-cell__bd tncheck-box">
+                                <!--<input type="text" class="weui-input" name="sex" id="sex" value="男" data-code="m">-->
+                                <div class="tnin-txt" id="sex" data-code="m"></div>
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd">
+                                <label for="birthDay" class="weui-longlabel">选择小朋友出生年月：</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <!--<input class="weui-input" type="text" value="" id="birthDay" placeholder="请选择出生日期">-->
+                                <div class="tnin-txt" id="birthDay"></div>
+                            </div>
+                        </div>
+
                         <div class="weui-cell">
                             <div class="weui-cell__hd">
                                 <label for="parentName" class="weui-label">家长姓名：</label>
@@ -75,9 +103,10 @@
                         </div>
                     </div>
                     <div class="tn-explain">
-                        <p>1、家长姓名和手机号提交之后无法修改，请您慎重填写，确认信息后再提交。</p>
-                        <p>2、手机号仅限大陆手机号。</p>
-                        <p>3、仅限百花2017年秋季在读大班会员家长注册。</p>
+                        <p>1、仅限百花2017年秋季在读中班下会员家长注册。</p>
+                        <p>2、我们会将您所填小朋友信息与系统已有信息（家长留给本塾的信息）作比对，只有完全一致者才可以注册成功。</p>
+                        <p>3、家长信息一旦注册成功，即无法修改。请谨慎填写！</p> 
+                        <p>4、双胞胎小朋友家长，只需要添加一位小朋友信息。</p>
                     </div>
                     <div class="weui-btn-area tn-handle">
                         <a href="javascript:void(0);" class="weui-btn weui-btn_primary" id="inSubmit">注册并登录</a>

@@ -9,7 +9,9 @@
 				name : $("#name").val(),
 				parentName : $("#parentName").val(),
 				remark : $("#remark").val(),
-				mobileNumber : $("#mobileNumber").val()
+				mobileNumber : $("#mobileNumber").val(),
+				schoolId : $("#schoo_select").combobox('getValue'),
+				signUpSchoolId:$("#baoming_schoo_select").combobox('getValue')
 			}
 		});
 
@@ -21,7 +23,9 @@
 				name : $("#name").val(),
 				parentName : $("#parentName").val(),
 				remark : $("#remark").val(),
-				mobileNumber : $("#mobileNumber").val()
+				mobileNumber : $("#mobileNumber").val(),
+				schoolId : $("#schoo_select").combobox('getValue'),
+				signUpSchoolId:$("#baoming_schoo_select").combobox('getValue')
 		}
 		
 		postAjaxRequest("/user/admin/student/export.do", data, function(data){		
@@ -127,6 +131,26 @@
 </div>
 <br><br>
 <div >
+	<span class="r-edit-label">就读校区:</span>
+ 	 <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="schoo_select" data-options="url:'/sch/admin/select.do',
+                    method:'get',
+                    valueField:'id',
+                    textField:'name',
+                    panelHeight:'auto',
+                    loadFilter:function(data){
+						return data.rows;
+					}"/>
+					
+	<span class="r-edit-label">报名校区:</span>
+ 	 <input class="easyui-combobox"  type="text" style="width:150px; height:30px;" id="baoming_schoo_select" data-options="url:'/sch/admin/select.do',
+                    method:'get',
+                    valueField:'id',
+                    textField:'name',
+                    panelHeight:'auto',
+                    loadFilter:function(data){
+						return data.rows;
+					}"/>
+					
 	<span class="r-edit-label">学生姓名:</span>
 	<input class="height24" type="text" name="name" id="name" /> 
 	
@@ -136,6 +160,8 @@
  	<span class="r-edit-label">家长手机号:</span>
  	<input class="height24" type="text" name="mobileNumber" id="mobileNumber" /> 
  	
+ 	</br>
+ 	<p></p>
  	<span class="r-edit-label">备注:</span>
  	<input class="height24" type="text" name="remark" id="remark" /> 
 	<button class="search_btn_noWidth" onclick="search();">搜索</button>
@@ -159,6 +185,7 @@
 			<th align="center" field="name" width="70" sortable="false" resizable="true" >姓名</th>					
 			<th align="center" field="sex" width="50" sortable="false" resizable="true" data-options="formatter:formatterSex">性别</th>	
 			<th align="center" field="birthday" width="80" sortable="false" resizable="true" >出生日期</th>
+			<th align="center" field="schoolName" width="100" sortable="false" resizable="true" >就读校区</th>
 			<th align="center" field="parentName" width="70" sortable="false" resizable="true" >家长姓名</th>	
 			<th align="center" field="parentMobileNumber" width="80" sortable="false" resizable="true" >家长手机</th>	
 			<th align="center" field="parentCreatedOn" width="130" sortable="false" resizable="true" >家长注册时间</th>	

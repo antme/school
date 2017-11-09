@@ -9,7 +9,7 @@
     <meta name="renderer" content="webkit"/>
     <meta http-equiv="Cache-Control" content="no-transform,no-siteapp"/>
     <meta name="applicable-device" content="pc,mobile"/>
-    <title>大班会员取号系统</title>
+    <title>会员取号系统</title>
     <link type="text/css" href="css/weui.min.css" rel="stylesheet"/>
     <link type="text/css" href="css/bass.css" rel="stylesheet"/>
     <link type="text/css" href="css/tn.css" rel="stylesheet"/>
@@ -26,22 +26,24 @@
             <div class="weui-tab__panel">
                 <!--标题-->
                 <h2 class="tnpage-tit" id="tngoTitle"><span id="tngoCompName">校区</span>取号</h2>
+                <!-- <h2 class="tnpage-tit" id="tngoTitle">取号</h2> -->
                 <div class="tnpage-body tngo-body">
                     <div class="tnpad">
                         <div class="tndemo" style="display:none;">
                             <div class="tngo-li clearfix" id="tngoliDemo">
                                 <p class="fl tngoli-std"></p>
                                 <p class="fr tngoli-link">
-                                    <a href="javascript:void(0);" class="weui-btn weui-btn_primary minbtn">仅限百花大班在读会员取号</a>
+                                    <a href="javascript:void(0);" class="weui-btn weui-btn_primary minbtn">仅限百花中班下在读会员取号</a>
                                 </p>
                             </div>
                         </div>
                         <div class="tngo-list" id="tngoList"></div>
                     </div>
-                    <div class="tn-explain tndemo" id="tngoExplain">
+                    <!-- <div class="tn-explain tndemo" id="tngoExplain">
                         <p>请至个人中心&nbsp;<a href="studentlist.html" class="weui-btn weui-btn_primary minbtn">我的小朋友</a>&nbsp;添加小朋友信息！</p>
-                    </div>
-                </div>
+                    </div> -->
+                </div> 
+                <div class="tngotips" id="tngoExplainTips">所取号码仅对百花在读中班下会员有效</div>
             </div>
             <!--底部导航-->
             <div class="weui-tabbar tntab" id="tnTabbar">
@@ -51,9 +53,9 @@
                 <a href="javascript:void(0);" class="weui-tabbar__item" id="centerMenuGo">
                     <p class="weui-tabbar__label">个人中心</p>
                 </a>
-                <a href="javascript:void(0);" class="weui-tabbar__item" id="informGo">
+                <!-- <a href="javascript:void(0);" class="weui-tabbar__item" id="informGo">
                     <p class="weui-tabbar__label">通知</p>
-                </a>
+                </a> -->
             </div>
         </div>
         <!--底部导航弹窗菜单-->

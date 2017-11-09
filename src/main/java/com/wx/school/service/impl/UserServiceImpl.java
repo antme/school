@@ -1,6 +1,7 @@
 package com.wx.school.service.impl;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -300,6 +301,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		query.joinColumns(User.TABLE_NAME, new String[] { User.NAME + " as parentName",
 				User.MOBILE_NUMBER + " as parentMobileNumber", User.CREATED_ON + " as parentCreatedOn" });
 
+		query.leftJoin(Student.TABLE_NAME, School.TABLE_NAME, Student.SCHOOL_ID, School.ID);
+		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName"});
+
+		
 		query.limitColumns(new Student().getColumnList());
 
 		if (uvo != null) {
@@ -318,6 +323,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 			if (EweblibUtil.isValid(uvo.getRemark())) {
 				query.and(DataBaseQueryOpertion.LIKE, Student.TABLE_NAME + "." + Student.REMARK, uvo.getRemark());
+			}
+
+			if (EweblibUtil.isValid(uvo.getSchoolId())) {
+				query.and(Student.SCHOOL_ID, uvo.getSchoolId());
+			}
+
+			if (EweblibUtil.isValid(uvo.getSignUpSchoolId())) {
+				query.and(Student.SIGN_UP_SCHOOL_ID, uvo.getSignUpSchoolId());
 			}
 		}
 		return query;
@@ -448,21 +461,25 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					String sex = row[1].trim();
 					String birthdaryStr = row[2].trim();
 					String schoolName = row[3].trim();
-					String remark = null;
-
-					if (row.length > 4) {
-						remark = row[4].trim();
-					}
+				
 
 					String mergedSchoolName = null;
-					if (row.length > 5) {
-						mergedSchoolName = row[5];
+					if (row.length > 4) {
+						mergedSchoolName = row[4];
 					}
 
 					String place = null;
-					if (row.length > 6) {
-						place = row[6];
+					if (row.length > 5) {
+						place = row[5];
 					}
+					
+					String remark = null;
+
+					if (row.length > 6) {
+						remark = row[6].trim();
+					}
+					
+					
 					if (EweblibUtil.isEmpty(name) && EweblibUtil.isEmpty(sex)) {
 						continue;
 					}
@@ -495,15 +512,11 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 						try {
 							birthDay = new Date(birthdaryStr);
 						} catch (Exception e) {
-							logger.error(birthdaryStr + " parser error", e);
+							throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确");
 						}
 					}
 
-					if (birthDay == null) {
-						throw new ResponseException(
-								errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确，请确保为yyyy/mm/dd 或者 dd/MM/yyyy");
-					}
-
+		
 					Calendar c = Calendar.getInstance();
 					c.setTime(birthDay);
 
@@ -561,12 +574,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					student.setName(name);
 					student.setSex(sexEn);
 
-					String monthStr = month + "";
-					if (month < 10) {
-						monthStr = "0" + month + "";
-					}
-					String birthDayStr = year + "-" + monthStr;
-					student.setBirthday(birthDayStr);
+//					String monthStr = month + "";
+//					if (month < 10) {
+//						monthStr = "0" + month + "";
+//					}
+//					String birthDayStr = year + "-" + monthStr;
+					SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+					
+					student.setBirthday(f.format(birthDay));
 					student.setIsVip(true);
 					student.setRemark(remark);
 					student.setBirdaryMonth(month);

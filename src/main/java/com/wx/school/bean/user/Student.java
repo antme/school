@@ -71,6 +71,16 @@ public class Student extends BaseEntity {
 
 	public String studentName;
 
+	public String schoolName;
+	
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
 	public String getSignUpPlace() {
 		return signUpPlace;
 	}

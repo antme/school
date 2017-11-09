@@ -9,7 +9,7 @@
     <meta name="renderer" content="webkit"/>
     <meta http-equiv="Cache-Control" content="no-transform,no-siteapp"/>
     <meta name="applicable-device" content="pc,mobile"/>
-    <title>大班会员取号系统</title>
+    <title>会员取号系统</title>
     <link type="text/css" href="css/weui.min.css" rel="stylesheet"/>
     <link type="text/css" href="css/bass.css" rel="stylesheet"/>
     <link type="text/css" href="css/tn.css" rel="stylesheet"/>
@@ -24,22 +24,24 @@
         <div class="weui-tab">
             <div class="weui-tab__panel">
                 <!--标题-->
-                <h2 class="tnpage-tit">各校区取号状态查询</h2>
+                <h2 class="tnpage-tit">校区取号状态查询</h2>
                 <div class="tnpage-body campus-body">
                     <div class="tn-explain">
-                        <p>1、每位小朋友只能取一个号码，所以请家长取号前请仔细核对小朋友信息和所选校区信息。一旦取号完成，将无法取消。</p>
-                        <p>2、本次取号仅用于2017年秋季在百花就读的大班小朋友（出生日期范围：2011.9.1-2012.8.31），非相关人员请勿取号。</p>
-                        <p>3、取号前请确认是否已经提交过小朋友信息，否则将无法取号。</p>
+                        <p>1、每位小朋友只有一次取号机会，所以请家长取号前仔细核对小朋友信息。一旦取号完成，将无法撤销。</p>
+                        <p>2、本次取号仅服务于2017年秋季在百花就读的中班下小朋友（出生日期范围：2011.9.1-2012.8.31），非相关人员请勿取号。</p> 
                     </div>
                     <div class="tnpad">
                         <div class="tndemo" style="display:none;">
                             <div class="campus-li" id="campusliDemo">
-                                <div class="campusli-tit"><em class="sort"></em>、<span class="name"></span></div>
-                                <div class="campusli-con">
+                               <!--  <div class="campusli-tit"><em class="sort"></em>、<span class="name"></span></div> --> 
+                                <div class="campusli-tit"> 
                                     <p>取号时间段：</p>
+                                    <div class = 'txtmark'>
                                     <p class="campusli-time"><span class="day"></span>&nbsp;&nbsp;<span class="starttime"></span>~<span class="endtime"></span></p>
+                                    </div>
                                     <p class="campusli-go">
-                                        <a href="javascript:void(0);" class="weui-btn weui-btn_primary">进入<span class="name"></span>取号页面</a>
+                                        <!-- <a href="javascript:void(0);" class="weui-btn weui-btn_primary">进入<span class="name"></span>取号页面</a> -->
+                                        <a href="javascript:void(0);" class="weui-btn weui-btn_primary">进入取号页面</a>
                                     </p>
                                 </div>
                             </div>
@@ -56,9 +58,9 @@
                 <a href="javascript:void(0);" class="weui-tabbar__item" id="centerMenuGo">
                     <p class="weui-tabbar__label">个人中心</p>
                 </a>
-                <a href="javascript:void(0);" class="weui-tabbar__item" id="informGo">
+                <!-- <a href="javascript:void(0);" class="weui-tabbar__item" id="informGo">
                     <p class="weui-tabbar__label">通知</p>
-                </a>
+                </a> -->
             </div>
         </div>
         <!--底部导航弹窗菜单-->

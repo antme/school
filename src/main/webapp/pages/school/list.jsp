@@ -235,7 +235,7 @@
             <label> - </label>
 	        <input class="easyui-timespinner" value="18:00" style="width:100%; height:30px;" id="endTime"/>
         </span>
-        <button class="search_btn_noWidth" onclick="submitPlan();">提交</button>
+        <button class="search_btn_noWidth" onclick="submitPlan();">新增取号批次</button>
 </div>
 
 

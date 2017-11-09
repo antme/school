@@ -3,9 +3,9 @@
  */
 
 //项目定义
-var ajaxUrlBase = "https://queue.dandgedu.com";
+var ajaxUrlBase = "http://localhost:8080";
 if(window.location.href.indexOf("queuetest.dandgedu.com") != -1){
-    ajaxUrlBase = "https://queuetest.dandgedu.com";
+    //ajaxUrlBase = "https://queuetest.dandgedu.com";
 }
 //通信协议强制切换到https
 var curProtocol = window.location.protocol;

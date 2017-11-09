@@ -13,6 +13,9 @@ public class SearchVO extends User {
 	public String schoolName;
 
 	public String schoolId;
+	
+	
+	public String signUpSchoolId;
 
 	@IntegerColumn
 	public Integer number;
@@ -23,6 +26,16 @@ public class SearchVO extends User {
 	public Date signUpDate;
 
 	public String targetSchoolId;
+	
+	
+
+	public String getSignUpSchoolId() {
+		return signUpSchoolId;
+	}
+
+	public void setSignUpSchoolId(String signUpSchoolId) {
+		this.signUpSchoolId = signUpSchoolId;
+	}
 
 	public String getTargetSchoolId() {
 		return targetSchoolId;
