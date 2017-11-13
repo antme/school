@@ -106,7 +106,7 @@ public class SMSController extends AbstractController {
 	@LoginRequired(required = false)
 	public void fetchFailedSMS(HttpServletRequest request, HttpServletResponse response) {
 //		String path =ms.exportFailedNotice(smsLog);
-		ms.checkNoticeSmsSendStatus();
+		//ms.checkNoticeSmsSendStatus();
 
 		responseWithEntity(null, request, response);
 	}
