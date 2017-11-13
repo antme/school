@@ -35,6 +35,7 @@ $(document).ready(function(){
                     $time.find(".day").text(curData['takeNumberDate']);
                     $time.find(".starttime").text(curData['startTime']);
                     $time.find(".endtime").text(curData['endTime']);
+                    $(".schoolName").text(curData['schoolName']);
                     //跳转按钮
                     var $link = $cloneHtml.find(".campusli-go a");
                     $link.attr('data-id',curData['id']);

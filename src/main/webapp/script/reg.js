@@ -172,6 +172,6 @@ function getInData(){
     inData.name = $("#parentName").val();
     inData.studentName = $("#studentName").val();
     inData.sex = $("#sex").attr('data-code');
-    inData.birthDay = $("#birthDay").text()+'-1';
+    inData.birthDay = $("#birthDay").text();
     return inData;
 }

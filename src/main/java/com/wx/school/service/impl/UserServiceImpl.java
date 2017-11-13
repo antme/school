@@ -204,7 +204,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		student.setBirdaryMonth(month);
 		student.setBirdaryYear(year);
 		
-		checkQuery.and(Student.BIRTH_DAY, student.getBirthday().replaceAll("-", "/"));
+		
+		Date birthDay = DateUtil.getDate(student.getBirthday(), "yyyy-MM-dd");
+		
+		checkQuery.and(Student.BIRTH_DAY, new SimpleDateFormat("yyyy/MM/dd").format(birthDay));
 		
 //		checkQuery.and(Student.BIRDARY_YEAR, year);
 //		checkQuery.and(Student.BIRDARY_MONTH, month);

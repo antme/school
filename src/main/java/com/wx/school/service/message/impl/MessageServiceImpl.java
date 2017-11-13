@@ -282,7 +282,11 @@ public class MessageServiceImpl implements IMessageService {
 		
 		for (SchoolPlan plan : planList) {
 
-			if (plan.getTakeNumberDate().getTime() < new Date().getTime()) {
+			Date endDate = DateUtil.getDateTime(
+					DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
+	
+			if (new Date().getTime() < endDate.getTime()
+					&& (new Date().getTime() + (60 * 60 * 1000) > endDate.getTime())) {
 
 				DataBaseQueryBuilder studentQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
 				studentQuery.and(Student.SIGN_UP_SCHOOL_ID, plan.getSchoolId());
@@ -294,22 +298,31 @@ public class MessageServiceImpl implements IMessageService {
 				List<Student> studentList = this.dao.listByQuery(studentQuery, Student.class);
 				for (Student student : studentList) {
 
-					User user = this.dao.findById(student.getOwnerId(), User.TABLE_NAME, User.class);
-					if (student.getNumber() == null) {
-						DataBaseQueryBuilder smsQuery = new DataBaseQueryBuilder(SMS.TABLE_NAME);
-						smsQuery.and(SMS.MOBILE_NUMBER, user.getMobileNumber());
-						smsQuery.and(SMS.SMS_TYPE, "TAKE_NUMBER_NOTICE");
-						
-						SMS sms = this.dao.findOneByQuery(smsQuery, SMS.class);
-						if(sms!=null) {
-							try {
-								SmsHelp.sendTakeNumberSms(user.getMobileNumber());
-							} catch (ClientException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+					if (student.getNumber() == null && student.getOwnerId() != null) {
+						User user = this.dao.findById(student.getOwnerId(), User.TABLE_NAME, User.class);
+
+						if (user != null) {
+							DataBaseQueryBuilder smsQuery = new DataBaseQueryBuilder(SMS.TABLE_NAME);
+							smsQuery.and(SMS.MOBILE_NUMBER, user.getMobileNumber());
+							smsQuery.and(SMS.SMS_TYPE, 99);
+
+							SMS sms = this.dao.findOneByQuery(smsQuery, SMS.class);
+							if (sms == null) {
+
+								sms = new SMS();
+								sms.setMobileNumber(user.getMobileNumber());
+								sms.setSmsType(99);
+								this.dao.insert(sms);
+
+								try {
+									SmsHelp.sendTakeNumberSms(user.getMobileNumber());
+								} catch (ClientException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
+
 						}
-						
 					}
 				}
 

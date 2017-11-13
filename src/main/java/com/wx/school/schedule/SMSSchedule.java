@@ -16,10 +16,16 @@ public class SMSSchedule {
 	@Autowired
 	private IMessageService smsService;
 
+	private boolean isRuinning = false;
+
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	@Async
 	public void run() {
-		smsService.sendSchoolTakeNumberNotice();
-		log.info("SMSSchedule called");
+		if (!isRuinning) {
+			isRuinning = true;
+			smsService.sendSchoolTakeNumberNotice();
+			log.info("SMSSchedule called");
+			isRuinning = false;
+		}
 	}
 }
