@@ -756,7 +756,7 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 				Date endDate = DateUtil.getDateTime(
 						DateUtil.getDateString(plan.getTakeNumberDate()) + " " + plan.getEndTime() + ":00");
 
-				if (endDate.getTime() > new Date().getTime()) {
+				if (new Date().getTime() > endDate.getTime()) {
 
 					SchoolBaoMingPlan sp = loadSchoolBaomingPlan(student.getSignUpSchoolId());
 					if (sp != null) {
