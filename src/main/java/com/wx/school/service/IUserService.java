@@ -56,7 +56,7 @@ public interface IUserService {
 	
 	public void importStudentInfo(InputStream inputStream);
 
-
+	public void importStudentInfoForTest(InputStream inputStream);
 
 
 }

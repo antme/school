@@ -80,9 +80,21 @@ public class Student extends BaseEntity {
 	public String parentMobileNumber;
 
 	public Date parentCreatedOn;
+	
+	private String schoolSignName;
 
 	public String sexCn;
 	public Integer number;
+	
+	
+
+	public String getSchoolSignName() {
+		return schoolSignName;
+	}
+
+	public void setSchoolSignName(String schoolSignName) {
+		this.schoolSignName = schoolSignName;
+	}
 
 	public Integer getNumber() {
 		return number;

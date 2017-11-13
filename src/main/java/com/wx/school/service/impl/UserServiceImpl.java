@@ -203,8 +203,11 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		student.setBirdaryMonth(month);
 		student.setBirdaryYear(year);
-		checkQuery.and(Student.BIRDARY_YEAR, year);
-		checkQuery.and(Student.BIRDARY_MONTH, month);
+		
+		checkQuery.and(Student.BIRTH_DAY, student.getBirthday().replaceAll("-", "/"));
+		
+//		checkQuery.and(Student.BIRDARY_YEAR, year);
+//		checkQuery.and(Student.BIRDARY_MONTH, month);
 
 		if (isNew) {
 			String currentUserId = EWeblibThreadLocal.getCurrentUserId();
@@ -304,6 +307,11 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		query.leftJoin(Student.TABLE_NAME, School.TABLE_NAME, Student.SCHOOL_ID, School.ID);
 		query.joinColumns(School.TABLE_NAME, new String[] { School.NAME + " as schoolName"});
 
+		
+		query.leftJoin(Student.TABLE_NAME, "Student", School.TABLE_NAME, "School1", Student.SIGN_UP_SCHOOL_ID, School.ID);
+		query.joinColumns("School1", new String[] { School.NAME + " as schoolSignName"});
+		
+		
 		
 		query.limitColumns(new Student().getColumnList());
 
@@ -435,6 +443,71 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 			}
 		}
 
+	}
+	
+	public void importStudentInfoForTest(InputStream inputStream) {
+		ExcelUtil excleUtil = new ExcelUtil(inputStream);
+		Map<String, String> schoolMap = new HashMap<String, String>();
+
+		for (int index = 0; index < excleUtil.getNumberOfSheets(); index++) {
+
+			List<String[]> list = excleUtil.getAllData(index);
+
+			if (list.isEmpty()) {
+				continue;
+			}
+
+			String sheetName = excleUtil.getSheetName(index);
+			String errorMsg = sheetName + "sheet 中的";
+			logger.info(sheetName + ":" + list.size());
+			for (int i = 1; i < list.size(); i++) {// 从第2行开始读数据
+				logger.debug(sheetName + ":" + i + ":" + list.size());
+				String[] row = list.get(i);
+
+				if (row.length > 3) {
+					String name = row[0].trim();
+					
+					if(EweblibUtil.isValid(name)) {
+					String sex = row[1].trim();
+					String birthdaryStr = row[2].trim();
+					
+					Date birthDay = DateUtil.getDate(birthdaryStr, "yyyy/MM/dd");
+
+					if (birthDay == null) {
+
+						birthDay = DateUtil.getDate(birthdaryStr, "dd/MM/yyyy");
+					}
+
+					if (birthDay == null) {
+
+						try {
+							birthDay = new Date(birthdaryStr);
+						} catch (Exception e) {
+							throw new ResponseException(errorMsg + "第" + (i + 1) + "行的学生出生日期格式不正确");
+						}
+					}
+
+		
+					Calendar c = Calendar.getInstance();
+					c.setTime(birthDay);
+
+					int year = c.get(Calendar.YEAR);
+					int month = c.get(Calendar.MONTH) + 1;
+
+					String key = name+sex+year+month;
+					String value = name+sex+ new SimpleDateFormat("yyyy-MM-dd").format(birthDay);
+					if(schoolMap.get(key)!=null) {
+						System.out.println(schoolMap.get(key)  + " : " + value);
+					}else {
+						schoolMap.put(key,value);
+					}
+					
+					}
+				}
+				
+			}
+			
+		}
 	}
 
 	public void importStudentInfo(InputStream inputStream) {
@@ -585,7 +658,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 //					String birthDayStr = year + "-" + monthStr;
 					SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
 					
-					student.setBirthday(f.format(birthDay));
+					String birtdayDisplay = f.format(birthDay);
+					student.setBirthday(birtdayDisplay);
 					student.setIsVip(true);
 					student.setRemark(remark);
 					student.setBirdaryMonth(month);
@@ -594,6 +668,8 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 					if (mergedSchool != null) {
 						student.setSignUpSchoolId(mergedSchool.getId());
+					}else {
+						student.setSignUpSchoolId(school.getId());
 					}
 
 					student.setSignUpPlace(place);
@@ -601,14 +677,19 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					DataBaseQueryBuilder query = new DataBaseQueryBuilder(Student.TABLE_NAME);
 					query.and(Student.NAME, name);
 					query.and(Student.SEX, sexEn);
-					query.and(Student.BIRDARY_YEAR, year);
-					query.and(Student.BIRDARY_MONTH, month);
+					
+					if (name.equalsIgnoreCase("陈诺") || name.equalsIgnoreCase("王子涵")) {
+						query.and(Student.BIRTH_DAY, birtdayDisplay);
+					} else {
+						query.and(Student.BIRDARY_YEAR, year);
+						query.and(Student.BIRDARY_MONTH, month);
+					}
 
 					Student old = this.dao.findOneByQuery(query, Student.class);
 					if (old != null) {
 						student.setId(old.getId());
 						this.dao.updateById(student, new String[] { Student.SCHOOL_ID, Student.BIRTH_DAY,
-								Student.REMARK, Student.SIGN_UP_SCHOOL_ID, Student.SIGN_UP_PLACE });
+								Student.REMARK, Student.SIGN_UP_SCHOOL_ID, Student.SIGN_UP_PLACE, Student.IS_VIP });
 					} else {
 						this.dao.insert(student);
 					}

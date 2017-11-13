@@ -190,6 +190,7 @@
 			<th align="center" field="parentMobileNumber" width="80" sortable="false" resizable="true" >家长手机</th>	
 			<th align="center" field="parentCreatedOn" width="130" sortable="false" resizable="true" >家长注册时间</th>	
 			<th align="center" field="createdOn" width="130" sortable="false" resizable="true" >学生注册时间</th>	
+			<th align="center" field="schoolSignName" width="100" sortable="false" resizable="true" >报名校区</th>
 			<th align="center" field="remark" width="250" sortable="false" resizable="true"  data-options="formatter:formatterRemark">备注</th>	
 		<th align="center" data-options="field:'id',formatter:formatterOperation,width:100" >操作</th>
 		</tr>
