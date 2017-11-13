@@ -278,8 +278,9 @@ public class MessageServiceImpl implements IMessageService {
 	public void sendSchoolTakeNumberNotice() {
 		
 		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
+		query.and(DataBaseQueryOpertion.IS_TRUE, SchoolPlan.IS_DISPLAY_FOR_WX);
 		List<SchoolPlan> planList = this.dao.listByQuery(query, SchoolPlan.class);
-		
+
 		for (SchoolPlan plan : planList) {
 
 			Date endDate = DateUtil.getDateTime(
