@@ -58,6 +58,24 @@ public class SmsHelp {
 		}
 
 	}
+	
+	
+	public static void sendTakeNumberSms(String mobileNumber) throws ClientException {
+
+		if (client != null) {
+			SingleSendSmsRequest request = new SingleSendSmsRequest();
+			request.setSignName("百花学习塾");
+			request.setTemplateCode("SMS_109530319");
+			request.setRecNum(mobileNumber);
+			SingleSendSmsResponse httpResponse = client.getAcsResponse(request);
+
+			System.out.println(httpResponse.getRequestId());
+		} else {
+			loadClient();
+			throw new ResponseException("短信发送失败，请稍后再试");
+		}
+
+	}
 
 	private static void loadClient() throws ClientException {
 		if (client == null) {

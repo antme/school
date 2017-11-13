@@ -19,7 +19,7 @@ public class SMSSchedule {
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	@Async
 	public void run() {
-		smsService.checkNoticeSmsSendStatus();
+		smsService.sendSchoolTakeNumberNotice();
 		log.info("SMSSchedule called");
 	}
 }

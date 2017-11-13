@@ -12,6 +12,7 @@ public interface IMessageService {
 	
 	void checkSms(User user, int smsType);
 
+	@Deprecated
 	void sendSchoolNoticeSms(SmsLog smsLog);
 
 	EntityResults<SmsLog> listSentSchoolNoticeSms(SmsLog smsLog);
@@ -23,5 +24,7 @@ public interface IMessageService {
 	String loadNoticeMsg(StudentSchoolInfo info, boolean admin);
 	
 	void deleteSmsLog(String schoolId);
+
+	void sendSchoolTakeNumberNotice();
 	
 }

@@ -2,6 +2,7 @@ package com.wx.school.service.message.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse.stat;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.cfg.ConfigManager;
@@ -22,10 +24,12 @@ import com.eweblib.util.DateUtil;
 import com.eweblib.util.EweblibUtil;
 import com.eweblib.util.ExcelUtil;
 import com.wx.school.bean.school.School;
+import com.wx.school.bean.school.SchoolPlan;
 import com.wx.school.bean.school.StudentNumber;
 import com.wx.school.bean.school.StudentSchoolInfo;
 import com.wx.school.bean.user.SMS;
 import com.wx.school.bean.user.SmsLog;
+import com.wx.school.bean.user.Student;
 import com.wx.school.bean.user.User;
 import com.wx.school.service.ISchoolService;
 import com.wx.school.service.message.IMessageService;
@@ -269,5 +273,49 @@ public class MessageServiceImpl implements IMessageService {
 		DataBaseQueryBuilder delQuery = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
 		delQuery.and(SmsLog.SCHOOL_ID, schoolId);
 		this.dao.deleteByQuery(delQuery);
+	}
+	
+	public void sendSchoolTakeNumberNotice() {
+		
+		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SchoolPlan.TABLE_NAME);
+		List<SchoolPlan> planList = this.dao.listByQuery(query, SchoolPlan.class);
+		
+		for (SchoolPlan plan : planList) {
+
+			if (plan.getTakeNumberDate().getTime() < new Date().getTime()) {
+
+				DataBaseQueryBuilder studentQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
+				studentQuery.and(Student.SIGN_UP_SCHOOL_ID, plan.getSchoolId());
+
+				studentQuery.leftJoin(Student.TABLE_NAME, StudentNumber.TABLE_NAME, Student.ID,
+						StudentNumber.STUDENT_ID);
+				studentQuery.joinColumns(StudentNumber.TABLE_NAME, new String[] { StudentNumber.NUMBER });
+
+				List<Student> studentList = this.dao.listByQuery(studentQuery, Student.class);
+				for (Student student : studentList) {
+
+					User user = this.dao.findById(student.getOwnerId(), User.TABLE_NAME, User.class);
+					if (student.getNumber() == null) {
+						DataBaseQueryBuilder smsQuery = new DataBaseQueryBuilder(SMS.TABLE_NAME);
+						smsQuery.and(SMS.MOBILE_NUMBER, user.getMobileNumber());
+						smsQuery.and(SMS.SMS_TYPE, "TAKE_NUMBER_NOTICE");
+						
+						SMS sms = this.dao.findOneByQuery(smsQuery, SMS.class);
+						if(sms!=null) {
+							try {
+								SmsHelp.sendTakeNumberSms(user.getMobileNumber());
+							} catch (ClientException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+					}
+				}
+
+			}
+		}
+		
+		
 	}
 }

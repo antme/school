@@ -72,7 +72,26 @@ public class Student extends BaseEntity {
 	public String studentName;
 
 	public String schoolName;
-	
+
+	public Boolean hasNumber = false;
+
+	public String parentName;
+
+	public String parentMobileNumber;
+
+	public Date parentCreatedOn;
+
+	public String sexCn;
+	public Integer number;
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
 	public String getSchoolName() {
 		return schoolName;
 	}
@@ -136,16 +155,6 @@ public class Student extends BaseEntity {
 	public void setIsVip(Boolean isVip) {
 		this.isVip = isVip;
 	}
-
-	public Boolean hasNumber = false;
-
-	public String parentName;
-
-	public String parentMobileNumber;
-
-	public Date parentCreatedOn;
-
-	public String sexCn;
 
 	public String getRemark() {
 		return remark;
