@@ -21,10 +21,11 @@ public class SMSSchedule {
 	@Scheduled(cron = "0 0/1 * * * ?")
 	@Async
 	public void run() {
+		log.info("SMSSchedule called");
 		if (!isRuinning) {
 			isRuinning = true;
 			smsService.sendSchoolTakeNumberNotice();
-			log.info("SMSSchedule called");
+			log.info("SMSSchedule called finished");
 			isRuinning = false;
 		}
 	}
