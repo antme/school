@@ -66,6 +66,8 @@ public class SmsHelp {
 			SingleSendSmsRequest request = new SingleSendSmsRequest();
 			request.setSignName("百花学习塾");
 			request.setTemplateCode("SMS_109530319");
+			Map<String, String> map = new HashMap<String, String>();
+			request.setParamString(EweblibUtil.toJson(map));
 			request.setRecNum(mobileNumber);
 			SingleSendSmsResponse httpResponse = client.getAcsResponse(request);
 
