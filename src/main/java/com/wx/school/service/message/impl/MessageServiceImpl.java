@@ -297,6 +297,8 @@ public class MessageServiceImpl implements IMessageService {
 
 				studentQuery.joinColumns(StudentNumber.TABLE_NAME, new String[] { StudentNumber.NUMBER });
 				studentQuery.and(Student.SIGN_UP_SCHOOL_ID, plan.getSchoolId());
+				
+				studentQuery.limitColumns(new String[] {Student.ID, Student.OWNER_ID});
 
 				List<Student> studentList = this.dao.listByQuery(studentQuery, Student.class);
 				for (Student student : studentList) {

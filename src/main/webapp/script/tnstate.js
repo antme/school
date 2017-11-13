@@ -91,6 +91,7 @@ $(document).ready(function(){
             var jsonData = eval(data);
             if(jsonData['takeDate']){
                 $("#weui-dialog__bd_2").html("错过取号的家长：可于报名当天（" + jsonData['takeDate'] + "）直接到校区报名。由于您没有取号，我们将在所有已取号家长报名完成以后再对您进行报名。")
+                $("#iosDialog2").show();
             }
         },
         error:function(res){

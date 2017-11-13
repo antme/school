@@ -650,15 +650,16 @@ public class SchoolServiceImpl extends AbstractService implements ISchoolService
 		
 		int hour = c.get(Calendar.HOUR_OF_DAY);
 		int minutes = c.get(Calendar.MINUTE);
-		
-		if ((hour == 11 && minutes >= 45) || (hour == 12)) {
+		Integer skipMinutes = baoming.getSkipMinutes();
+
+		if ((hour == 11 && (minutes + skipMinutes) > 60) || (hour == 12)) {
 			//午休时间
-			int skipMinutes = (int) (baoming.getMiddayRestHours() * 60);		
-			c.add(Calendar.MINUTE, skipMinutes);
+			int sleepMinutes = (int) (baoming.getMiddayRestHours() * 60);		
+			c.add(Calendar.MINUTE, sleepMinutes);
 
 		}else if (last != null) {
 			// 如果已经有批次了，要加上 skipMinutes
-			c.add(Calendar.MINUTE, baoming.getSkipMinutes());
+			c.add(Calendar.MINUTE, skipMinutes);
 		}
 		
 		
