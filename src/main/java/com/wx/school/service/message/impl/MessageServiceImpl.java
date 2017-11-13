@@ -291,11 +291,12 @@ public class MessageServiceImpl implements IMessageService {
 					&& (new Date().getTime() + (60 * 60 * 1000) > endDate.getTime())) {
 
 				DataBaseQueryBuilder studentQuery = new DataBaseQueryBuilder(Student.TABLE_NAME);
-				studentQuery.and(Student.SIGN_UP_SCHOOL_ID, plan.getSchoolId());
 
 				studentQuery.leftJoin(Student.TABLE_NAME, StudentNumber.TABLE_NAME, Student.ID,
 						StudentNumber.STUDENT_ID);
+
 				studentQuery.joinColumns(StudentNumber.TABLE_NAME, new String[] { StudentNumber.NUMBER });
+				studentQuery.and(Student.SIGN_UP_SCHOOL_ID, plan.getSchoolId());
 
 				List<Student> studentList = this.dao.listByQuery(studentQuery, Student.class);
 				for (Student student : studentList) {
