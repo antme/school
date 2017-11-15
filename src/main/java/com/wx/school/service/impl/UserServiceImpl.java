@@ -205,9 +205,13 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 		student.setBirdaryYear(year);
 		
 		
-		Date birthDay = DateUtil.getDate(student.getBirthday(), "yyyy-MM-dd");
 		
-		checkQuery.and(Student.BIRTH_DAY, new SimpleDateFormat("yyyy/MM/dd").format(birthDay));
+		Date birthDay = parserBirthyDay(student.getBirthday());
+
+		
+		
+		String birthDayFormat = new SimpleDateFormat("yyyy/MM/dd").format(birthDay);
+		checkQuery.and(Student.BIRTH_DAY, birthDayFormat);
 		
 //		checkQuery.and(Student.BIRDARY_YEAR, year);
 //		checkQuery.and(Student.BIRDARY_MONTH, month);
@@ -365,17 +369,38 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 	public void updateStudentInfo(Student student) {
 
-		if (EweblibUtil.isEmpty(student.getBirthday())) {
+		String birthday2 = student.getBirthday();
+		if (EweblibUtil.isEmpty(birthday2)) {
 			throw new ResponseException("出生日期不能为空");
 		}
 
-		if (!student.getBirthday().contains("-")) {
-			throw new ResponseException("日期格式为yyyy-mm");
-		}
 
 		checkStudent(student, false, true, false);
+		
+		Date birthDay = parserBirthyDay(birthday2);
+
+		
+		String birthDayFormat = new SimpleDateFormat("yyyy/MM/dd").format(birthDay);
+		student.setBirthday(birthDayFormat);
+		
 		this.dao.updateById(student, new String[] { Student.NAME, Student.SEX, Student.BIRTH_DAY, Student.REMARK,
 				Student.BIRDARY_MONTH, Student.BIRDARY_YEAR });
+	}
+
+	private Date parserBirthyDay(String birthday2) {
+		Date birthDay = DateUtil.getDate(birthday2, "yyyy-MM-dd");
+
+	
+		if (birthDay == null) {
+
+			birthDay = DateUtil.getDate(birthday2, "dd/MM/yyyy");
+		}
+		
+		if (birthDay == null) {
+
+			birthDay = DateUtil.getDate(birthday2, "yyyy/MM/dd");
+		}
+		return birthDay;
 	}
 
 	public Map<String, Object> sumtUserInfo() {
