@@ -194,8 +194,13 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
 		// checkQuery.and(Student.BIRTH_DAY, student.getBirthday());
 
-		int year = EweblibUtil.getInteger(student.getBirthday().split("-")[0], 0);
-		int month = EweblibUtil.getInteger(student.getBirthday().split("-")[1], 0);
+		String split = "-";
+		
+		if(student.getBirthday().contains("/")) {
+			split = "/";
+		}
+		int year  = EweblibUtil.getInteger(student.getBirthday().split(split)[0], 0);
+		int month = EweblibUtil.getInteger(student.getBirthday().split(split)[1], 0);
 
 		if (year == 0 || month == 0) {
 			throw new ResponseException("日期格式错误");
@@ -390,15 +395,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 	private Date parserBirthyDay(String birthday2) {
 		Date birthDay = DateUtil.getDate(birthday2, "yyyy-MM-dd");
 
-	
-		if (birthDay == null) {
-
-			birthDay = DateUtil.getDate(birthday2, "dd/MM/yyyy");
-		}
 		
 		if (birthDay == null) {
 
 			birthDay = DateUtil.getDate(birthday2, "yyyy/MM/dd");
+		}
+		if (birthDay == null) {
+
+			birthDay = DateUtil.getDate(birthday2, "dd/MM/yyyy");
 		}
 		return birthDay;
 	}
