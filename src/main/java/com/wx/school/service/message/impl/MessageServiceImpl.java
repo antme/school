@@ -65,6 +65,7 @@ public class MessageServiceImpl implements IMessageService {
 		c.add(Calendar.MINUTE, -5);
 		DataBaseQueryBuilder delQeury2 = new DataBaseQueryBuilder(SMS.TABLE_NAME);
 		delQeury2.and(DataBaseQueryOpertion.LESS_THAN, SMS.CREATED_ON, c.getTime());
+		delQeury2.and(SMS.SMS_TYPE, sms.getSmsType());
 		this.dao.deleteByQuery(delQeury2);
 
 		this.dao.insert(sms);
