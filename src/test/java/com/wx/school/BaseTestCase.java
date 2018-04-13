@@ -42,7 +42,7 @@ public class BaseTestCase extends TestCase {
 //		SmsHelp.sendSchoolNoticeSms("2017-01-18", "09:10", "09:30", "徐汇校区", "徐汇区天钥桥路30号15楼15", "18516692298");
 
 		 InputStream in = new FileInputStream(new
-		 File("/Users/clp/downloads/2017年秋季名单汇总 （已去重）.xls"));
+		 File("/Users/clp/downloads/2018年春季名单汇总 （已去重）.xls"));
 		
 		 us.importParentInfo(in);
 		// us.exportStudentInfo(null);
