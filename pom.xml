@@ -197,21 +197,17 @@
 			<version>2.0.21</version>
 		</dependency>
 
-		<dependency>
-			<groupId>aliyun-sdk</groupId>
-			<artifactId>sdk</artifactId>
-			<version>2.4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/WEB-INF/lib/aliyun-java-sdk-core-2.4.2.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>aliyun-sms</groupId>
-			<artifactId>sms</artifactId>
-			<version>3.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/WEB-INF/lib/aliyun-java-sdk-sms-3.0.0-rc1.jar</systemPath>
-		</dependency>
+			<dependency>
+				<groupId>com.aliyun</groupId>
+				<artifactId>aliyun-java-sdk-core</artifactId>
+				<version>3.2.8</version>
+				注：如提示报错，先升级基础包版，无法解决可联系技术支持
+			</dependency>
+			<dependency>
+				<groupId>com.aliyun</groupId>
+				<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+				<version>1.1.0</version>
+			</dependency>
 
 	</dependencies>
 

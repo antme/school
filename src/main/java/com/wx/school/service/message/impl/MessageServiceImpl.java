@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.sms.model.v20160927.QuerySmsFailByPageResponse.stat;
 import com.eweblib.bean.vo.EntityResults;
 import com.eweblib.cfg.ConfigManager;
 import com.eweblib.dao.IQueryDao;
@@ -166,29 +165,29 @@ public class MessageServiceImpl implements IMessageService {
 	}
 
 	public void checkNoticeSmsSendStatus() {
-		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DAY_OF_YEAR, -1);
-		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.CREATED_ON, c.getTime());
-
-		List<SmsLog> logList = this.dao.listByQuery(query, SmsLog.class);
-		for (SmsLog log : logList) {
-			List<stat> statList = SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 0);
-			statList.addAll(SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 2));
-			for (stat stat : statList) {
-				if (stat.getSmsCode().equals("SMS_36350142")
-						&& log.getMobileNumbers().indexOf(stat.getReceiverNum()) != -1)
-
-					if (log.getFailedMobileNumbers().indexOf(stat.getReceiverNum()) != -1) {
-						log.setFailedCount(log.getFailedCount() + 1);
-						log.setSuccessCount(log.getSuccessCount() + 1);
-						log.setFailedMobileNumbers(log.getFailedMobileNumbers() + "," + stat.getReceiverNum());
-						this.dao.updateById(log, new String[] { SmsLog.FAILED_MOBILE_NUMBERS, SmsLog.SUCCESS_COUNT,
-								SmsLog.FAILED_COUNT });
-					}
-
-			}
-		}
+//		DataBaseQueryBuilder query = new DataBaseQueryBuilder(SmsLog.TABLE_NAME);
+//		Calendar c = Calendar.getInstance();
+//		c.add(Calendar.DAY_OF_YEAR, -1);
+//		query.and(DataBaseQueryOpertion.LARGER_THAN_EQUALS, SmsLog.CREATED_ON, c.getTime());
+//
+//		List<SmsLog> logList = this.dao.listByQuery(query, SmsLog.class);
+//		for (SmsLog log : logList) {
+//			List<stat> statList = SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 0);
+//			statList.addAll(SmsHelp.getFailedMobileNumbers(DateUtil.getDateString(log.getCreatedOn()), 2));
+//			for (stat stat : statList) {
+//				if (stat.getSmsCode().equals("SMS_36350142")
+//						&& log.getMobileNumbers().indexOf(stat.getReceiverNum()) != -1)
+//
+//					if (log.getFailedMobileNumbers().indexOf(stat.getReceiverNum()) != -1) {
+//						log.setFailedCount(log.getFailedCount() + 1);
+//						log.setSuccessCount(log.getSuccessCount() + 1);
+//						log.setFailedMobileNumbers(log.getFailedMobileNumbers() + "," + stat.getReceiverNum());
+//						this.dao.updateById(log, new String[] { SmsLog.FAILED_MOBILE_NUMBERS, SmsLog.SUCCESS_COUNT,
+//								SmsLog.FAILED_COUNT });
+//					}
+//
+//			}
+//		}
 
 	}
 
