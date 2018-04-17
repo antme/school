@@ -710,12 +710,12 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 					query.and(Student.NAME, name);
 					query.and(Student.SEX, sexEn);
 					
-					if (name.equalsIgnoreCase("陈诺") || name.equalsIgnoreCase("王子涵")) {
+//					if (name.equalsIgnoreCase("张心悦")) {
 						query.and(Student.BIRTH_DAY, birtdayDisplay);
-					} else {
-						query.and(Student.BIRDARY_YEAR, year);
-						query.and(Student.BIRDARY_MONTH, month);
-					}
+//					} else {
+//						query.and(Student.BIRDARY_YEAR, year);
+//						query.and(Student.BIRDARY_MONTH, month);
+//					}
 
 					Student old = this.dao.findOneByQuery(query, Student.class);
 					if (old != null) {
